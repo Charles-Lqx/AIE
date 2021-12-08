@@ -1,9 +1,8 @@
 import spinal.lib._
 import spinal.core._
 
-// define a config class for Axi_M_Write
-case class Axi4_S_Config(addressWidth: Int,
-                         dataWidth: Int,
+// define a config class for Axi_S
+case class Axi4_S_Config(dataWidth: Int,
                          dataNumber: Int,
                          useStrb: Boolean = true,
                          useKeep: Boolean = true,
@@ -15,7 +14,7 @@ case class Axi4_S_Config(addressWidth: Int,
                          tDestWidth: Int = -1,
                          tUserWidth: Int = -1
                         ) {
-  // when use the ID, DEST, USER signal, some condition shoud be met
+  // when use the ID, DEST, USER signal, some condition should be met
   if (useId) {
     require(tIdWidth >= 0, "You shoud set the tIdWidth in this config !")
   }
