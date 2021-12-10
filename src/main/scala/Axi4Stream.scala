@@ -56,7 +56,7 @@ object Axi4StreamSpecRenamer {
         port.setName(port.getName().replace("_payload_", ""))
         port.setName(port.getName().replace("_valid", "Valid"))
         port.setName(port.getName().replace("_ready", "Ready"))
-        if (port.getName().startsWith("io_")) port.getName().replaceFirst("io_", "")
+        if (port.getName().startsWith("io_")) port.setName(port.getName().replaceFirst("io_", ""))
       }
     }
     if (Component.current == that.component){

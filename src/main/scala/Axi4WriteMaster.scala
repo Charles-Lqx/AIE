@@ -31,18 +31,21 @@ case class Axi4WriteMaster(addressWidth: Int, len: Int = 256, widthPerData: Int 
 
   // --------------------the interconnection logic---------------------
 
-  // ----------------fifo to Axi4WriteMaster channel map-------------------
+  // record the times of write op in write channel
+  val writeCounter = Counter(0, len)
 
   // record the times of handshake between fifo and Axi4WriteMaster interface
   val handshakeCounter: Counter = Counter(0, len)
 
+  // ----------------fifo to Axi4WriteMaster channel map-------------------
+
   // register the fifo data (or fifo data buffer)
 
-  val fifoDataBuffer: Bits = RegInit(B(0, widthPerData * len bits))
+  val fifoDataBuffer: Vec[Bits] = Vec(List.tabulate(len)(i => RegInit(B(0, widthPerData bits))))
 
   // handshake between fifo and Axi4WriteMaster
   when(fifoStreamInterface.fire) {
-    fifoDataBuffer(handshakeCounter * U(widthPerData), widthPerData bits) := fifoStreamInterface.payload
+    fifoDataBuffer(handshakeCounter.resized) := fifoStreamInterface.payload
     handshakeCounter.increment()
   }
 
@@ -63,13 +66,14 @@ case class Axi4WriteMaster(addressWidth: Int, len: Int = 256, widthPerData: Int 
   // ----------------------the write address channel map----------------------
 
   // compute the start address for each transfer in each burst
-  val address =
-    RegNextWhen(Axi4.incr(address,
+  val address: UInt = Reg(UInt(addressWidth bits)) init (U(0, addressWidth bits))
+  when(writeMasterInterface.aw.fire) {
+    address := Axi4.incr(address,
       writeMasterInterface.aw.burst,
       writeMasterInterface.aw.len,
       writeMasterInterface.aw.size,
-      config.bytePerWord),
-      writeMasterInterface.aw.fire) init (U(0, addressWidth bits))
+      config.bytePerWord)
+  }
   // handshake logic
   writeMasterInterface.aw.valid := writeMasterInterface.w.valid
 
@@ -106,13 +110,10 @@ case class Axi4WriteMaster(addressWidth: Int, len: Int = 256, widthPerData: Int 
 
   // --------------------------the write channel map--------------------------
 
-  // record the times of write op in write channel
-  val writeCounter = Counter(0, len)
-
   // data logic
   writeMasterInterface.w.payload.data := B(0, widthPerData bits)
   when(writeMasterInterface.w.valid) {
-    writeMasterInterface.w.payload.data := fifoDataBuffer(writeCounter * widthPerData, widthPerData bits)
+    writeMasterInterface.w.payload.data := fifoDataBuffer(writeCounter.resized)
   }
   when(writeMasterInterface.w.fire) {
     writeCounter.increment()
@@ -134,6 +135,7 @@ case class Axi4WriteMaster(addressWidth: Int, len: Int = 256, widthPerData: Int 
 
   // ------------------------The write respond map---------------------------
   // in this interface, noting to do
+  writeMasterInterface.b.ready := True
 
 
   // --------------------The read address channel map -----------------------
@@ -152,19 +154,23 @@ case class Axi4WriteMaster(addressWidth: Int, len: Int = 256, widthPerData: Int 
 
   // ------------------------The read channel map-----------------------------
   // in this interface, noting to do
+  writeMasterInterface.r.ready := False
 }
 
 
 object Axi4WriteMasterSpecRenamer {
   def apply(that: Axi4WriteMaster): Unit = {
     def doIt() = {
+      val name: String = that.getName()
       that.flatten.foreach { port =>
         port.setName(port.getName().replace("_payload_", ""))
         port.setName(port.getName().replace("_valid", "Valid"))
         port.setName(port.getName().replace("_ready", "Ready"))
         port.setName(port.getName().replace("fifo_payload", "fifoPayload"))
-        if (port.getName().startsWith("io_t_")) port.getName().replaceFirst("io_t_", "")
-        if (port.getName().startsWith("io_fifo_")) port.getName().replaceFirst("io_fifo_", "fifo")
+        if (port.getName().startsWith(name + "_t_")) port.setName(port.getName().replaceFirst(name + "_t_", ""))
+        if (port.getName().startsWith(name + "_fifo")) port.setName(port.getName().replaceFirst(name + "_fifo", "fifo"))
+        if (port.getName().startsWith("io_" + name + "_t_")) port.setName(port.getName().replaceFirst("io_" + name + "_t_", ""))
+        if (port.getName().startsWith("io_" + name + "_fifo")) port.setName(port.getName().replaceFirst("io_" + name + "_fifo", "fifo"))
       }
     }
 
