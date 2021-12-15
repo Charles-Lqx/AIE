@@ -159,7 +159,7 @@ public:
     uint32_t timeCheck;
     bool waveEnabled;
     VTestFifo2Axi4WriteMaster top;
-    ISignalAccess *signalAccess[44];
+    ISignalAccess *signalAccess[45];
     #ifdef TRACE
 	  VerilatedVcdC tfp;
 	  #endif
@@ -171,50 +171,51 @@ public:
       timeCheck = 0;
       lastFlushAt = high_resolution_clock::now();
       waveEnabled = true;
-      signalAccess[0] = new CDataSignalAccess( top.fifoInterface_valid );
-      signalAccess[1] = new CDataSignalAccess( top.fifoInterface_ready );
-      signalAccess[2] = new IDataSignalAccess( top.fifoInterface_payload );
-      signalAccess[3] = new CDataSignalAccess( top.axi4MasterInterface_ar_valid );
-      signalAccess[4] = new CDataSignalAccess( top.axi4MasterInterface_ar_ready );
-      signalAccess[5] = new IDataSignalAccess( top.axi4MasterInterface_ar_payload_addr );
-      signalAccess[6] = new CDataSignalAccess( top.axi4MasterInterface_ar_payload_id );
-      signalAccess[7] = new CDataSignalAccess( top.axi4MasterInterface_ar_payload_region );
-      signalAccess[8] = new CDataSignalAccess( top.axi4MasterInterface_ar_payload_len );
-      signalAccess[9] = new CDataSignalAccess( top.axi4MasterInterface_ar_payload_size );
-      signalAccess[10] = new CDataSignalAccess( top.axi4MasterInterface_ar_payload_burst );
-      signalAccess[11] = new CDataSignalAccess( top.axi4MasterInterface_ar_payload_lock );
-      signalAccess[12] = new CDataSignalAccess( top.axi4MasterInterface_ar_payload_cache );
-      signalAccess[13] = new CDataSignalAccess( top.axi4MasterInterface_ar_payload_qos );
-      signalAccess[14] = new CDataSignalAccess( top.axi4MasterInterface_ar_payload_prot );
-      signalAccess[15] = new CDataSignalAccess( top.axi4MasterInterface_aw_valid );
-      signalAccess[16] = new CDataSignalAccess( top.axi4MasterInterface_aw_ready );
-      signalAccess[17] = new IDataSignalAccess( top.axi4MasterInterface_aw_payload_addr );
-      signalAccess[18] = new CDataSignalAccess( top.axi4MasterInterface_aw_payload_id );
-      signalAccess[19] = new CDataSignalAccess( top.axi4MasterInterface_aw_payload_region );
-      signalAccess[20] = new CDataSignalAccess( top.axi4MasterInterface_aw_payload_len );
-      signalAccess[21] = new CDataSignalAccess( top.axi4MasterInterface_aw_payload_size );
-      signalAccess[22] = new CDataSignalAccess( top.axi4MasterInterface_aw_payload_burst );
-      signalAccess[23] = new CDataSignalAccess( top.axi4MasterInterface_aw_payload_lock );
-      signalAccess[24] = new CDataSignalAccess( top.axi4MasterInterface_aw_payload_cache );
-      signalAccess[25] = new CDataSignalAccess( top.axi4MasterInterface_aw_payload_qos );
-      signalAccess[26] = new CDataSignalAccess( top.axi4MasterInterface_aw_payload_prot );
-      signalAccess[27] = new CDataSignalAccess( top.axi4MasterInterface_w_valid );
-      signalAccess[28] = new CDataSignalAccess( top.axi4MasterInterface_w_ready );
-      signalAccess[29] = new IDataSignalAccess( top.axi4MasterInterface_w_payload_data );
-      signalAccess[30] = new CDataSignalAccess( top.axi4MasterInterface_w_payload_strb );
-      signalAccess[31] = new CDataSignalAccess( top.axi4MasterInterface_w_payload_last );
-      signalAccess[32] = new CDataSignalAccess( top.axi4MasterInterface_r_valid );
-      signalAccess[33] = new CDataSignalAccess( top.axi4MasterInterface_r_ready );
-      signalAccess[34] = new IDataSignalAccess( top.axi4MasterInterface_r_payload_data );
-      signalAccess[35] = new CDataSignalAccess( top.axi4MasterInterface_r_payload_id );
-      signalAccess[36] = new CDataSignalAccess( top.axi4MasterInterface_r_payload_resp );
-      signalAccess[37] = new CDataSignalAccess( top.axi4MasterInterface_r_payload_last );
-      signalAccess[38] = new CDataSignalAccess( top.axi4MasterInterface_b_valid );
-      signalAccess[39] = new CDataSignalAccess( top.axi4MasterInterface_b_ready );
-      signalAccess[40] = new CDataSignalAccess( top.axi4MasterInterface_b_payload_id );
-      signalAccess[41] = new CDataSignalAccess( top.axi4MasterInterface_b_payload_resp );
-      signalAccess[42] = new CDataSignalAccess( top.clk );
-      signalAccess[43] = new CDataSignalAccess( top.reset );
+      signalAccess[0] = new IDataSignalAccess( top.TestFifo2Axi4WriteMaster->axi4Interconnection->axi4Interface_address );
+      signalAccess[1] = new CDataSignalAccess( top.fifoInterface_valid );
+      signalAccess[2] = new CDataSignalAccess( top.fifoInterface_ready );
+      signalAccess[3] = new IDataSignalAccess( top.fifoInterface_payload );
+      signalAccess[4] = new CDataSignalAccess( top.axi4WriteMasterInterface_ar_valid );
+      signalAccess[5] = new CDataSignalAccess( top.axi4WriteMasterInterface_ar_ready );
+      signalAccess[6] = new IDataSignalAccess( top.axi4WriteMasterInterface_ar_payload_addr );
+      signalAccess[7] = new CDataSignalAccess( top.axi4WriteMasterInterface_ar_payload_id );
+      signalAccess[8] = new CDataSignalAccess( top.axi4WriteMasterInterface_ar_payload_region );
+      signalAccess[9] = new CDataSignalAccess( top.axi4WriteMasterInterface_ar_payload_len );
+      signalAccess[10] = new CDataSignalAccess( top.axi4WriteMasterInterface_ar_payload_size );
+      signalAccess[11] = new CDataSignalAccess( top.axi4WriteMasterInterface_ar_payload_burst );
+      signalAccess[12] = new CDataSignalAccess( top.axi4WriteMasterInterface_ar_payload_lock );
+      signalAccess[13] = new CDataSignalAccess( top.axi4WriteMasterInterface_ar_payload_cache );
+      signalAccess[14] = new CDataSignalAccess( top.axi4WriteMasterInterface_ar_payload_qos );
+      signalAccess[15] = new CDataSignalAccess( top.axi4WriteMasterInterface_ar_payload_prot );
+      signalAccess[16] = new CDataSignalAccess( top.axi4WriteMasterInterface_aw_valid );
+      signalAccess[17] = new CDataSignalAccess( top.axi4WriteMasterInterface_aw_ready );
+      signalAccess[18] = new IDataSignalAccess( top.axi4WriteMasterInterface_aw_payload_addr );
+      signalAccess[19] = new CDataSignalAccess( top.axi4WriteMasterInterface_aw_payload_id );
+      signalAccess[20] = new CDataSignalAccess( top.axi4WriteMasterInterface_aw_payload_region );
+      signalAccess[21] = new CDataSignalAccess( top.axi4WriteMasterInterface_aw_payload_len );
+      signalAccess[22] = new CDataSignalAccess( top.axi4WriteMasterInterface_aw_payload_size );
+      signalAccess[23] = new CDataSignalAccess( top.axi4WriteMasterInterface_aw_payload_burst );
+      signalAccess[24] = new CDataSignalAccess( top.axi4WriteMasterInterface_aw_payload_lock );
+      signalAccess[25] = new CDataSignalAccess( top.axi4WriteMasterInterface_aw_payload_cache );
+      signalAccess[26] = new CDataSignalAccess( top.axi4WriteMasterInterface_aw_payload_qos );
+      signalAccess[27] = new CDataSignalAccess( top.axi4WriteMasterInterface_aw_payload_prot );
+      signalAccess[28] = new CDataSignalAccess( top.axi4WriteMasterInterface_w_valid );
+      signalAccess[29] = new CDataSignalAccess( top.axi4WriteMasterInterface_w_ready );
+      signalAccess[30] = new IDataSignalAccess( top.axi4WriteMasterInterface_w_payload_data );
+      signalAccess[31] = new CDataSignalAccess( top.axi4WriteMasterInterface_w_payload_strb );
+      signalAccess[32] = new CDataSignalAccess( top.axi4WriteMasterInterface_w_payload_last );
+      signalAccess[33] = new CDataSignalAccess( top.axi4WriteMasterInterface_r_valid );
+      signalAccess[34] = new CDataSignalAccess( top.axi4WriteMasterInterface_r_ready );
+      signalAccess[35] = new IDataSignalAccess( top.axi4WriteMasterInterface_r_payload_data );
+      signalAccess[36] = new CDataSignalAccess( top.axi4WriteMasterInterface_r_payload_id );
+      signalAccess[37] = new CDataSignalAccess( top.axi4WriteMasterInterface_r_payload_resp );
+      signalAccess[38] = new CDataSignalAccess( top.axi4WriteMasterInterface_r_payload_last );
+      signalAccess[39] = new CDataSignalAccess( top.axi4WriteMasterInterface_b_valid );
+      signalAccess[40] = new CDataSignalAccess( top.axi4WriteMasterInterface_b_ready );
+      signalAccess[41] = new CDataSignalAccess( top.axi4WriteMasterInterface_b_payload_id );
+      signalAccess[42] = new CDataSignalAccess( top.axi4WriteMasterInterface_b_payload_resp );
+      signalAccess[43] = new CDataSignalAccess( top.clk );
+      signalAccess[44] = new CDataSignalAccess( top.reset );
 
       #ifdef TRACE
       Verilated::traceEverOn(true);
@@ -225,7 +226,7 @@ public:
     }
 
     virtual ~Wrapper_1(){
-      for(int idx = 0;idx < 44;idx++){
+      for(int idx = 0;idx < 45;idx++){
           delete signalAccess[idx];
       }
 

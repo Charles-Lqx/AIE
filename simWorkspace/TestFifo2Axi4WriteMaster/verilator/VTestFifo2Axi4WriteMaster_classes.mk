@@ -16,14 +16,19 @@ VM_TRACE = 1
 # Generated module classes, fast-path, compile with highest optimization
 VM_CLASSES_FAST += \
 	VTestFifo2Axi4WriteMaster \
-	VTestFifo2Axi4WriteMaster__1 \
+	VTestFifo2Axi4WriteMaster_TestFifo2Axi4WriteMaster \
+	VTestFifo2Axi4WriteMaster_TestAxi4WriteMaster \
+	VTestFifo2Axi4WriteMaster_TestAxi4WriteMaster__1 \
 
 # Generated module classes, non-fast-path, compile with low/medium optimization
 VM_CLASSES_SLOW += \
 	VTestFifo2Axi4WriteMaster__Slow \
+	VTestFifo2Axi4WriteMaster_TestFifo2Axi4WriteMaster__Slow \
+	VTestFifo2Axi4WriteMaster_TestAxi4WriteMaster__Slow \
 
 # Generated support classes, fast-path, compile with highest optimization
 VM_SUPPORT_FAST += \
+	VTestFifo2Axi4WriteMaster__Dpi \
 	VTestFifo2Axi4WriteMaster__Trace \
 
 # Generated support classes, non-fast-path, compile with low/medium optimization
@@ -34,6 +39,7 @@ VM_SUPPORT_SLOW += \
 # Global classes, need linked once per executable, fast-path, compile with highest optimization
 VM_GLOBAL_FAST += \
 	verilated \
+	verilated_dpi \
 	verilated_vcd_c \
 
 # Global classes, need linked once per executable, non-fast-path, compile with low/medium optimization

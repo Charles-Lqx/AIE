@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.6.0    git head : 73c8d8e2b86b45646e9d0b2e729291f2b65e6be3
 // Component : TestFifo2Axi4WriteMaster
-// Git hash  : 0979837f915a50e3cecc964d3b3d2423bf347c03
+// Git hash  : d20cd190a2dadeaddfed7ca5c0e660977f8aa0ce
 
 
 
@@ -8,45 +8,45 @@ module TestFifo2Axi4WriteMaster (
   input               fifoInterface_valid,
   output              fifoInterface_ready,
   input      [31:0]   fifoInterface_payload,
-  output              axi4MasterInterface_aw_valid,
-  input               axi4MasterInterface_aw_ready,
-  output     [31:0]   axi4MasterInterface_aw_payload_addr,
-  output     [0:0]    axi4MasterInterface_aw_payload_id,
-  output     [3:0]    axi4MasterInterface_aw_payload_region,
-  output     [7:0]    axi4MasterInterface_aw_payload_len,
-  output     [2:0]    axi4MasterInterface_aw_payload_size,
-  output     [1:0]    axi4MasterInterface_aw_payload_burst,
-  output     [0:0]    axi4MasterInterface_aw_payload_lock,
-  output     [3:0]    axi4MasterInterface_aw_payload_cache,
-  output     [3:0]    axi4MasterInterface_aw_payload_qos,
-  output     [2:0]    axi4MasterInterface_aw_payload_prot,
-  output              axi4MasterInterface_w_valid,
-  input               axi4MasterInterface_w_ready,
-  output     [31:0]   axi4MasterInterface_w_payload_data,
-  output     [3:0]    axi4MasterInterface_w_payload_strb,
-  output              axi4MasterInterface_w_payload_last,
-  input               axi4MasterInterface_b_valid,
-  output              axi4MasterInterface_b_ready,
-  input      [0:0]    axi4MasterInterface_b_payload_id,
-  input      [1:0]    axi4MasterInterface_b_payload_resp,
-  output              axi4MasterInterface_ar_valid,
-  input               axi4MasterInterface_ar_ready,
-  output     [31:0]   axi4MasterInterface_ar_payload_addr,
-  output     [0:0]    axi4MasterInterface_ar_payload_id,
-  output     [3:0]    axi4MasterInterface_ar_payload_region,
-  output     [7:0]    axi4MasterInterface_ar_payload_len,
-  output     [2:0]    axi4MasterInterface_ar_payload_size,
-  output     [1:0]    axi4MasterInterface_ar_payload_burst,
-  output     [0:0]    axi4MasterInterface_ar_payload_lock,
-  output     [3:0]    axi4MasterInterface_ar_payload_cache,
-  output     [3:0]    axi4MasterInterface_ar_payload_qos,
-  output     [2:0]    axi4MasterInterface_ar_payload_prot,
-  input               axi4MasterInterface_r_valid,
-  output              axi4MasterInterface_r_ready,
-  input      [31:0]   axi4MasterInterface_r_payload_data,
-  input      [0:0]    axi4MasterInterface_r_payload_id,
-  input      [1:0]    axi4MasterInterface_r_payload_resp,
-  input               axi4MasterInterface_r_payload_last,
+  output              axi4WriteMasterInterface_aw_valid,
+  input               axi4WriteMasterInterface_aw_ready,
+  output     [31:0]   axi4WriteMasterInterface_aw_payload_addr,
+  output     [0:0]    axi4WriteMasterInterface_aw_payload_id,
+  output     [3:0]    axi4WriteMasterInterface_aw_payload_region,
+  output     [7:0]    axi4WriteMasterInterface_aw_payload_len,
+  output     [2:0]    axi4WriteMasterInterface_aw_payload_size,
+  output     [1:0]    axi4WriteMasterInterface_aw_payload_burst,
+  output     [0:0]    axi4WriteMasterInterface_aw_payload_lock,
+  output     [3:0]    axi4WriteMasterInterface_aw_payload_cache,
+  output     [3:0]    axi4WriteMasterInterface_aw_payload_qos,
+  output     [2:0]    axi4WriteMasterInterface_aw_payload_prot,
+  output              axi4WriteMasterInterface_w_valid,
+  input               axi4WriteMasterInterface_w_ready,
+  output     [31:0]   axi4WriteMasterInterface_w_payload_data,
+  output     [3:0]    axi4WriteMasterInterface_w_payload_strb,
+  output              axi4WriteMasterInterface_w_payload_last,
+  input               axi4WriteMasterInterface_b_valid,
+  output              axi4WriteMasterInterface_b_ready,
+  input      [0:0]    axi4WriteMasterInterface_b_payload_id,
+  input      [1:0]    axi4WriteMasterInterface_b_payload_resp,
+  output              axi4WriteMasterInterface_ar_valid,
+  input               axi4WriteMasterInterface_ar_ready,
+  output     [31:0]   axi4WriteMasterInterface_ar_payload_addr,
+  output     [0:0]    axi4WriteMasterInterface_ar_payload_id,
+  output     [3:0]    axi4WriteMasterInterface_ar_payload_region,
+  output     [7:0]    axi4WriteMasterInterface_ar_payload_len,
+  output     [2:0]    axi4WriteMasterInterface_ar_payload_size,
+  output     [1:0]    axi4WriteMasterInterface_ar_payload_burst,
+  output     [0:0]    axi4WriteMasterInterface_ar_payload_lock,
+  output     [3:0]    axi4WriteMasterInterface_ar_payload_cache,
+  output     [3:0]    axi4WriteMasterInterface_ar_payload_qos,
+  output     [2:0]    axi4WriteMasterInterface_ar_payload_prot,
+  input               axi4WriteMasterInterface_r_valid,
+  output              axi4WriteMasterInterface_r_ready,
+  input      [31:0]   axi4WriteMasterInterface_r_payload_data,
+  input      [0:0]    axi4WriteMasterInterface_r_payload_id,
+  input      [1:0]    axi4WriteMasterInterface_r_payload_resp,
+  input               axi4WriteMasterInterface_r_payload_last,
   input               clk,
   input               reset
 );
@@ -86,50 +86,50 @@ module TestFifo2Axi4WriteMaster (
   wire       [8:0]    fifoInstance_io_availability;
 
   TestAxi4WriteMaster axi4Interconnection (
-    .fifoValid      (fifoInstance_io_pop_valid           ), //i
-    .fifoReady      (axi4Interconnection_fifoReady       ), //o
-    .fifoPayload    (fifoInstance_io_pop_payload         ), //i
-    .awValid        (axi4Interconnection_awValid         ), //o
-    .awReady        (axi4MasterInterface_aw_ready        ), //i
-    .awaddr         (axi4Interconnection_awaddr          ), //o
-    .awid           (axi4Interconnection_awid            ), //o
-    .awregion       (axi4Interconnection_awregion        ), //o
-    .awlen          (axi4Interconnection_awlen           ), //o
-    .awsize         (axi4Interconnection_awsize          ), //o
-    .awburst        (axi4Interconnection_awburst         ), //o
-    .awlock         (axi4Interconnection_awlock          ), //o
-    .awcache        (axi4Interconnection_awcache         ), //o
-    .awqos          (axi4Interconnection_awqos           ), //o
-    .awprot         (axi4Interconnection_awprot          ), //o
-    .wValid         (axi4Interconnection_wValid          ), //o
-    .wReady         (axi4MasterInterface_w_ready         ), //i
-    .wdata          (axi4Interconnection_wdata           ), //o
-    .wstrb          (axi4Interconnection_wstrb           ), //o
-    .wlast          (axi4Interconnection_wlast           ), //o
-    .bValid         (axi4MasterInterface_b_valid         ), //i
-    .bReady         (axi4Interconnection_bReady          ), //o
-    .bid            (axi4MasterInterface_b_payload_id    ), //i
-    .bresp          (axi4MasterInterface_b_payload_resp  ), //i
-    .arValid        (axi4Interconnection_arValid         ), //o
-    .arReady        (axi4MasterInterface_ar_ready        ), //i
-    .araddr         (axi4Interconnection_araddr          ), //o
-    .arid           (axi4Interconnection_arid            ), //o
-    .arregion       (axi4Interconnection_arregion        ), //o
-    .arlen          (axi4Interconnection_arlen           ), //o
-    .arsize         (axi4Interconnection_arsize          ), //o
-    .arburst        (axi4Interconnection_arburst         ), //o
-    .arlock         (axi4Interconnection_arlock          ), //o
-    .arcache        (axi4Interconnection_arcache         ), //o
-    .arqos          (axi4Interconnection_arqos           ), //o
-    .arprot         (axi4Interconnection_arprot          ), //o
-    .rValid         (axi4MasterInterface_r_valid         ), //i
-    .rReady         (axi4Interconnection_rReady          ), //o
-    .rdata          (axi4MasterInterface_r_payload_data  ), //i
-    .rid            (axi4MasterInterface_r_payload_id    ), //i
-    .rresp          (axi4MasterInterface_r_payload_resp  ), //i
-    .rlast          (axi4MasterInterface_r_payload_last  ), //i
-    .clk            (clk                                 ), //i
-    .reset          (reset                               )  //i
+    .fifoValid      (fifoInstance_io_pop_valid                ), //i
+    .fifoReady      (axi4Interconnection_fifoReady            ), //o
+    .fifoPayload    (fifoInstance_io_pop_payload              ), //i
+    .awValid        (axi4Interconnection_awValid              ), //o
+    .awReady        (axi4WriteMasterInterface_aw_ready        ), //i
+    .awaddr         (axi4Interconnection_awaddr               ), //o
+    .awid           (axi4Interconnection_awid                 ), //o
+    .awregion       (axi4Interconnection_awregion             ), //o
+    .awlen          (axi4Interconnection_awlen                ), //o
+    .awsize         (axi4Interconnection_awsize               ), //o
+    .awburst        (axi4Interconnection_awburst              ), //o
+    .awlock         (axi4Interconnection_awlock               ), //o
+    .awcache        (axi4Interconnection_awcache              ), //o
+    .awqos          (axi4Interconnection_awqos                ), //o
+    .awprot         (axi4Interconnection_awprot               ), //o
+    .wValid         (axi4Interconnection_wValid               ), //o
+    .wReady         (axi4WriteMasterInterface_w_ready         ), //i
+    .wdata          (axi4Interconnection_wdata                ), //o
+    .wstrb          (axi4Interconnection_wstrb                ), //o
+    .wlast          (axi4Interconnection_wlast                ), //o
+    .bValid         (axi4WriteMasterInterface_b_valid         ), //i
+    .bReady         (axi4Interconnection_bReady               ), //o
+    .bid            (axi4WriteMasterInterface_b_payload_id    ), //i
+    .bresp          (axi4WriteMasterInterface_b_payload_resp  ), //i
+    .arValid        (axi4Interconnection_arValid              ), //o
+    .arReady        (axi4WriteMasterInterface_ar_ready        ), //i
+    .araddr         (axi4Interconnection_araddr               ), //o
+    .arid           (axi4Interconnection_arid                 ), //o
+    .arregion       (axi4Interconnection_arregion             ), //o
+    .arlen          (axi4Interconnection_arlen                ), //o
+    .arsize         (axi4Interconnection_arsize               ), //o
+    .arburst        (axi4Interconnection_arburst              ), //o
+    .arlock         (axi4Interconnection_arlock               ), //o
+    .arcache        (axi4Interconnection_arcache              ), //o
+    .arqos          (axi4Interconnection_arqos                ), //o
+    .arprot         (axi4Interconnection_arprot               ), //o
+    .rValid         (axi4WriteMasterInterface_r_valid         ), //i
+    .rReady         (axi4Interconnection_rReady               ), //o
+    .rdata          (axi4WriteMasterInterface_r_payload_data  ), //i
+    .rid            (axi4WriteMasterInterface_r_payload_id    ), //i
+    .rresp          (axi4WriteMasterInterface_r_payload_resp  ), //i
+    .rlast          (axi4WriteMasterInterface_r_payload_last  ), //i
+    .clk            (clk                                      ), //i
+    .reset          (reset                                    )  //i
   );
   StreamFifo fifoInstance (
     .io_push_valid      (fifoInterface_valid            ), //i
@@ -145,34 +145,34 @@ module TestFifo2Axi4WriteMaster (
     .reset              (reset                          )  //i
   );
   assign fifoInterface_ready = fifoInstance_io_push_ready;
-  assign axi4MasterInterface_ar_valid = axi4Interconnection_arValid;
-  assign axi4MasterInterface_ar_payload_addr = axi4Interconnection_araddr;
-  assign axi4MasterInterface_ar_payload_id = axi4Interconnection_arid;
-  assign axi4MasterInterface_ar_payload_region = axi4Interconnection_arregion;
-  assign axi4MasterInterface_ar_payload_len = axi4Interconnection_arlen;
-  assign axi4MasterInterface_ar_payload_size = axi4Interconnection_arsize;
-  assign axi4MasterInterface_ar_payload_burst = axi4Interconnection_arburst;
-  assign axi4MasterInterface_ar_payload_lock = axi4Interconnection_arlock;
-  assign axi4MasterInterface_ar_payload_cache = axi4Interconnection_arcache;
-  assign axi4MasterInterface_ar_payload_qos = axi4Interconnection_arqos;
-  assign axi4MasterInterface_ar_payload_prot = axi4Interconnection_arprot;
-  assign axi4MasterInterface_aw_valid = axi4Interconnection_awValid;
-  assign axi4MasterInterface_aw_payload_addr = axi4Interconnection_awaddr;
-  assign axi4MasterInterface_aw_payload_id = axi4Interconnection_awid;
-  assign axi4MasterInterface_aw_payload_region = axi4Interconnection_awregion;
-  assign axi4MasterInterface_aw_payload_len = axi4Interconnection_awlen;
-  assign axi4MasterInterface_aw_payload_size = axi4Interconnection_awsize;
-  assign axi4MasterInterface_aw_payload_burst = axi4Interconnection_awburst;
-  assign axi4MasterInterface_aw_payload_lock = axi4Interconnection_awlock;
-  assign axi4MasterInterface_aw_payload_cache = axi4Interconnection_awcache;
-  assign axi4MasterInterface_aw_payload_qos = axi4Interconnection_awqos;
-  assign axi4MasterInterface_aw_payload_prot = axi4Interconnection_awprot;
-  assign axi4MasterInterface_w_valid = axi4Interconnection_wValid;
-  assign axi4MasterInterface_w_payload_data = axi4Interconnection_wdata;
-  assign axi4MasterInterface_w_payload_strb = axi4Interconnection_wstrb;
-  assign axi4MasterInterface_w_payload_last = axi4Interconnection_wlast;
-  assign axi4MasterInterface_r_ready = axi4Interconnection_rReady;
-  assign axi4MasterInterface_b_ready = axi4Interconnection_bReady;
+  assign axi4WriteMasterInterface_ar_valid = axi4Interconnection_arValid;
+  assign axi4WriteMasterInterface_ar_payload_addr = axi4Interconnection_araddr;
+  assign axi4WriteMasterInterface_ar_payload_id = axi4Interconnection_arid;
+  assign axi4WriteMasterInterface_ar_payload_region = axi4Interconnection_arregion;
+  assign axi4WriteMasterInterface_ar_payload_len = axi4Interconnection_arlen;
+  assign axi4WriteMasterInterface_ar_payload_size = axi4Interconnection_arsize;
+  assign axi4WriteMasterInterface_ar_payload_burst = axi4Interconnection_arburst;
+  assign axi4WriteMasterInterface_ar_payload_lock = axi4Interconnection_arlock;
+  assign axi4WriteMasterInterface_ar_payload_cache = axi4Interconnection_arcache;
+  assign axi4WriteMasterInterface_ar_payload_qos = axi4Interconnection_arqos;
+  assign axi4WriteMasterInterface_ar_payload_prot = axi4Interconnection_arprot;
+  assign axi4WriteMasterInterface_aw_valid = axi4Interconnection_awValid;
+  assign axi4WriteMasterInterface_aw_payload_addr = axi4Interconnection_awaddr;
+  assign axi4WriteMasterInterface_aw_payload_id = axi4Interconnection_awid;
+  assign axi4WriteMasterInterface_aw_payload_region = axi4Interconnection_awregion;
+  assign axi4WriteMasterInterface_aw_payload_len = axi4Interconnection_awlen;
+  assign axi4WriteMasterInterface_aw_payload_size = axi4Interconnection_awsize;
+  assign axi4WriteMasterInterface_aw_payload_burst = axi4Interconnection_awburst;
+  assign axi4WriteMasterInterface_aw_payload_lock = axi4Interconnection_awlock;
+  assign axi4WriteMasterInterface_aw_payload_cache = axi4Interconnection_awcache;
+  assign axi4WriteMasterInterface_aw_payload_qos = axi4Interconnection_awqos;
+  assign axi4WriteMasterInterface_aw_payload_prot = axi4Interconnection_awprot;
+  assign axi4WriteMasterInterface_w_valid = axi4Interconnection_wValid;
+  assign axi4WriteMasterInterface_w_payload_data = axi4Interconnection_wdata;
+  assign axi4WriteMasterInterface_w_payload_strb = axi4Interconnection_wstrb;
+  assign axi4WriteMasterInterface_w_payload_last = axi4Interconnection_wlast;
+  assign axi4WriteMasterInterface_r_ready = axi4Interconnection_rReady;
+  assign axi4WriteMasterInterface_b_ready = axi4Interconnection_bReady;
 
 endmodule
 
@@ -374,8 +374,8 @@ module TestAxi4WriteMaster (
 );
   wire       [8:0]    _zz__zz_wdata_1;
   wire       [0:0]    _zz__zz_wdata_1_1;
-  wire       [8:0]    _zz__zz_when_Axi4WriteMaster_l53_1;
-  wire       [0:0]    _zz__zz_when_Axi4WriteMaster_l53_1_1;
+  wire       [8:0]    _zz__zz_when_Axi4WriteMaster_l54_1;
+  wire       [0:0]    _zz__zz_when_Axi4WriteMaster_l54_1_1;
   wire       [7:0]    _zz__zz_5;
   wire       [1:0]    _zz_Axi4Incr_alignMask;
   wire       [11:0]   _zz_Axi4Incr_base;
@@ -402,13 +402,13 @@ module TestAxi4WriteMaster (
   reg                 _zz_1;
   reg        [8:0]    _zz_wdata_1;
   reg        [8:0]    _zz_wdata_2;
-  wire                _zz_when_Axi4WriteMaster_l61;
+  wire                _zz_when_Axi4WriteMaster_l62;
   wire                _zz_2;
-  reg                 _zz_when_Axi4WriteMaster_l53;
+  reg                 _zz_when_Axi4WriteMaster_l54;
   reg                 _zz_3;
-  reg        [8:0]    _zz_when_Axi4WriteMaster_l53_1;
-  reg        [8:0]    _zz_when_Axi4WriteMaster_l53_2;
-  wire                _zz_when_Axi4WriteMaster_l53_3;
+  reg        [8:0]    _zz_when_Axi4WriteMaster_l54_1;
+  reg        [8:0]    _zz_when_Axi4WriteMaster_l54_2;
+  wire                _zz_when_Axi4WriteMaster_l54_3;
   wire                _zz_4;
   reg        [31:0]   fifoDataBuffer_0;
   reg        [31:0]   fifoDataBuffer_1;
@@ -668,10 +668,10 @@ module TestAxi4WriteMaster (
   reg        [31:0]   fifoDataBuffer_255;
   wire                axi4Interface_fifo_fire;
   wire       [255:0]  _zz_5;
-  wire                when_Axi4WriteMaster_l53;
-  wire                when_Axi4WriteMaster_l61;
-  reg        [31:0]   axi4Interface_address;
-  wire                axi4Interface_t_aw_fire;
+  wire                when_Axi4WriteMaster_l54;
+  wire                when_Axi4WriteMaster_l62;
+  reg        [31:0]   axi4Interface_address /* verilator public */ ;
+  wire                axi4Interface_t_w_fire;
   wire       [1:0]    Axi4Incr_validSize;
   reg        [31:0]   Axi4Incr_result;
   wire       [19:0]   Axi4Incr_highCat;
@@ -681,16 +681,17 @@ module TestAxi4WriteMaster (
   wire       [11:0]   Axi4Incr_baseIncr;
   reg        [1:0]    _zz_Axi4Incr_wrapCase;
   wire       [2:0]    Axi4Incr_wrapCase;
+  reg                 axi4Interface_controlAwValidWithWChannel;
+  wire                when_Axi4WriteMaster_l80;
   reg        [31:0]   axi4Interface_initialAddress;
-  wire                when_Axi4WriteMaster_l87;
-  wire                axi4Interface_t_w_fire;
-  wire                when_Axi4WriteMaster_l124;
+  wire                axi4Interface_t_w_fire_1;
+  wire                when_Axi4WriteMaster_l132;
 
   assign _zz__zz_wdata_1_1 = _zz_wdata;
   assign _zz__zz_wdata_1 = {8'd0, _zz__zz_wdata_1_1};
-  assign _zz__zz_when_Axi4WriteMaster_l53_1_1 = _zz_when_Axi4WriteMaster_l53;
-  assign _zz__zz_when_Axi4WriteMaster_l53_1 = {8'd0, _zz__zz_when_Axi4WriteMaster_l53_1_1};
-  assign _zz__zz_5 = _zz_when_Axi4WriteMaster_l53_2[7:0];
+  assign _zz__zz_when_Axi4WriteMaster_l54_1_1 = _zz_when_Axi4WriteMaster_l54;
+  assign _zz__zz_when_Axi4WriteMaster_l54_1 = {8'd0, _zz__zz_when_Axi4WriteMaster_l54_1_1};
+  assign _zz__zz_5 = _zz_when_Axi4WriteMaster_l54_2[7:0];
   assign _zz_Axi4Incr_alignMask = {(2'b01 < Axi4Incr_validSize),(2'b00 < Axi4Incr_validSize)};
   assign _zz_Axi4Incr_base_1 = axi4Interface_address[11 : 0];
   assign _zz_Axi4Incr_base = _zz_Axi4Incr_base_1;
@@ -1508,20 +1509,20 @@ module TestAxi4WriteMaster (
 
   always @(*) begin
     _zz_wdata = 1'b0;
-    if(axi4Interface_t_w_fire) begin
+    if(axi4Interface_t_w_fire_1) begin
       _zz_wdata = 1'b1;
     end
   end
 
   always @(*) begin
     _zz_1 = 1'b0;
-    if(_zz_when_Axi4WriteMaster_l61) begin
+    if(_zz_when_Axi4WriteMaster_l62) begin
       _zz_1 = 1'b1;
     end
   end
 
-  assign _zz_when_Axi4WriteMaster_l61 = (_zz_wdata_2 == 9'h100);
-  assign _zz_2 = (_zz_when_Axi4WriteMaster_l61 && _zz_wdata);
+  assign _zz_when_Axi4WriteMaster_l62 = (_zz_wdata_2 == 9'h100);
+  assign _zz_2 = (_zz_when_Axi4WriteMaster_l62 && _zz_wdata);
   always @(*) begin
     if(_zz_2) begin
       _zz_wdata_1 = 9'h0;
@@ -1534,29 +1535,29 @@ module TestAxi4WriteMaster (
   end
 
   always @(*) begin
-    _zz_when_Axi4WriteMaster_l53 = 1'b0;
+    _zz_when_Axi4WriteMaster_l54 = 1'b0;
     if(axi4Interface_fifo_fire) begin
-      _zz_when_Axi4WriteMaster_l53 = 1'b1;
+      _zz_when_Axi4WriteMaster_l54 = 1'b1;
     end
   end
 
   always @(*) begin
     _zz_3 = 1'b0;
-    if(when_Axi4WriteMaster_l61) begin
+    if(when_Axi4WriteMaster_l62) begin
       _zz_3 = 1'b1;
     end
   end
 
-  assign _zz_when_Axi4WriteMaster_l53_3 = (_zz_when_Axi4WriteMaster_l53_2 == 9'h100);
-  assign _zz_4 = (_zz_when_Axi4WriteMaster_l53_3 && _zz_when_Axi4WriteMaster_l53);
+  assign _zz_when_Axi4WriteMaster_l54_3 = (_zz_when_Axi4WriteMaster_l54_2 == 9'h100);
+  assign _zz_4 = (_zz_when_Axi4WriteMaster_l54_3 && _zz_when_Axi4WriteMaster_l54);
   always @(*) begin
     if(_zz_4) begin
-      _zz_when_Axi4WriteMaster_l53_1 = 9'h0;
+      _zz_when_Axi4WriteMaster_l54_1 = 9'h0;
     end else begin
-      _zz_when_Axi4WriteMaster_l53_1 = (_zz_when_Axi4WriteMaster_l53_2 + _zz__zz_when_Axi4WriteMaster_l53_1);
+      _zz_when_Axi4WriteMaster_l54_1 = (_zz_when_Axi4WriteMaster_l54_2 + _zz__zz_when_Axi4WriteMaster_l54_1);
     end
     if(_zz_3) begin
-      _zz_when_Axi4WriteMaster_l53_1 = 9'h0;
+      _zz_when_Axi4WriteMaster_l54_1 = 9'h0;
     end
   end
 
@@ -1564,14 +1565,14 @@ module TestAxi4WriteMaster (
   assign _zz_5 = ({255'd0,1'b1} <<< _zz__zz_5);
   always @(*) begin
     fifoReady = 1'b0;
-    if(when_Axi4WriteMaster_l53) begin
+    if(when_Axi4WriteMaster_l54) begin
       fifoReady = 1'b1;
     end
   end
 
-  assign when_Axi4WriteMaster_l53 = (! _zz_when_Axi4WriteMaster_l53_3);
-  assign when_Axi4WriteMaster_l61 = (_zz_when_Axi4WriteMaster_l61 && (bresp == 2'b00));
-  assign axi4Interface_t_aw_fire = (awValid && awReady);
+  assign when_Axi4WriteMaster_l54 = (! _zz_when_Axi4WriteMaster_l54_3);
+  assign when_Axi4WriteMaster_l62 = (_zz_when_Axi4WriteMaster_l62 && (bresp == 2'b00));
+  assign axi4Interface_t_w_fire = (wValid && wReady);
   assign Axi4Incr_validSize = awsize[1 : 0];
   assign Axi4Incr_highCat = axi4Interface_address[31 : 12];
   assign Axi4Incr_sizeValue = {(2'b10 == Axi4Incr_validSize),{(2'b01 == Axi4Incr_validSize),(2'b00 == Axi4Incr_validSize)}};
@@ -1610,10 +1611,10 @@ module TestAxi4WriteMaster (
     endcase
   end
 
-  assign awValid = wValid;
-  assign when_Axi4WriteMaster_l87 = (_zz_wdata_2 == 9'h0);
+  assign when_Axi4WriteMaster_l80 = (awValid && awReady);
+  assign awValid = (wValid && axi4Interface_controlAwValidWithWChannel);
   always @(*) begin
-    if(_zz_when_Axi4WriteMaster_l61) begin
+    if(_zz_when_Axi4WriteMaster_l62) begin
       awaddr = axi4Interface_address;
     end else begin
       awaddr = axi4Interface_initialAddress;
@@ -1624,7 +1625,7 @@ module TestAxi4WriteMaster (
   assign awregion = 4'b0000;
   assign awburst = 2'b01;
   assign awlen = 8'hff;
-  assign awsize = 3'b100;
+  assign awsize = 3'b010;
   assign awlock = 1'b0;
   assign awcache = 4'b0000;
   assign awqos = 4'b0000;
@@ -1636,15 +1637,15 @@ module TestAxi4WriteMaster (
     end
   end
 
-  assign axi4Interface_t_w_fire = (wValid && wReady);
+  assign axi4Interface_t_w_fire_1 = (wValid && wReady);
   always @(*) begin
     wValid = 1'b0;
-    if(when_Axi4WriteMaster_l124) begin
+    if(when_Axi4WriteMaster_l132) begin
       wValid = 1'b1;
     end
   end
 
-  assign when_Axi4WriteMaster_l124 = ((9'h0 < _zz_when_Axi4WriteMaster_l53_2) && (! _zz_when_Axi4WriteMaster_l61));
+  assign when_Axi4WriteMaster_l132 = (((9'h0 < _zz_when_Axi4WriteMaster_l54_2) && (_zz_wdata_2 < _zz_when_Axi4WriteMaster_l54_2)) && (! _zz_when_Axi4WriteMaster_l62));
   assign wstrb = 4'b1111;
   assign wlast = (_zz_wdata_2 == 9'h0ff);
   assign bReady = 1'b1;
@@ -1663,7 +1664,7 @@ module TestAxi4WriteMaster (
   always @(posedge clk or posedge reset) begin
     if(reset) begin
       _zz_wdata_2 <= 9'h0;
-      _zz_when_Axi4WriteMaster_l53_2 <= 9'h0;
+      _zz_when_Axi4WriteMaster_l54_2 <= 9'h0;
       fifoDataBuffer_0 <= 32'h0;
       fifoDataBuffer_1 <= 32'h0;
       fifoDataBuffer_2 <= 32'h0;
@@ -1921,10 +1922,11 @@ module TestAxi4WriteMaster (
       fifoDataBuffer_254 <= 32'h0;
       fifoDataBuffer_255 <= 32'h0;
       axi4Interface_address <= 32'h0;
+      axi4Interface_controlAwValidWithWChannel <= 1'b1;
       axi4Interface_initialAddress <= 32'h0;
     end else begin
       _zz_wdata_2 <= _zz_wdata_1;
-      _zz_when_Axi4WriteMaster_l53_2 <= _zz_when_Axi4WriteMaster_l53_1;
+      _zz_when_Axi4WriteMaster_l54_2 <= _zz_when_Axi4WriteMaster_l54_1;
       if(axi4Interface_fifo_fire) begin
         if(_zz_5[0]) begin
           fifoDataBuffer_0 <= fifoPayload;
@@ -2695,10 +2697,16 @@ module TestAxi4WriteMaster (
           fifoDataBuffer_255 <= fifoPayload;
         end
       end
-      if(axi4Interface_t_aw_fire) begin
+      if(axi4Interface_t_w_fire) begin
         axi4Interface_address <= Axi4Incr_result;
       end
-      if(when_Axi4WriteMaster_l87) begin
+      if(when_Axi4WriteMaster_l80) begin
+        axi4Interface_controlAwValidWithWChannel <= 1'b0;
+      end
+      if(_zz_when_Axi4WriteMaster_l62) begin
+        axi4Interface_controlAwValidWithWChannel <= 1'b1;
+      end
+      if(_zz_when_Axi4WriteMaster_l62) begin
         axi4Interface_initialAddress <= axi4Interface_address;
       end
     end

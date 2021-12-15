@@ -10,6 +10,10 @@
 
 // INCLUDE MODULE CLASSES
 #include "VTestFifo2Axi4WriteMaster.h"
+#include "VTestFifo2Axi4WriteMaster_TestFifo2Axi4WriteMaster.h"
+#include "VTestFifo2Axi4WriteMaster_TestAxi4WriteMaster.h"
+
+// DPI TYPES for DPI Export callbacks (Internal use)
 
 // SYMS CLASS
 class VTestFifo2Axi4WriteMaster__Syms : public VerilatedSyms {
@@ -22,6 +26,11 @@ class VTestFifo2Axi4WriteMaster__Syms : public VerilatedSyms {
     
     // SUBCELL STATE
     VTestFifo2Axi4WriteMaster*     TOPp;
+    VTestFifo2Axi4WriteMaster_TestFifo2Axi4WriteMaster TOP__TestFifo2Axi4WriteMaster;
+    VTestFifo2Axi4WriteMaster_TestAxi4WriteMaster TOP__TestFifo2Axi4WriteMaster__axi4Interconnection;
+    
+    // SCOPE NAMES
+    VerilatedScope __Vscope_TestFifo2Axi4WriteMaster__axi4Interconnection;
     
     // CREATORS
     VTestFifo2Axi4WriteMaster__Syms(VTestFifo2Axi4WriteMaster* topp, const char* namep);

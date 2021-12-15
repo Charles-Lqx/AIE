@@ -1,0 +1,127 @@
+#-----------------------------------------------------------
+# Vivado v2021.1 (64-bit)
+# SW Build 3247384 on Thu Jun 10 19:36:07 MDT 2021
+# IP Build 3246043 on Fri Jun 11 00:30:35 MDT 2021
+# Start of session at: Sat Dec 11 22:40:32 2021
+# Process ID: 46959
+# Current directory: /home/lqx/IdeaProjects/AIE
+# Command line: vivado
+# Log file: /home/lqx/IdeaProjects/AIE/vivado.log
+# Journal file: /home/lqx/IdeaProjects/AIE/vivado.jou
+#-----------------------------------------------------------
+start_gui
+create_project Axi4WriteOnlyMasterTest /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest -part xc7vx485tffg1157-1
+create_bd_design "Axi4WriteOnlyMasterTestBD"
+update_compile_order -fileset sources_1
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi4stream_vip:1.1 axi4stream_vip_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_vip:1.1 axi_vip_0
+endgroup
+set_property location {0.5 -132 -150} [get_bd_cells axi4stream_vip_0]
+set_property location {2.5 612 -155} [get_bd_cells axi_vip_0]
+add_files -norecurse /home/lqx/IdeaProjects/AIE/simWorkspace/TestFifo2Axi4WriteOnlyMaster/rtl/TestFifo2Axi4WriteOnlyMaster.v
+update_compile_order -fileset sources_1
+create_bd_cell -type module -reference TestAxi4WriteOnlyMaster TestAxi4WriteOnlyMas_0
+set_property location {2 278 -166} [get_bd_cells TestAxi4WriteOnlyMas_0]
+set_property location {1 -161 -338} [get_bd_cells axi4stream_vip_0]
+set_property location {2.5 454 -358} [get_bd_cells axi_vip_0]
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_0
+endgroup
+set_property location {3 399 -389} [get_bd_cells util_vector_logic_0]
+set_property -dict [list CONFIG.C_SIZE {1} CONFIG.C_OPERATION {not} CONFIG.LOGO_FILE {data/sym_notgate.png}] [get_bd_cells util_vector_logic_0]
+startgroup
+create_bd_port -dir I -type clk -freq_hz 100000000 aclk
+connect_bd_net [get_bd_pins /axi4stream_vip_0/aclk] [get_bd_ports aclk]
+endgroup
+startgroup
+create_bd_port -dir I -type rst aresetn
+connect_bd_net [get_bd_pins /axi4stream_vip_0/aresetn] [get_bd_ports aresetn]
+endgroup
+connect_bd_net [get_bd_ports aresetn] [get_bd_pins util_vector_logic_0/Op1]
+connect_bd_net [get_bd_pins util_vector_logic_0/Res] [get_bd_pins TestAxi4WriteOnlyMas_0/reset]
+startgroup
+set_property -dict [list CONFIG.INTERFACE_MODE {MASTER}] [get_bd_cells axi4stream_vip_0]
+endgroup
+set_property -dict [list CONFIG.READ_WRITE_MODE.VALUE_SRC USER] [get_bd_cells axi_vip_0]
+set_property -dict [list CONFIG.READ_WRITE_MODE {WRITE_ONLY} CONFIG.INTERFACE_MODE {SLAVE}] [get_bd_cells axi_vip_0]
+set_property location {3 791 -219} [get_bd_cells axi_vip_0]
+connect_bd_intf_net [get_bd_intf_pins axi_vip_0/S_AXI] [get_bd_intf_pins TestAxi4WriteOnlyMas_0/interface_aximm]
+connect_bd_net [get_bd_ports aresetn] [get_bd_pins axi_vip_0/aresetn]
+connect_bd_net [get_bd_ports aclk] [get_bd_pins axi_vip_0/aclk]
+connect_bd_net [get_bd_pins TestAxi4WriteOnlyMas_0/fifoReady] [get_bd_pins axi4stream_vip_0/m_axis_tready]
+connect_bd_net [get_bd_pins TestAxi4WriteOnlyMas_0/fifoValid] [get_bd_pins axi4stream_vip_0/m_axis_tvalid]
+connect_bd_net [get_bd_pins axi4stream_vip_0/m_axis_tdata] [get_bd_pins TestAxi4WriteOnlyMas_0/fifoPayload]
+startgroup
+set_property -dict [list CONFIG.TDATA_NUM_BYTES {4}] [get_bd_cells axi4stream_vip_0]
+endgroup
+connect_bd_net [get_bd_ports aclk] [get_bd_pins TestAxi4WriteOnlyMas_0/clk]
+assign_bd_address
+validate_bd_design
+set_property offset 0x00000000 [get_bd_addr_segs {TestAxi4WriteOnlyMas_0/interface_aximm/SEG_axi_vip_0_Reg}]
+validate_bd_design
+open_bd_design {/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.srcs/sources_1/bd/Axi4WriteOnlyMasterTestBD/Axi4WriteOnlyMasterTestBD.bd}
+make_wrapper -files [get_files /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.srcs/sources_1/bd/Axi4WriteOnlyMasterTestBD/Axi4WriteOnlyMasterTestBD.bd] -top
+add_files -norecurse /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.gen/sources_1/bd/Axi4WriteOnlyMasterTestBD/hdl/Axi4WriteOnlyMasterTestBD_wrapper.v
+update_compile_order -fileset sources_1
+file mkdir /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.srcs/sim_1/new
+set_property SOURCE_SET sources_1 [get_filesets sim_1]
+close [ open /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.srcs/sim_1/new/Axi4WriteOnlyMasterSimTop.sv w ]
+add_files -fileset sim_1 /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.srcs/sim_1/new/Axi4WriteOnlyMasterSimTop.sv
+update_compile_order -fileset sim_1
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top Axi4WriteOnlyMasterSimTop [get_filesets sim_1]
+set_property top_lib xil_defaultlib [get_filesets sim_1]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+update_compile_order -fileset sim_1
+generate_target Simulation [get_files /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.srcs/sources_1/bd/Axi4WriteOnlyMasterTestBD/Axi4WriteOnlyMasterTestBD.bd]
+export_ip_user_files -of_objects [get_files /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.srcs/sources_1/bd/Axi4WriteOnlyMasterTestBD/Axi4WriteOnlyMasterTestBD.bd] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.srcs/sources_1/bd/Axi4WriteOnlyMasterTestBD/Axi4WriteOnlyMasterTestBD.bd] -directory /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.ip_user_files/sim_scripts -ip_user_files_dir /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.ip_user_files -ipstatic_source_dir /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.ip_user_files/ipstatic -lib_map_path [list {modelsim=/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.cache/compile_simlib/modelsim} {questa=/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.cache/compile_simlib/questa} {ies=/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.cache/compile_simlib/ies} {xcelium=/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.cache/compile_simlib/xcelium} {vcs=/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.cache/compile_simlib/vcs} {riviera=/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.cache/compile_simlib/riviera}] -use_ip_compiled_libs -force -quiet
+launch_simulation
+update_compile_order -fileset sim_1
+update_compile_order -fileset sim_1
+launch_simulation
+launch_simulation
+source Axi4WriteOnlyMasterSimTop.tcl
+close_sim
+launch_simulation
+source Axi4WriteOnlyMasterSimTop.tcl
+run all
+close_sim
+launch_simulation
+source Axi4WriteOnlyMasterSimTop.tcl
+run all
+close_sim
+launch_simulation
+source Axi4WriteOnlyMasterSimTop.tcl
+run all
+close_sim
+generate_target all [get_files  /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.srcs/sources_1/bd/Axi4WriteOnlyMasterTestBD/Axi4WriteOnlyMasterTestBD.bd]
+catch { config_ip_cache -export [get_ips -all Axi4WriteOnlyMasterTestBD_axi4stream_vip_0_0] }
+catch { config_ip_cache -export [get_ips -all Axi4WriteOnlyMasterTestBD_axi_vip_0_0] }
+catch { config_ip_cache -export [get_ips -all Axi4WriteOnlyMasterTestBD_TestAxi4WriteOnlyMas_0_0] }
+catch { config_ip_cache -export [get_ips -all Axi4WriteOnlyMasterTestBD_util_vector_logic_0_0] }
+export_ip_user_files -of_objects [get_files /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.srcs/sources_1/bd/Axi4WriteOnlyMasterTestBD/Axi4WriteOnlyMasterTestBD.bd] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.srcs/sources_1/bd/Axi4WriteOnlyMasterTestBD/Axi4WriteOnlyMasterTestBD.bd]
+launch_runs Axi4WriteOnlyMasterTestBD_axi4stream_vip_0_0_synth_1 Axi4WriteOnlyMasterTestBD_axi_vip_0_0_synth_1 Axi4WriteOnlyMasterTestBD_TestAxi4WriteOnlyMas_0_0_synth_1 Axi4WriteOnlyMasterTestBD_util_vector_logic_0_0_synth_1 -jobs 24
+wait_on_run Axi4WriteOnlyMasterTestBD_axi4stream_vip_0_0_synth_1
+wait_on_run Axi4WriteOnlyMasterTestBD_axi_vip_0_0_synth_1
+wait_on_run Axi4WriteOnlyMasterTestBD_TestAxi4WriteOnlyMas_0_0_synth_1
+wait_on_run Axi4WriteOnlyMasterTestBD_util_vector_logic_0_0_synth_1
+export_simulation -of_objects [get_files /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.srcs/sources_1/bd/Axi4WriteOnlyMasterTestBD/Axi4WriteOnlyMasterTestBD.bd] -directory /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.ip_user_files/sim_scripts -ip_user_files_dir /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.ip_user_files -ipstatic_source_dir /home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.ip_user_files/ipstatic -lib_map_path [list {modelsim=/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.cache/compile_simlib/modelsim} {questa=/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.cache/compile_simlib/questa} {ies=/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.cache/compile_simlib/ies} {xcelium=/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.cache/compile_simlib/xcelium} {vcs=/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.cache/compile_simlib/vcs} {riviera=/home/lqx/vivadoProject/Axi4WriteOnlyMasterTest/Axi4WriteOnlyMasterTest.cache/compile_simlib/riviera}] -use_ip_compiled_libs -force -quiet
+close_project
+create_project project_1 /home/lqx/vivadoProject/project_1 -part xc7vx485tffg1157-1
+create_ip -name axi_vip -vendor xilinx.com -library ip -version 1.1 -module_name axi_vip_0
+set_property -dict [list CONFIG.READ_WRITE_MODE {WRITE_ONLY} CONFIG.INTERFACE_MODE {SLAVE} CONFIG.HAS_LOCK {0} CONFIG.HAS_RRESP {0}] [get_ips axi_vip_0]
+generate_target {instantiation_template} [get_files /home/lqx/vivadoProject/project_1/project_1.srcs/sources_1/ip/axi_vip_0/axi_vip_0.xci]
+generate_target all [get_files  /home/lqx/vivadoProject/project_1/project_1.srcs/sources_1/ip/axi_vip_0/axi_vip_0.xci]
+catch { config_ip_cache -export [get_ips -all axi_vip_0] }
+export_ip_user_files -of_objects [get_files /home/lqx/vivadoProject/project_1/project_1.srcs/sources_1/ip/axi_vip_0/axi_vip_0.xci] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] /home/lqx/vivadoProject/project_1/project_1.srcs/sources_1/ip/axi_vip_0/axi_vip_0.xci]
+launch_runs axi_vip_0_synth_1 -jobs 24
+wait_on_run axi_vip_0_synth_1
+export_simulation -of_objects [get_files /home/lqx/vivadoProject/project_1/project_1.srcs/sources_1/ip/axi_vip_0/axi_vip_0.xci] -directory /home/lqx/vivadoProject/project_1/project_1.ip_user_files/sim_scripts -ip_user_files_dir /home/lqx/vivadoProject/project_1/project_1.ip_user_files -ipstatic_source_dir /home/lqx/vivadoProject/project_1/project_1.ip_user_files/ipstatic -lib_map_path [list {modelsim=/home/lqx/vivadoProject/project_1/project_1.cache/compile_simlib/modelsim} {questa=/home/lqx/vivadoProject/project_1/project_1.cache/compile_simlib/questa} {ies=/home/lqx/vivadoProject/project_1/project_1.cache/compile_simlib/ies} {xcelium=/home/lqx/vivadoProject/project_1/project_1.cache/compile_simlib/xcelium} {vcs=/home/lqx/vivadoProject/project_1/project_1.cache/compile_simlib/vcs} {riviera=/home/lqx/vivadoProject/project_1/project_1.cache/compile_simlib/riviera}] -use_ip_compiled_libs -force -quiet
+update_compile_order -fileset sources_1
+open_example_project -force -dir /home/lqx/vivadoProject [get_ips  axi_vip_0]

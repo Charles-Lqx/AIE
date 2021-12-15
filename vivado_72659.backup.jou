@@ -1,0 +1,204 @@
+#-----------------------------------------------------------
+# Vivado v2021.1 (64-bit)
+# SW Build 3247384 on Thu Jun 10 19:36:07 MDT 2021
+# IP Build 3246043 on Fri Jun 11 00:30:35 MDT 2021
+# Start of session at: Sat Dec 11 15:30:41 2021
+# Process ID: 72659
+# Current directory: /home/lqx/IdeaProjects/AIE
+# Command line: vivado
+# Log file: /home/lqx/IdeaProjects/AIE/vivado.log
+# Journal file: /home/lqx/IdeaProjects/AIE/vivado.jou
+#-----------------------------------------------------------
+start_gui
+create_project Axi4WriteMasterVerification /home/lqx/vivadoProject/Axi4WriteMasterVerification -part xc7vx485tffg1157-1
+add_files -norecurse /home/lqx/IdeaProjects/AIE/simWorkspace/TestFifo2Axi4WriteMaster/rtl/TestFifo2Axi4WriteMaster.v
+update_compile_order -fileset sources_1
+create_bd_design "AxiWriteMasterVerifiBD"
+update_compile_order -fileset sources_1
+create_bd_cell -type module -reference TestAxi4WriteMaster TestAxi4WriteMaster_0
+set_property location {1 178 -37} [get_bd_cells TestAxi4WriteMaster_0]
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_vip:1.1 axi_vip_0
+endgroup
+set_property location {1 48 -37} [get_bd_cells axi_vip_0]
+set_property location {0.5 -264 -37} [get_bd_cells TestAxi4WriteMaster_0]
+set_property -dict [list CONFIG.READ_WRITE_MODE.VALUE_SRC USER] [get_bd_cells axi_vip_0]
+set_property -dict [list CONFIG.READ_WRITE_MODE {WRITE_ONLY} CONFIG.INTERFACE_MODE {SLAVE}] [get_bd_cells axi_vip_0]
+delete_bd_objs [get_bd_cells TestAxi4WriteMaster_0]
+add_files -norecurse /home/lqx/IdeaProjects/AIE/simWorkspace/TestFifo2Axi4WriteOnlyMaster/rtl/TestFifo2Axi4WriteOnlyMaster.v
+update_compile_order -fileset sources_1
+create_bd_cell -type module -reference TestFifo2Axi4WriteOnlyMaster TestFifo2Axi4WriteOn_0
+delete_bd_objs [get_bd_cells TestFifo2Axi4WriteOn_0]
+create_bd_cell -type module -reference TestFifo2Axi4WriteOnlyMaster TestFifo2Axi4WriteOn_0
+open_bd_design {/home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.srcs/sources_1/bd/AxiWriteMasterVerifiBD/AxiWriteMasterVerifiBD.bd}
+create_bd_cell -type module -reference TestFifo2Axi4WriteMaster TestFifo2Axi4WriteMa_0
+delete_bd_objs [get_bd_cells TestFifo2Axi4WriteMa_0]
+delete_bd_objs [get_bd_cells TestFifo2Axi4WriteOn_0]
+open_bd_design {/home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.srcs/sources_1/bd/AxiWriteMasterVerifiBD/AxiWriteMasterVerifiBD.bd}
+create_bd_cell -type module -reference TestAxi4WriteOnlyMaster TestAxi4WriteOnlyMas_0
+set_property location {2 844 -285} [get_bd_cells axi_vip_0]
+set_property location {1.5 731 -275} [get_bd_cells axi_vip_0]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {Auto} Clk_slave {Auto} Clk_xbar {Auto} Master {/TestAxi4WriteOnlyMas_0/interface_aximm} Slave {/axi_vip_0/S_AXI} ddr_seg {Auto} intc_ip {New AXI SmartConnect} master_apm {0}}  [get_bd_intf_pins axi_vip_0/S_AXI]
+undo
+connect_bd_intf_net [get_bd_intf_pins TestAxi4WriteOnlyMas_0/interface_aximm] [get_bd_intf_pins axi_vip_0/S_AXI]
+set_property location {1 193 -261} [get_bd_cells TestAxi4WriteOnlyMas_0]
+startgroup
+create_bd_port -dir I -type clk -freq_hz 100000000 clk
+connect_bd_net [get_bd_pins /TestAxi4WriteOnlyMas_0/clk] [get_bd_ports clk]
+endgroup
+startgroup
+create_bd_port -dir I -type rst reset
+connect_bd_net [get_bd_pins /TestAxi4WriteOnlyMas_0/reset] [get_bd_ports reset]
+set_property CONFIG.POLARITY ACTIVE_HIGH [get_bd_ports reset]
+endgroup
+connect_bd_net [get_bd_ports clk] [get_bd_pins axi_vip_0/aclk]
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_0
+endgroup
+set_property location {2 523 -90} [get_bd_cells util_vector_logic_0]
+set_property -dict [list CONFIG.C_SIZE {1} CONFIG.C_OPERATION {not} CONFIG.LOGO_FILE {data/sym_notgate.png}] [get_bd_cells util_vector_logic_0]
+connect_bd_net [get_bd_ports reset] [get_bd_pins util_vector_logic_0/Op1]
+connect_bd_net [get_bd_pins util_vector_logic_0/Res] [get_bd_pins axi_vip_0/aresetn]
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_0
+endgroup
+set_property location {1 184 -413} [get_bd_cells axis_data_fifo_0]
+set_property -dict [list CONFIG.TDATA_NUM_BYTES.VALUE_SRC USER] [get_bd_cells axis_data_fifo_0]
+set_property -dict [list CONFIG.TDATA_NUM_BYTES {32} CONFIG.FIFO_DEPTH {256}] [get_bd_cells axis_data_fifo_0]
+set_property -dict [list CONFIG.FIFO_DEPTH {128}] [get_bd_cells axis_data_fifo_0]
+set_property -dict [list CONFIG.FIFO_DEPTH {256}] [get_bd_cells axis_data_fifo_0]
+set_property -dict [list CONFIG.TDATA_NUM_BYTES.VALUE_SRC PROPAGATED] [get_bd_cells axis_data_fifo_0]
+connect_bd_net [get_bd_pins axis_data_fifo_0/m_axis_tdata] [get_bd_pins TestAxi4WriteOnlyMas_0/fifoPayload]
+undo
+connect_bd_net [get_bd_pins axis_data_fifo_0/m_axis_tdata] [get_bd_pins TestAxi4WriteOnlyMas_0/fifoPayload]
+startgroup
+set_property -dict [list CONFIG.TDATA_NUM_BYTES.VALUE_SRC PROPAGATED] [get_bd_cells axis_data_fifo_0]
+endgroup
+startgroup
+set_property -dict [list CONFIG.FIFO_DEPTH {8192}] [get_bd_cells axis_data_fifo_0]
+endgroup
+connect_bd_net [get_bd_pins TestAxi4WriteOnlyMas_0/fifoReady] [get_bd_pins axis_data_fifo_0/m_axis_tready]
+connect_bd_net [get_bd_pins TestAxi4WriteOnlyMas_0/fifoValid] [get_bd_pins axis_data_fifo_0/m_axis_tvalid]
+startgroup
+create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 S_AXIS
+set_property CONFIG.TDATA_NUM_BYTES [get_property CONFIG.TDATA_NUM_BYTES [get_bd_intf_pins axis_data_fifo_0/S_AXIS]] [get_bd_intf_ports S_AXIS]
+connect_bd_intf_net [get_bd_intf_pins axis_data_fifo_0/S_AXIS] [get_bd_intf_ports S_AXIS]
+endgroup
+undo
+startgroup
+create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 M_AXIS
+set_property CONFIG.TDATA_NUM_BYTES [get_property CONFIG.TDATA_NUM_BYTES [get_bd_intf_pins axis_data_fifo_0/S_AXIS]] [get_bd_intf_ports M_AXIS]
+connect_bd_intf_net [get_bd_intf_pins axis_data_fifo_0/S_AXIS] [get_bd_intf_ports M_AXIS]
+endgroup
+delete_bd_objs [get_bd_intf_nets M_AXIS_1] [get_bd_intf_ports M_AXIS]
+startgroup
+create_bd_port -dir I -from 255 -to 0 s_axis_tdata
+connect_bd_net [get_bd_pins /axis_data_fifo_0/s_axis_tdata] [get_bd_ports s_axis_tdata]
+endgroup
+startgroup
+create_bd_port -dir O s_axis_tready
+connect_bd_net [get_bd_pins /axis_data_fifo_0/s_axis_tready] [get_bd_ports s_axis_tready]
+endgroup
+delete_bd_objs [get_bd_nets axis_data_fifo_0_s_axis_tready]
+undo
+regenerate_bd_layout -routing
+regenerate_bd_layout
+startgroup
+create_bd_port -dir I s_axis_tvalid
+connect_bd_net [get_bd_pins /axis_data_fifo_0/s_axis_tvalid] [get_bd_ports s_axis_tvalid]
+endgroup
+startgroup
+set_property -dict [list CONFIG.FIFO_DEPTH {256}] [get_bd_cells axis_data_fifo_0]
+endgroup
+startgroup
+set_property -dict [list CONFIG.TDATA_NUM_BYTES.VALUE_SRC USER] [get_bd_cells axis_data_fifo_0]
+set_property -dict [list CONFIG.TDATA_NUM_BYTES {4}] [get_bd_cells axis_data_fifo_0]
+endgroup
+startgroup
+endgroup
+connect_bd_net [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins util_vector_logic_0/Res]
+connect_bd_net [get_bd_ports clk] [get_bd_pins axis_data_fifo_0/s_axis_aclk]
+regenerate_bd_layout
+delete_bd_objs [get_bd_nets s_axis_tdata_1]
+delete_bd_objs [get_bd_ports s_axis_tdata]
+undo
+undo
+delete_bd_objs [get_bd_nets s_axis_tdata_1]
+undo
+delete_bd_objs [get_bd_nets s_axis_tdata_1] [get_bd_ports s_axis_tdata]
+startgroup
+create_bd_port -dir I -from 31 -to 0 s_axis_tdata
+connect_bd_net [get_bd_pins /axis_data_fifo_0/s_axis_tdata] [get_bd_ports s_axis_tdata]
+endgroup
+regenerate_bd_layout
+validate_bd_design
+assign_bd_address
+validate_bd_design
+undo
+assign_bd_address
+validate_bd_design
+delete_bd_objs [get_bd_intf_nets TestAxi4WriteOnlyMas_0_interface_aximm]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk (100 MHz)} Clk_slave {/clk (100 MHz)} Clk_xbar {/clk (100 MHz)} Master {/TestAxi4WriteOnlyMas_0/interface_aximm} Slave {/axi_vip_0/S_AXI} ddr_seg {Auto} intc_ip {New AXI SmartConnect} master_apm {0}}  [get_bd_intf_pins axi_vip_0/S_AXI]
+undo
+connect_bd_intf_net [get_bd_intf_pins TestAxi4WriteOnlyMas_0/interface_aximm] [get_bd_intf_pins axi_vip_0/S_AXI]
+update_module_reference AxiWriteMasterVerifiBD_TestAxi4WriteMaster_0_0
+delete_bd_objs [get_bd_nets axis_data_fifo_0_m_axis_tvalid] [get_bd_nets TestAxi4WriteOnlyMas_0_fifoReady] [get_bd_intf_nets TestAxi4WriteOnlyMas_0_interface_aximm] [get_bd_nets axis_data_fifo_0_m_axis_tdata] [get_bd_cells TestAxi4WriteOnlyMas_0]
+create_bd_cell -type module -reference TestAxi4WriteOnlyMaster TestAxi4WriteOnlyMas_0
+set_property location {3 747 135} [get_bd_cells TestAxi4WriteOnlyMas_0]
+connect_bd_net [get_bd_pins axis_data_fifo_0/m_axis_tdata] [get_bd_pins TestAxi4WriteOnlyMas_0/fifoPayload]
+connect_bd_net [get_bd_pins axis_data_fifo_0/m_axis_tready] [get_bd_pins TestAxi4WriteOnlyMas_0/fifoReady]
+connect_bd_net [get_bd_pins axis_data_fifo_0/m_axis_tvalid] [get_bd_pins TestAxi4WriteOnlyMas_0/fifoValid]
+connect_bd_intf_net [get_bd_intf_pins TestAxi4WriteOnlyMas_0/interface_aximm] [get_bd_intf_pins axi_vip_0/S_AXI]
+connect_bd_net [get_bd_ports clk] [get_bd_pins TestAxi4WriteOnlyMas_0/clk]
+connect_bd_net [get_bd_ports reset] [get_bd_pins TestAxi4WriteOnlyMas_0/reset]
+regenerate_bd_layout
+assign_bd_address
+validate_bd_design
+make_wrapper -files [get_files /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.srcs/sources_1/bd/AxiWriteMasterVerifiBD/AxiWriteMasterVerifiBD.bd] -top
+add_files -norecurse /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.gen/sources_1/bd/AxiWriteMasterVerifiBD/hdl/AxiWriteMasterVerifiBD_wrapper.v
+update_compile_order -fileset sources_1
+delete_bd_objs [get_bd_nets s_axis_tdata_1]
+delete_bd_objs [get_bd_nets s_axis_tvalid_1]
+delete_bd_objs [get_bd_nets axis_data_fifo_0_s_axis_tready]
+delete_bd_objs [get_bd_ports s_axis_tdata]
+delete_bd_objs [get_bd_ports s_axis_tvalid]
+delete_bd_objs [get_bd_ports s_axis_tready]
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_vip:1.1 axi_vip_1
+endgroup
+set_property location {2 312 18} [get_bd_cells axi_vip_1]
+delete_bd_objs [get_bd_cells axi_vip_1]
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi4stream_vip:1.1 axi4stream_vip_0
+endgroup
+set_property location {2 353 -28} [get_bd_cells axi4stream_vip_0]
+set_property -dict [list CONFIG.INTERFACE_MODE {MASTER}] [get_bd_cells axi4stream_vip_0]
+connect_bd_intf_net [get_bd_intf_pins axi4stream_vip_0/M_AXIS] [get_bd_intf_pins axis_data_fifo_0/S_AXIS]
+set_property location {1 443 -9} [get_bd_cells axi4stream_vip_0]
+connect_bd_net [get_bd_ports clk] [get_bd_pins axi4stream_vip_0/aclk]
+connect_bd_net [get_bd_pins axi4stream_vip_0/aresetn] [get_bd_pins util_vector_logic_0/Res]
+regenerate_bd_layout
+validate_bd_design
+validate_bd_design -force
+startgroup
+set_property -dict [list CONFIG.TDATA_NUM_BYTES {4}] [get_bd_cells axi4stream_vip_0]
+endgroup
+validate_bd_design
+make_wrapper -files [get_files /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.srcs/sources_1/bd/AxiWriteMasterVerifiBD/AxiWriteMasterVerifiBD.bd] -top
+export_ip_user_files -of_objects  [get_files /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.gen/sources_1/bd/AxiWriteMasterVerifiBD/hdl/AxiWriteMasterVerifiBD_wrapper.v] -no_script -reset -force -quiet
+remove_files  /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.gen/sources_1/bd/AxiWriteMasterVerifiBD/hdl/AxiWriteMasterVerifiBD_wrapper.v
+file delete -force /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.gen/sources_1/bd/AxiWriteMasterVerifiBD/hdl/AxiWriteMasterVerifiBD_wrapper.v
+make_wrapper -files [get_files /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.srcs/sources_1/bd/AxiWriteMasterVerifiBD/AxiWriteMasterVerifiBD.bd] -top
+add_files -norecurse /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.gen/sources_1/bd/AxiWriteMasterVerifiBD/hdl/AxiWriteMasterVerifiBD_wrapper.v
+update_compile_order -fileset sources_1
+validate_bd_design -force
+open_bd_design {/home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.srcs/sources_1/bd/AxiWriteMasterVerifiBD/AxiWriteMasterVerifiBD.bd}
+make_wrapper -files [get_files /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.srcs/sources_1/bd/AxiWriteMasterVerifiBD/AxiWriteMasterVerifiBD.bd] -top
+export_ip_user_files -of_objects  [get_files /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.gen/sources_1/bd/AxiWriteMasterVerifiBD/hdl/AxiWriteMasterVerifiBD_wrapper.v] -no_script -reset -force -quiet
+remove_files  /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.gen/sources_1/bd/AxiWriteMasterVerifiBD/hdl/AxiWriteMasterVerifiBD_wrapper.v
+file delete -force /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.gen/sources_1/bd/AxiWriteMasterVerifiBD/hdl/AxiWriteMasterVerifiBD_wrapper.v
+open_bd_design {/home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.srcs/sources_1/bd/AxiWriteMasterVerifiBD/AxiWriteMasterVerifiBD.bd}
+make_wrapper -files [get_files /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.srcs/sources_1/bd/AxiWriteMasterVerifiBD/AxiWriteMasterVerifiBD.bd] -top
+add_files -norecurse /home/lqx/vivadoProject/Axi4WriteMasterVerification/Axi4WriteMasterVerification.gen/sources_1/bd/AxiWriteMasterVerifiBD/hdl/AxiWriteMasterVerifiBD_wrapper.v
+update_compile_order -fileset sources_1
+close_project
