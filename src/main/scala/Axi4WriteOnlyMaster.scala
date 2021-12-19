@@ -24,10 +24,10 @@ case class Axi4WriteOnlyMaster(addressWidth: Int, len: Int = 256, widthPerData: 
   )
 
   // ------------------declare the interface we need-------------------
-  val fifo = slave Stream Bits(widthPerData bits)
+  val stream = slave Stream Bits(widthPerData bits)
   val t = master(Axi4WriteOnly(config))
 
-  def fifoStreamInterface: Stream[Bits] = fifo
+  def StreamInterface: Stream[Bits] = stream
 
   def writeOnlyMasterInterface: Axi4WriteOnly = t
 
@@ -46,14 +46,14 @@ case class Axi4WriteOnlyMaster(addressWidth: Int, len: Int = 256, widthPerData: 
   val fifoDataBuffer: Vec[Bits] = Vec(List.tabulate(len)(i => RegInit(B(0, widthPerData bits))))
 
   // handshake between fifo and Axi4WriteMaster
-  when(fifoStreamInterface.fire) {
-    fifoDataBuffer(handshakeCounter.resized) := fifoStreamInterface.payload
+  when(StreamInterface.fire) {
+    fifoDataBuffer(handshakeCounter.resized) := StreamInterface.payload
     handshakeCounter.increment()
   }
 
-  fifoStreamInterface.ready := False
+  StreamInterface.ready := False
   when(!handshakeCounter.willOverflowIfInc) {
-    fifoStreamInterface.ready := True
+    StreamInterface.ready := True
   }
 
   // when the write channel complete a burst, the buffer can receive next burst data from fifo
@@ -81,7 +81,7 @@ case class Axi4WriteOnlyMaster(addressWidth: Int, len: Int = 256, widthPerData: 
   val controlAwValid = RegInit(False)
 
   val isTransferAfterReset = RegInit(True)
-  when(ClockDomain.current.readResetWire){
+  when(ClockDomain.current.readResetWire) {
     isTransferAfterReset := False
   }
   // Asynchronous LOW Level reset
@@ -153,21 +153,17 @@ case class Axi4WriteOnlyMaster(addressWidth: Int, len: Int = 256, widthPerData: 
 
   // ------------------------The write respond map---------------------------
   // when the first transfer start in a burst, we can receive the bResp signal
-  // TODO: check function
-//  val controlBReady = RegInit(False)
-//  when(writeOnlyMasterInterface.w.valid & writeCounter === U(0)) {
-//    controlBReady := True
-//  }
-//  when(writeOnlyMasterInterface.b.fire) {
-//    controlBReady := False
-//  }
-//
-//  when(writeOnlyMasterInterface.w.valid & writeCounter === U(0)) {
-//    writeOnlyMasterInterface.b.ready := True
-//  } otherwise {
-//    writeOnlyMasterInterface.b.ready := controlBReady
-//  }
-  writeOnlyMasterInterface.b.ready := True
+
+  val controlBReady = RegInit(False)
+  when(writeOnlyMasterInterface.w.valid.rise()) {
+    controlBReady := True
+  }
+  when(writeOnlyMasterInterface.b.fire) {
+    controlBReady := False
+  }
+  writeOnlyMasterInterface.b.ready := controlBReady
+
+
 }
 
 
@@ -177,13 +173,13 @@ object Axi4WriteOnlyMasterSpecRenamer {
       val name: String = that.getName()
       that.flatten.foreach { port =>
         port.setName(port.getName().replace("_payload_", ""))
-        port.setName(port.getName().replace("_valid", "Valid"))
-        port.setName(port.getName().replace("_ready", "Ready"))
-        port.setName(port.getName().replace("fifo_payload", "fifoPayload"))
-        if (port.getName().startsWith(name + "_t_")) port.setName(port.getName().replaceFirst(name + "_t_", ""))
-        if (port.getName().startsWith(name + "_fifo")) port.setName(port.getName().replaceFirst(name + "_fifo", "fifo"))
-        if (port.getName().startsWith("io_" + name + "_t_")) port.setName(port.getName().replaceFirst("io_" + name + "_t_", ""))
-        if (port.getName().startsWith("io_" + name + "_fifo")) port.setName(port.getName().replaceFirst("io_" + name + "_fifo", "fifo"))
+        port.setName(port.getName().replace("_payload", "payload"))
+        port.setName(port.getName().replace("_valid", "valid"))
+        port.setName(port.getName().replace("_ready", "ready"))
+        if (port.getName().startsWith(name + "_t_")) port.setName(port.getName().replaceFirst(name + "_t_", "m_axi_"))
+        if (port.getName().startsWith(name + "_stream")) port.setName(port.getName().replaceFirst(name + "_stream", "s_axis_"))
+        if (port.getName().startsWith("io_" + name + "_t_")) port.setName(port.getName().replaceFirst("io_" + name + "_t_", "m_axi_"))
+        if (port.getName().startsWith("io_" + name + "_stream")) port.setName(port.getName().replaceFirst("io_" + name + "_stream", "s_axis_"))
       }
     }
 
@@ -194,5 +190,23 @@ object Axi4WriteOnlyMasterSpecRenamer {
     }
   }
 
+  def apply(that: Axi4WriteOnly): Unit = {
+    def doIt() = {
+      val name: String = that.getName()
+      that.flatten.foreach { port =>
+        port.setName(port.getName().replace("_payload_", ""))
+        port.setName(port.getName().replace("_valid", "valid"))
+        port.setName(port.getName().replace("_ready", "ready"))
+        if (port.getName().startsWith(name + "_")) port.setName(port.getName().replaceFirst(name + "_", "m_axi_"))
+        if (port.getName().startsWith("io_" + name + "_")) port.setName(port.getName().replaceFirst("io_" + name + "_", "m_axi_"))
+      }
+    }
+
+    if (Component.current == that.component) {
+      that.component.addPrePopTask(() => doIt)
+    } else {
+      doIt
+    }
+  }
 
 }

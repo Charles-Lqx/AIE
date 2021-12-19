@@ -1,13 +1,13 @@
 // Generator : SpinalHDL v1.6.0    git head : 73c8d8e2b86b45646e9d0b2e729291f2b65e6be3
-// Component : Fifo2Axi4WriteOnlyMasterInterface
+// Component : Stream2Axi4WriteOnlyMasterInterface
 // Git hash  : 6d1480269f65659931465c8b65ad201e15ffd506
 
 
 
-module Fifo2Axi4WriteOnlyMasterInterface (
-  input               fifoInterface_valid,
-  output              fifoInterface_ready,
-  input      [31:0]   fifoInterface_payload,
+module Stream2Axi4WriteOnlyMasterInterface (
+  input               s_axis_valid,
+  output              s_axis_ready,
+  input      [31:0]   s_axis_payload,
   output              m_axi_awvalid,
   input               m_axi_awready,
   output     [31:0]   m_axi_awaddr,
@@ -76,9 +76,9 @@ module Fifo2Axi4WriteOnlyMasterInterface (
     .clk               (clk                                 )  //i
   );
   StreamFifo fifoInstance (
-    .io_push_valid      (fifoInterface_valid               ), //i
+    .io_push_valid      (s_axis_valid                      ), //i
     .io_push_ready      (fifoInstance_io_push_ready        ), //o
-    .io_push_payload    (fifoInterface_payload             ), //i
+    .io_push_payload    (s_axis_payload                    ), //i
     .io_pop_valid       (fifoInstance_io_pop_valid         ), //o
     .io_pop_ready       (axi4Interconnection_s_axis_ready  ), //i
     .io_pop_payload     (fifoInstance_io_pop_payload       ), //o
@@ -88,7 +88,7 @@ module Fifo2Axi4WriteOnlyMasterInterface (
     .clk                (clk                               ), //i
     .resetn             (resetn                            )  //i
   );
-  assign fifoInterface_ready = fifoInstance_io_push_ready;
+  assign s_axis_ready = fifoInstance_io_push_ready;
   assign m_axi_awvalid = axi4Interconnection_m_axi_awvalid;
   assign m_axi_awaddr = axi4Interconnection_m_axi_awaddr;
   assign m_axi_awregion = axi4Interconnection_m_axi_awregion;
@@ -319,39 +319,39 @@ module Axi4WriteOnlyMasterInterface (
   reg        [5:0]    handshakeCounter /* verilator public */ ;
   wire                _zz_when_Axi4WriteOnlyMaster_l55;
   wire                _zz_4;
-  reg        [31:0]   s_axis_DataBuffer_0;
-  reg        [31:0]   s_axis_DataBuffer_1;
-  reg        [31:0]   s_axis_DataBuffer_2;
-  reg        [31:0]   s_axis_DataBuffer_3;
-  reg        [31:0]   s_axis_DataBuffer_4;
-  reg        [31:0]   s_axis_DataBuffer_5;
-  reg        [31:0]   s_axis_DataBuffer_6;
-  reg        [31:0]   s_axis_DataBuffer_7;
-  reg        [31:0]   s_axis_DataBuffer_8;
-  reg        [31:0]   s_axis_DataBuffer_9;
-  reg        [31:0]   s_axis_DataBuffer_10;
-  reg        [31:0]   s_axis_DataBuffer_11;
-  reg        [31:0]   s_axis_DataBuffer_12;
-  reg        [31:0]   s_axis_DataBuffer_13;
-  reg        [31:0]   s_axis_DataBuffer_14;
-  reg        [31:0]   s_axis_DataBuffer_15;
-  reg        [31:0]   s_axis_DataBuffer_16;
-  reg        [31:0]   s_axis_DataBuffer_17;
-  reg        [31:0]   s_axis_DataBuffer_18;
-  reg        [31:0]   s_axis_DataBuffer_19;
-  reg        [31:0]   s_axis_DataBuffer_20;
-  reg        [31:0]   s_axis_DataBuffer_21;
-  reg        [31:0]   s_axis_DataBuffer_22;
-  reg        [31:0]   s_axis_DataBuffer_23;
-  reg        [31:0]   s_axis_DataBuffer_24;
-  reg        [31:0]   s_axis_DataBuffer_25;
-  reg        [31:0]   s_axis_DataBuffer_26;
-  reg        [31:0]   s_axis_DataBuffer_27;
-  reg        [31:0]   s_axis_DataBuffer_28;
-  reg        [31:0]   s_axis_DataBuffer_29;
-  reg        [31:0]   s_axis_DataBuffer_30;
-  reg        [31:0]   s_axis_DataBuffer_31;
-  wire                axi4Interface_fifo_fire;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_0;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_1;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_2;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_3;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_4;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_5;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_6;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_7;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_8;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_9;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_10;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_11;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_12;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_13;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_14;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_15;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_16;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_17;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_18;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_19;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_20;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_21;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_22;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_23;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_24;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_25;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_26;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_27;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_28;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_29;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_30;
+  reg        [31:0]   axi4Interface_fifoDataBuffer_31;
+  wire                axi4Interface_stream_fire;
   wire       [31:0]   _zz_5;
   wire                when_Axi4WriteOnlyMaster_l55;
   reg        [31:0]   debugAddress /* verilator public */ ;
@@ -423,100 +423,100 @@ module Axi4WriteOnlyMasterInterface (
   always @(*) begin
     case(_zz_m_axi_wdata_1)
       5'b00000 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_0;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_0;
       end
       5'b00001 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_1;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_1;
       end
       5'b00010 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_2;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_2;
       end
       5'b00011 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_3;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_3;
       end
       5'b00100 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_4;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_4;
       end
       5'b00101 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_5;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_5;
       end
       5'b00110 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_6;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_6;
       end
       5'b00111 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_7;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_7;
       end
       5'b01000 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_8;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_8;
       end
       5'b01001 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_9;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_9;
       end
       5'b01010 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_10;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_10;
       end
       5'b01011 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_11;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_11;
       end
       5'b01100 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_12;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_12;
       end
       5'b01101 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_13;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_13;
       end
       5'b01110 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_14;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_14;
       end
       5'b01111 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_15;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_15;
       end
       5'b10000 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_16;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_16;
       end
       5'b10001 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_17;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_17;
       end
       5'b10010 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_18;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_18;
       end
       5'b10011 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_19;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_19;
       end
       5'b10100 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_20;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_20;
       end
       5'b10101 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_21;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_21;
       end
       5'b10110 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_22;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_22;
       end
       5'b10111 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_23;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_23;
       end
       5'b11000 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_24;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_24;
       end
       5'b11001 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_25;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_25;
       end
       5'b11010 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_26;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_26;
       end
       5'b11011 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_27;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_27;
       end
       5'b11100 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_28;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_28;
       end
       5'b11101 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_29;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_29;
       end
       5'b11110 : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_30;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_30;
       end
       default : begin
-        _zz_m_axi_wdata = s_axis_DataBuffer_31;
+        _zz_m_axi_wdata = axi4Interface_fifoDataBuffer_31;
       end
     endcase
   end
@@ -550,7 +550,7 @@ module Axi4WriteOnlyMasterInterface (
 
   always @(*) begin
     _zz_handshakeCounter = 1'b0;
-    if(axi4Interface_fifo_fire) begin
+    if(axi4Interface_stream_fire) begin
       _zz_handshakeCounter = 1'b1;
     end
   end
@@ -575,7 +575,7 @@ module Axi4WriteOnlyMasterInterface (
     end
   end
 
-  assign axi4Interface_fifo_fire = (s_axis_valid && s_axis_ready);
+  assign axi4Interface_stream_fire = (s_axis_valid && s_axis_ready);
   assign _zz_5 = ({31'd0,1'b1} <<< _zz__zz_5);
   always @(*) begin
     s_axis_ready = 1'b0;
@@ -665,38 +665,38 @@ module Axi4WriteOnlyMasterInterface (
     if(!resetn) begin
       writeCounter <= 6'h0;
       handshakeCounter <= 6'h0;
-      s_axis_DataBuffer_0 <= 32'h0;
-      s_axis_DataBuffer_1 <= 32'h0;
-      s_axis_DataBuffer_2 <= 32'h0;
-      s_axis_DataBuffer_3 <= 32'h0;
-      s_axis_DataBuffer_4 <= 32'h0;
-      s_axis_DataBuffer_5 <= 32'h0;
-      s_axis_DataBuffer_6 <= 32'h0;
-      s_axis_DataBuffer_7 <= 32'h0;
-      s_axis_DataBuffer_8 <= 32'h0;
-      s_axis_DataBuffer_9 <= 32'h0;
-      s_axis_DataBuffer_10 <= 32'h0;
-      s_axis_DataBuffer_11 <= 32'h0;
-      s_axis_DataBuffer_12 <= 32'h0;
-      s_axis_DataBuffer_13 <= 32'h0;
-      s_axis_DataBuffer_14 <= 32'h0;
-      s_axis_DataBuffer_15 <= 32'h0;
-      s_axis_DataBuffer_16 <= 32'h0;
-      s_axis_DataBuffer_17 <= 32'h0;
-      s_axis_DataBuffer_18 <= 32'h0;
-      s_axis_DataBuffer_19 <= 32'h0;
-      s_axis_DataBuffer_20 <= 32'h0;
-      s_axis_DataBuffer_21 <= 32'h0;
-      s_axis_DataBuffer_22 <= 32'h0;
-      s_axis_DataBuffer_23 <= 32'h0;
-      s_axis_DataBuffer_24 <= 32'h0;
-      s_axis_DataBuffer_25 <= 32'h0;
-      s_axis_DataBuffer_26 <= 32'h0;
-      s_axis_DataBuffer_27 <= 32'h0;
-      s_axis_DataBuffer_28 <= 32'h0;
-      s_axis_DataBuffer_29 <= 32'h0;
-      s_axis_DataBuffer_30 <= 32'h0;
-      s_axis_DataBuffer_31 <= 32'h0;
+      axi4Interface_fifoDataBuffer_0 <= 32'h0;
+      axi4Interface_fifoDataBuffer_1 <= 32'h0;
+      axi4Interface_fifoDataBuffer_2 <= 32'h0;
+      axi4Interface_fifoDataBuffer_3 <= 32'h0;
+      axi4Interface_fifoDataBuffer_4 <= 32'h0;
+      axi4Interface_fifoDataBuffer_5 <= 32'h0;
+      axi4Interface_fifoDataBuffer_6 <= 32'h0;
+      axi4Interface_fifoDataBuffer_7 <= 32'h0;
+      axi4Interface_fifoDataBuffer_8 <= 32'h0;
+      axi4Interface_fifoDataBuffer_9 <= 32'h0;
+      axi4Interface_fifoDataBuffer_10 <= 32'h0;
+      axi4Interface_fifoDataBuffer_11 <= 32'h0;
+      axi4Interface_fifoDataBuffer_12 <= 32'h0;
+      axi4Interface_fifoDataBuffer_13 <= 32'h0;
+      axi4Interface_fifoDataBuffer_14 <= 32'h0;
+      axi4Interface_fifoDataBuffer_15 <= 32'h0;
+      axi4Interface_fifoDataBuffer_16 <= 32'h0;
+      axi4Interface_fifoDataBuffer_17 <= 32'h0;
+      axi4Interface_fifoDataBuffer_18 <= 32'h0;
+      axi4Interface_fifoDataBuffer_19 <= 32'h0;
+      axi4Interface_fifoDataBuffer_20 <= 32'h0;
+      axi4Interface_fifoDataBuffer_21 <= 32'h0;
+      axi4Interface_fifoDataBuffer_22 <= 32'h0;
+      axi4Interface_fifoDataBuffer_23 <= 32'h0;
+      axi4Interface_fifoDataBuffer_24 <= 32'h0;
+      axi4Interface_fifoDataBuffer_25 <= 32'h0;
+      axi4Interface_fifoDataBuffer_26 <= 32'h0;
+      axi4Interface_fifoDataBuffer_27 <= 32'h0;
+      axi4Interface_fifoDataBuffer_28 <= 32'h0;
+      axi4Interface_fifoDataBuffer_29 <= 32'h0;
+      axi4Interface_fifoDataBuffer_30 <= 32'h0;
+      axi4Interface_fifoDataBuffer_31 <= 32'h0;
       debugAddress <= 32'h0;
       axi4Interface_controlAwValid <= 1'b0;
       axi4Interface_isTransferAfterReset <= 1'b1;
@@ -704,102 +704,102 @@ module Axi4WriteOnlyMasterInterface (
     end else begin
       writeCounter <= _zz_writeCounter_1;
       handshakeCounter <= _zz_handshakeCounter_1;
-      if(axi4Interface_fifo_fire) begin
+      if(axi4Interface_stream_fire) begin
         if(_zz_5[0]) begin
-          s_axis_DataBuffer_0 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_0 <= s_axis_payload;
         end
         if(_zz_5[1]) begin
-          s_axis_DataBuffer_1 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_1 <= s_axis_payload;
         end
         if(_zz_5[2]) begin
-          s_axis_DataBuffer_2 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_2 <= s_axis_payload;
         end
         if(_zz_5[3]) begin
-          s_axis_DataBuffer_3 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_3 <= s_axis_payload;
         end
         if(_zz_5[4]) begin
-          s_axis_DataBuffer_4 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_4 <= s_axis_payload;
         end
         if(_zz_5[5]) begin
-          s_axis_DataBuffer_5 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_5 <= s_axis_payload;
         end
         if(_zz_5[6]) begin
-          s_axis_DataBuffer_6 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_6 <= s_axis_payload;
         end
         if(_zz_5[7]) begin
-          s_axis_DataBuffer_7 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_7 <= s_axis_payload;
         end
         if(_zz_5[8]) begin
-          s_axis_DataBuffer_8 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_8 <= s_axis_payload;
         end
         if(_zz_5[9]) begin
-          s_axis_DataBuffer_9 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_9 <= s_axis_payload;
         end
         if(_zz_5[10]) begin
-          s_axis_DataBuffer_10 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_10 <= s_axis_payload;
         end
         if(_zz_5[11]) begin
-          s_axis_DataBuffer_11 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_11 <= s_axis_payload;
         end
         if(_zz_5[12]) begin
-          s_axis_DataBuffer_12 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_12 <= s_axis_payload;
         end
         if(_zz_5[13]) begin
-          s_axis_DataBuffer_13 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_13 <= s_axis_payload;
         end
         if(_zz_5[14]) begin
-          s_axis_DataBuffer_14 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_14 <= s_axis_payload;
         end
         if(_zz_5[15]) begin
-          s_axis_DataBuffer_15 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_15 <= s_axis_payload;
         end
         if(_zz_5[16]) begin
-          s_axis_DataBuffer_16 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_16 <= s_axis_payload;
         end
         if(_zz_5[17]) begin
-          s_axis_DataBuffer_17 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_17 <= s_axis_payload;
         end
         if(_zz_5[18]) begin
-          s_axis_DataBuffer_18 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_18 <= s_axis_payload;
         end
         if(_zz_5[19]) begin
-          s_axis_DataBuffer_19 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_19 <= s_axis_payload;
         end
         if(_zz_5[20]) begin
-          s_axis_DataBuffer_20 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_20 <= s_axis_payload;
         end
         if(_zz_5[21]) begin
-          s_axis_DataBuffer_21 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_21 <= s_axis_payload;
         end
         if(_zz_5[22]) begin
-          s_axis_DataBuffer_22 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_22 <= s_axis_payload;
         end
         if(_zz_5[23]) begin
-          s_axis_DataBuffer_23 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_23 <= s_axis_payload;
         end
         if(_zz_5[24]) begin
-          s_axis_DataBuffer_24 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_24 <= s_axis_payload;
         end
         if(_zz_5[25]) begin
-          s_axis_DataBuffer_25 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_25 <= s_axis_payload;
         end
         if(_zz_5[26]) begin
-          s_axis_DataBuffer_26 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_26 <= s_axis_payload;
         end
         if(_zz_5[27]) begin
-          s_axis_DataBuffer_27 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_27 <= s_axis_payload;
         end
         if(_zz_5[28]) begin
-          s_axis_DataBuffer_28 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_28 <= s_axis_payload;
         end
         if(_zz_5[29]) begin
-          s_axis_DataBuffer_29 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_29 <= s_axis_payload;
         end
         if(_zz_5[30]) begin
-          s_axis_DataBuffer_30 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_30 <= s_axis_payload;
         end
         if(_zz_5[31]) begin
-          s_axis_DataBuffer_31 <= s_axis_payload;
+          axi4Interface_fifoDataBuffer_31 <= s_axis_payload;
         end
       end
       if(axi4Interface_t_w_fire) begin

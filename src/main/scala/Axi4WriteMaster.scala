@@ -24,10 +24,10 @@ case class Axi4WriteMaster(addressWidth: Int, len: Int = 256, widthPerData: Int 
   )
 
   // ------------------declare the interface we need-------------------
-  val fifo = slave Stream Bits(widthPerData bits)
+  val stream = slave Stream Bits(widthPerData bits)
   val t = master(Axi4(config))
 
-  def fifoStreamInterface: Stream[Bits] = fifo
+  def StreamInterface: Stream[Bits] = stream
 
   def writeMasterInterface: Axi4 = t
 
@@ -46,14 +46,14 @@ case class Axi4WriteMaster(addressWidth: Int, len: Int = 256, widthPerData: Int 
   val fifoDataBuffer: Vec[Bits] = Vec(List.tabulate(len)(i => RegInit(B(0, widthPerData bits))))
 
   // handshake between fifo and Axi4WriteMaster
-  when(fifoStreamInterface.fire) {
-    fifoDataBuffer(handshakeCounter.resized) := fifoStreamInterface.payload
+  when(StreamInterface.fire) {
+    fifoDataBuffer(handshakeCounter.resized) := StreamInterface.payload
     handshakeCounter.increment()
   }
 
-  fifoStreamInterface.ready := False
+  StreamInterface.ready := False
   when(!handshakeCounter.willOverflowIfInc) {
-    fifoStreamInterface.ready := True
+    StreamInterface.ready := True
   }
 
   // when the write channel complete a burst, the buffer can receive next burst data from fifo
@@ -151,8 +151,15 @@ case class Axi4WriteMaster(addressWidth: Int, len: Int = 256, widthPerData: Int 
   writeMasterInterface.w.last := writeCounter === U(len - 1)
 
   // ------------------------The write respond map---------------------------
-  // in this interface, noting to do
-  writeMasterInterface.b.ready := True
+  // when the first transfer start in a burst, we can receive the bResp signal
+  val controlBReady = RegInit(False)
+  when(writeMasterInterface.w.valid.rise()) {
+    controlBReady := True
+  }
+  when(writeMasterInterface.b.fire) {
+    controlBReady := False
+  }
+  writeMasterInterface.b.ready := controlBReady
 
 
   // --------------------The read address channel map -----------------------
@@ -179,13 +186,13 @@ object Axi4WriteMasterSpecRenamer {
       val name: String = that.getName()
       that.flatten.foreach { port =>
         port.setName(port.getName().replace("_payload_", ""))
-        port.setName(port.getName().replace("_valid", "Valid"))
-        port.setName(port.getName().replace("_ready", "Ready"))
-        port.setName(port.getName().replace("fifo_payload", "fifoPayload"))
-        if (port.getName().startsWith(name + "_t_")) port.setName(port.getName().replaceFirst(name + "_t_", ""))
-        if (port.getName().startsWith(name + "_fifo")) port.setName(port.getName().replaceFirst(name + "_fifo", "fifo"))
-        if (port.getName().startsWith("io_" + name + "_t_")) port.setName(port.getName().replaceFirst("io_" + name + "_t_", ""))
-        if (port.getName().startsWith("io_" + name + "_fifo")) port.setName(port.getName().replaceFirst("io_" + name + "_fifo", "fifo"))
+        port.setName(port.getName().replace("_payload", "payload"))
+        port.setName(port.getName().replace("_valid", "valid"))
+        port.setName(port.getName().replace("_ready", "ready"))
+        if (port.getName().startsWith(name + "_t_")) port.setName(port.getName().replaceFirst(name + "_t_", "m_axi_"))
+        if (port.getName().startsWith(name + "_stream")) port.setName(port.getName().replaceFirst(name + "_stream", "s_axis_"))
+        if (port.getName().startsWith("io_" + name + "_t_")) port.setName(port.getName().replaceFirst("io_" + name + "_t_", "m_axi_"))
+        if (port.getName().startsWith("io_" + name + "_stream")) port.setName(port.getName().replaceFirst("io_" + name + "_stream", "s_axis_"))
       }
     }
 
@@ -196,5 +203,24 @@ object Axi4WriteMasterSpecRenamer {
     }
   }
 
+
+  def apply(that: Axi4): Unit = {
+    def doIt() = {
+      val name: String = that.getName()
+      that.flatten.foreach { port =>
+        port.setName(port.getName().replace("_payload_", ""))
+        port.setName(port.getName().replace("_valid", "valid"))
+        port.setName(port.getName().replace("_ready", "ready"))
+        if (port.getName().startsWith(name + "_")) port.setName(port.getName().replaceFirst(name + "_", "m_axi_"))
+        if (port.getName().startsWith("io_" + name + "_")) port.setName(port.getName().replaceFirst("io_" + name + "_", "m_axi_"))
+      }
+    }
+
+    if (Component.current == that.component) {
+      that.component.addPrePopTask(() => doIt)
+    } else {
+      doIt
+    }
+  }
 
 }
