@@ -3,14 +3,14 @@ import spinal.core._
 import spinal.core.sim._
 import spinal.lib.bus.amba4.axi._
 
-case class Stream2Axi4WriteOnlyMasterInterface(addressWidth: Int, len: Int = 256, widthPerData: Int = 32) extends Component {
-  val axi4Interface = Axi4WriteOnlyMaster(addressWidth, len, widthPerData)
+case class Stream2Axi4WriteOnlyMasterInterface(addressWidth: Int, maxBurstLen: Int = 256, widthPerData: Int = 32) extends Component {
+  val axi4Interface = Axi4WriteOnlyMaster(addressWidth, maxBurstLen, widthPerData)
   Axi4WriteOnlyMasterSpecRenamer(axi4Interface)
   ClockDomain.current.clock.setName("aclk")
   ClockDomain.current.reset.setName("aresetn")
 }
 
-case class Stream2Axi4WriteOnlyMasterInterfaceAddFifo(addressWidth: Int, len: Int = 256, widthPerData: Int = 32) extends Component {
+case class Stream2Axi4WriteOnlyMasterInterfaceAddFifo(addressWidth: Int, maxBurstLen: Int = 256, widthPerData: Int = 32) extends Component {
   val config = Axi4Config(
     addressWidth = addressWidth,
     dataWidth = widthPerData,
@@ -26,10 +26,18 @@ case class Stream2Axi4WriteOnlyMasterInterfaceAddFifo(addressWidth: Int, len: In
   val axi4WriteOnlyMasterInterface = master(Axi4WriteOnly(config))
   Axi4WriteOnlyMasterSpecRenamer(axi4WriteOnlyMasterInterface)
 
-  val axi4Interconnection = Stream2Axi4WriteOnlyMasterInterface(addressWidth, len, widthPerData)
-  val fifoInstance = StreamFifo(Bits(widthPerData bits), len)
+  val axi4Interconnection = Stream2Axi4WriteOnlyMasterInterface(addressWidth, maxBurstLen, widthPerData)
+  val fifoInstance = StreamFifo(Bits(widthPerData bits), maxBurstLen)
+  val start = in Bool()
+  val burstLen = in UInt(8 bits)
+  val offset = in UInt(addressWidth bits)
+  val transInterrupt = out Bool()
   streamInterface >> fifoInstance.io.push
   fifoInstance.io.pop >> axi4Interconnection.axi4Interface.stream
+  axi4Interconnection.axi4Interface.start := start
+  axi4Interconnection.axi4Interface.burstLen := burstLen
+  axi4Interconnection.axi4Interface.offset := offset
+  transInterrupt := axi4Interconnection.axi4Interface.transInterrupt
   axi4Interconnection.axi4Interface.writeOnlyMasterInterface >> axi4WriteOnlyMasterInterface
 
   ClockDomain.current.clock.setName("aclk")
@@ -49,6 +57,7 @@ object TestAxi4WriteOnlyMasterInterface extends App {
 
       val testCase = ArrayBuffer[BigInt]()
       val writeData = ArrayBuffer[BigInt]()
+      var isLastHandshake = false
 
       import Axi4.resp._
       dut.axi4WriteOnlyMasterInterface.w.ready #= false
@@ -63,14 +72,31 @@ object TestAxi4WriteOnlyMasterInterface extends App {
       dut.clockDomain.forkStimulus(10)
       dut.clockDomain.waitSampling()
 
+      dut.start #= false
+      dut.offset #= 0
+      dut.burstLen #= 128
       def doSim(): Unit = {
         val readySignal = Random.nextBoolean()
+        dut.start #= Random.nextBoolean()
+        if(dut.axi4WriteOnlyMasterInterface.b.valid.toBoolean && dut.axi4WriteOnlyMasterInterface.b.ready.toBoolean){
+          dut.offset #= Random.nextInt(256)
+        }
         dut.streamInterface.payload #= Random.nextInt(256)
         dut.streamInterface.valid #= Random.nextBoolean()
         dut.axi4WriteOnlyMasterInterface.aw.ready #= readySignal
         dut.axi4WriteOnlyMasterInterface.w.ready #= readySignal
-        if(dut.axi4WriteOnlyMasterInterface.w.payload.last.toBoolean){
+        if(dut.axi4WriteOnlyMasterInterface.w.payload.last.toBoolean && dut.axi4WriteOnlyMasterInterface.w.valid.toBoolean
+          && dut.axi4WriteOnlyMasterInterface.w.ready.toBoolean){
+          isLastHandshake = true
+        }
+        if(isLastHandshake) {
           dut.axi4WriteOnlyMasterInterface.b.valid #= true
+        }
+        if(!isLastHandshake){
+          dut.axi4WriteOnlyMasterInterface.b.valid #= false
+        }
+        if(dut.axi4WriteOnlyMasterInterface.b.valid.toBoolean && dut.axi4WriteOnlyMasterInterface.b.ready.toBoolean){
+          isLastHandshake = false
         }
         if (dut.streamInterface.valid.toBoolean & dut.streamInterface.ready.toBoolean) {
           testCase += dut.streamInterface.payload.toBigInt

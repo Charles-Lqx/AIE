@@ -159,7 +159,7 @@ public:
     uint32_t timeCheck;
     bool waveEnabled;
     VStream2Axi4WriteOnlyMasterInterfaceAddFifo top;
-    ISignalAccess *signalAccess[26];
+    ISignalAccess *signalAccess[27];
     #ifdef TRACE
 	  VerilatedVcdC tfp;
 	  #endif
@@ -171,32 +171,33 @@ public:
       timeCheck = 0;
       lastFlushAt = high_resolution_clock::now();
       waveEnabled = true;
-      signalAccess[0] = new SDataSignalAccess( top.Stream2Axi4WriteOnlyMasterInterfaceAddFifo->axi4Interconnection->writeCounter );
-      signalAccess[1] = new SDataSignalAccess( top.Stream2Axi4WriteOnlyMasterInterfaceAddFifo->axi4Interconnection->handshakeCounter );
-      signalAccess[2] = new IDataSignalAccess( top.Stream2Axi4WriteOnlyMasterInterfaceAddFifo->axi4Interconnection->debugAddress );
-      signalAccess[3] = new CDataSignalAccess( top.s_axis_valid );
-      signalAccess[4] = new CDataSignalAccess( top.s_axis_ready );
-      signalAccess[5] = new IDataSignalAccess( top.s_axis_payload );
-      signalAccess[6] = new CDataSignalAccess( top.m_axi_awvalid );
-      signalAccess[7] = new CDataSignalAccess( top.m_axi_awready );
-      signalAccess[8] = new IDataSignalAccess( top.m_axi_awaddr );
-      signalAccess[9] = new CDataSignalAccess( top.m_axi_awregion );
-      signalAccess[10] = new CDataSignalAccess( top.m_axi_awlen );
-      signalAccess[11] = new CDataSignalAccess( top.m_axi_awsize );
-      signalAccess[12] = new CDataSignalAccess( top.m_axi_awburst );
-      signalAccess[13] = new CDataSignalAccess( top.m_axi_awcache );
-      signalAccess[14] = new CDataSignalAccess( top.m_axi_awqos );
-      signalAccess[15] = new CDataSignalAccess( top.m_axi_awprot );
-      signalAccess[16] = new CDataSignalAccess( top.m_axi_wvalid );
-      signalAccess[17] = new CDataSignalAccess( top.m_axi_wready );
-      signalAccess[18] = new IDataSignalAccess( top.m_axi_wdata );
-      signalAccess[19] = new CDataSignalAccess( top.m_axi_wstrb );
-      signalAccess[20] = new CDataSignalAccess( top.m_axi_wlast );
-      signalAccess[21] = new CDataSignalAccess( top.m_axi_bvalid );
-      signalAccess[22] = new CDataSignalAccess( top.m_axi_bready );
-      signalAccess[23] = new CDataSignalAccess( top.m_axi_bresp );
-      signalAccess[24] = new CDataSignalAccess( top.aresetn );
-      signalAccess[25] = new CDataSignalAccess( top.aclk );
+      signalAccess[0] = new CDataSignalAccess( top.s_axis_valid );
+      signalAccess[1] = new CDataSignalAccess( top.s_axis_ready );
+      signalAccess[2] = new IDataSignalAccess( top.s_axis_payload );
+      signalAccess[3] = new CDataSignalAccess( top.m_axi_awvalid );
+      signalAccess[4] = new CDataSignalAccess( top.m_axi_awready );
+      signalAccess[5] = new IDataSignalAccess( top.m_axi_awaddr );
+      signalAccess[6] = new CDataSignalAccess( top.m_axi_awregion );
+      signalAccess[7] = new CDataSignalAccess( top.m_axi_awlen );
+      signalAccess[8] = new CDataSignalAccess( top.m_axi_awsize );
+      signalAccess[9] = new CDataSignalAccess( top.m_axi_awburst );
+      signalAccess[10] = new CDataSignalAccess( top.m_axi_awcache );
+      signalAccess[11] = new CDataSignalAccess( top.m_axi_awqos );
+      signalAccess[12] = new CDataSignalAccess( top.m_axi_awprot );
+      signalAccess[13] = new CDataSignalAccess( top.m_axi_wvalid );
+      signalAccess[14] = new CDataSignalAccess( top.m_axi_wready );
+      signalAccess[15] = new IDataSignalAccess( top.m_axi_wdata );
+      signalAccess[16] = new CDataSignalAccess( top.m_axi_wstrb );
+      signalAccess[17] = new CDataSignalAccess( top.m_axi_wlast );
+      signalAccess[18] = new CDataSignalAccess( top.m_axi_bvalid );
+      signalAccess[19] = new CDataSignalAccess( top.m_axi_bready );
+      signalAccess[20] = new CDataSignalAccess( top.m_axi_bresp );
+      signalAccess[21] = new CDataSignalAccess( top.aresetn );
+      signalAccess[22] = new CDataSignalAccess( top.start );
+      signalAccess[23] = new CDataSignalAccess( top.burstLen );
+      signalAccess[24] = new IDataSignalAccess( top.offset );
+      signalAccess[25] = new CDataSignalAccess( top.transInterrupt );
+      signalAccess[26] = new CDataSignalAccess( top.aclk );
 
       #ifdef TRACE
       Verilated::traceEverOn(true);
@@ -207,7 +208,7 @@ public:
     }
 
     virtual ~Wrapper_1(){
-      for(int idx = 0;idx < 26;idx++){
+      for(int idx = 0;idx < 27;idx++){
           delete signalAccess[idx];
       }
 

@@ -10,10 +10,6 @@
 
 // INCLUDE MODULE CLASSES
 #include "VStream2Axi4WriteOnlyMasterInterfaceAddFifo.h"
-#include "VStream2Axi4WriteOnlyMasterInterfaceAddFifo_Stream2Axi4WriteOnlyMasterInterfaceAddFifo.h"
-#include "VStream2Axi4WriteOnlyMasterInterfaceAddFifo_Stream2Axi4WriteOnlyMasterInterface.h"
-
-// DPI TYPES for DPI Export callbacks (Internal use)
 
 // SYMS CLASS
 class VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms : public VerilatedSyms {
@@ -26,11 +22,6 @@ class VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms : public VerilatedSyms {
     
     // SUBCELL STATE
     VStream2Axi4WriteOnlyMasterInterfaceAddFifo* TOPp;
-    VStream2Axi4WriteOnlyMasterInterfaceAddFifo_Stream2Axi4WriteOnlyMasterInterfaceAddFifo TOP__Stream2Axi4WriteOnlyMasterInterfaceAddFifo;
-    VStream2Axi4WriteOnlyMasterInterfaceAddFifo_Stream2Axi4WriteOnlyMasterInterface TOP__Stream2Axi4WriteOnlyMasterInterfaceAddFifo__axi4Interconnection;
-    
-    // SCOPE NAMES
-    VerilatedScope __Vscope_Stream2Axi4WriteOnlyMasterInterfaceAddFifo__axi4Interconnection;
     
     // CREATORS
     VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms(VStream2Axi4WriteOnlyMasterInterfaceAddFifo* topp, const char* namep);

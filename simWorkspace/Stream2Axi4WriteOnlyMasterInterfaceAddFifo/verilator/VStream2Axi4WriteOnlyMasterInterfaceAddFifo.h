@@ -9,25 +9,20 @@
 #define _VStream2Axi4WriteOnlyMasterInterfaceAddFifo_H_
 
 #include "verilated.h"
-#include "VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Dpi.h"
 
 class VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms;
-class VStream2Axi4WriteOnlyMasterInterfaceAddFifo_Stream2Axi4WriteOnlyMasterInterfaceAddFifo;
 class VerilatedVcd;
 
 //----------
 
 VL_MODULE(VStream2Axi4WriteOnlyMasterInterfaceAddFifo) {
   public:
-    // CELLS
-    // Public to allow access to /*verilator_public*/ items;
-    // otherwise the application code can consider these internals.
-    VStream2Axi4WriteOnlyMasterInterfaceAddFifo_Stream2Axi4WriteOnlyMasterInterfaceAddFifo*	Stream2Axi4WriteOnlyMasterInterfaceAddFifo;
     
     // PORTS
     // The application code writes and reads these signals to
     // propagate new values into/out from the Verilated model.
     VL_IN8(aresetn,0,0);
+    VL_IN8(start,0,0);
     VL_IN8(aclk,0,0);
     VL_IN8(s_axis_valid,0,0);
     VL_OUT8(s_axis_ready,0,0);
@@ -47,17 +42,85 @@ VL_MODULE(VStream2Axi4WriteOnlyMasterInterfaceAddFifo) {
     VL_IN8(m_axi_bvalid,0,0);
     VL_OUT8(m_axi_bready,0,0);
     VL_IN8(m_axi_bresp,1,0);
+    VL_IN8(burstLen,7,0);
+    VL_OUT8(transInterrupt,0,0);
     VL_IN(s_axis_payload,31,0);
     VL_OUT(m_axi_awaddr,31,0);
     VL_OUT(m_axi_wdata,31,0);
+    VL_IN(offset,31,0);
     
     // LOCAL SIGNALS
     // Internals; generally not touched by application code
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT___zz_4,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection_s_axis_ready,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection_m_axi_wvalid,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection_m_axi_wlast,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance_io_pop_valid,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2_io_push_valid,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2_io_pop_ready,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2_io_pop_valid,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT___zz_m_axi_wlast,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT___zz_1,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__m_axi_wlast_regNext,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__startSendSignal,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT___zz_when_Axi4WriteOnlyMaster_l89,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT___zz_5,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__when_Axi4WriteOnlyMaster_l89,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__axi4Interface_isTransferAfterReset,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__when_Axi4WriteOnlyMaster_l115,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__axi4Interface_lastBurstComplete,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__axi4Interface_controlAwValidSignal,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__axi4Interface_full_aw_fire,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__when_Axi4WriteOnlyMaster_l152,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__axi4Interface_controlBReady,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__axi4Interface_full_b_fire_3,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__axi4Interface_isBurstComplete,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT___zz_1,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_pushPtr_willIncrement,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_pushPtr_valueNext,7,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_pushPtr_value,7,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_popPtr_willIncrement,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_popPtr_valueNext,7,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_popPtr_value,7,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_ptrMatch,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_risingOccupancy,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_pushing,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_popping,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_full,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT___zz_io_pop_valid,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT___zz_1,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT__logic_pushPtr_willIncrement,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT__logic_pushPtr_valueNext,7,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT__logic_pushPtr_value,7,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT__logic_popPtr_willIncrement,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT__logic_popPtr_valueNext,7,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT__logic_popPtr_value,7,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT__logic_ptrMatch,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT__logic_risingOccupancy,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT__logic_pushing,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT__logic_popping,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT__logic_full,0,0);
+    VL_SIG8(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT___zz_io_pop_valid,0,0);
+    VL_SIG16(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT___zz_m_axi_wlast_1,8,0);
+    VL_SIG16(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT___zz_m_axi_wlast_2,8,0);
+    VL_SIG16(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT___zz_when_Axi4WriteOnlyMaster_l89_1,8,0);
+    VL_SIG16(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT___zz_when_Axi4WriteOnlyMaster_l89_2,8,0);
+    VL_SIG(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection_m_axi_wdata,31,0);
+    VL_SIG(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2_io_push_payload,31,0);
+    VL_SIG(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__axi4Interface_transferDataType,31,0);
+    VL_SIG(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT___zz_logic_ram_port0,31,0);
+    VL_SIG(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT___zz_logic_ram_port0,31,0);
+    VL_SIG(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_ram[256],31,0);
+    VL_SIG(Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__fifoInstance__DOT__logic_ram[256],31,0);
     
     // LOCAL VARIABLES
     // Internals; generally not touched by application code
+    VL_SIG8(__VinpClk__TOP__Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT___zz_4,0,0);
     VL_SIG8(__Vclklast__TOP__aclk,0,0);
+    VL_SIG8(__Vclklast__TOP____VinpClk__TOP__Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT___zz_4,0,0);
+    VL_SIG8(__Vclklast__TOP__start,0,0);
     VL_SIG8(__Vclklast__TOP__aresetn,0,0);
+    VL_SIG8(__Vchglast__TOP__Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT___zz_4,0,0);
     VL_SIG(__Vm_traceActivity,31,0);
     
     // INTERNAL VARIABLES
@@ -95,6 +158,10 @@ VL_MODULE(VStream2Axi4WriteOnlyMasterInterfaceAddFifo) {
   private:
     static QData _change_request(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
     static QData _change_request_1(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
+  public:
+    static void _combo__TOP__2(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
+    static void _combo__TOP__7(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
+  private:
     void _ctor_var_reset();
   public:
     static void _eval(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
@@ -106,22 +173,20 @@ VL_MODULE(VStream2Axi4WriteOnlyMasterInterfaceAddFifo) {
     static void _eval_initial(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
     static void _eval_settle(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
     static void _sequent__TOP__3(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
-    static void _sequent__TOP__4(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
+    static void _sequent__TOP__5(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
+    static void _sequent__TOP__6(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
     static void _settle__TOP__1(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
-    static void _settle__TOP__2(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp);
     static void traceChgThis(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
-    static void traceChgThis__10(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
-    static void traceChgThis__11(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
     static void traceChgThis__2(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
     static void traceChgThis__3(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
     static void traceChgThis__4(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
     static void traceChgThis__5(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
     static void traceChgThis__6(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
     static void traceChgThis__7(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
+    static void traceChgThis__8(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
     static void traceChgThis__9(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
     static void traceFullThis(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
     static void traceFullThis__1(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
-    static void traceFullThis__8(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
     static void traceInitThis(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
     static void traceInitThis__1(VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms* __restrict vlSymsp, VerilatedVcd* vcdp, uint32_t code);
     static void traceInit (VerilatedVcd* vcdp, void* userthis, uint32_t code);

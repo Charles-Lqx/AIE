@@ -6,8 +6,4 @@ VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Trace.o: \
  /usr/share/verilator/include/verilated_config.h \
  VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Syms.h \
  /usr/share/verilator/include/verilated.h \
- VStream2Axi4WriteOnlyMasterInterfaceAddFifo.h \
- VStream2Axi4WriteOnlyMasterInterfaceAddFifo__Dpi.h \
- /usr/share/verilator/include/vltstd/svdpi.h \
- VStream2Axi4WriteOnlyMasterInterfaceAddFifo_Stream2Axi4WriteOnlyMasterInterfaceAddFifo.h \
- VStream2Axi4WriteOnlyMasterInterfaceAddFifo_Stream2Axi4WriteOnlyMasterInterface.h
+ VStream2Axi4WriteOnlyMasterInterfaceAddFifo.h
