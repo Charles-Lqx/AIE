@@ -65,6 +65,12 @@ object TestAxi4WriteOnlyMasterInterface extends App {
       dut.axi4WriteOnlyMasterInterface.b.resp #= 0
       dut.axi4WriteOnlyMasterInterface.b.valid #= false
 
+      dut.start #= false
+      dut.offset #= 0
+      dut.burstLen #= 128
+
+
+
       dut.streamInterface.payload #= 32
       dut.streamInterface.valid #= false
 
@@ -72,14 +78,22 @@ object TestAxi4WriteOnlyMasterInterface extends App {
       dut.clockDomain.forkStimulus(10)
       dut.clockDomain.waitSampling()
 
+      sleep(20)
+      dut.start #= true
+      sleep(5)
       dut.start #= false
-      dut.offset #= 0
-      dut.burstLen #= 128
+
+
+
       def doSim(): Unit = {
         val readySignal = Random.nextBoolean()
-        dut.start #= Random.nextBoolean()
         if(dut.axi4WriteOnlyMasterInterface.b.valid.toBoolean && dut.axi4WriteOnlyMasterInterface.b.ready.toBoolean){
           dut.offset #= Random.nextInt(256)
+          sleep(20)
+          dut.start #= true
+          sleep(5)
+          dut.start #= false
+
         }
         dut.streamInterface.payload #= Random.nextInt(256)
         dut.streamInterface.valid #= Random.nextBoolean()
@@ -87,16 +101,10 @@ object TestAxi4WriteOnlyMasterInterface extends App {
         dut.axi4WriteOnlyMasterInterface.w.ready #= readySignal
         if(dut.axi4WriteOnlyMasterInterface.w.payload.last.toBoolean && dut.axi4WriteOnlyMasterInterface.w.valid.toBoolean
           && dut.axi4WriteOnlyMasterInterface.w.ready.toBoolean){
-          isLastHandshake = true
-        }
-        if(isLastHandshake) {
           dut.axi4WriteOnlyMasterInterface.b.valid #= true
         }
-        if(!isLastHandshake){
+        if(dut.axi4WriteOnlyMasterInterface.b.valid.toBoolean){
           dut.axi4WriteOnlyMasterInterface.b.valid #= false
-        }
-        if(dut.axi4WriteOnlyMasterInterface.b.valid.toBoolean && dut.axi4WriteOnlyMasterInterface.b.ready.toBoolean){
-          isLastHandshake = false
         }
         if (dut.streamInterface.valid.toBoolean & dut.streamInterface.ready.toBoolean) {
           testCase += dut.streamInterface.payload.toBigInt
