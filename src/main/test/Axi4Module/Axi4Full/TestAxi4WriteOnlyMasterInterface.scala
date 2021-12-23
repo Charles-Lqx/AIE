@@ -1,6 +1,8 @@
-import spinal.lib._
+package Axi4Module.Axi4Full
+
 import spinal.core._
 import spinal.core.sim._
+import spinal.lib._
 import spinal.lib.bus.amba4.axi._
 
 case class Stream2Axi4WriteOnlyMasterInterface(addressWidth: Int, maxBurstLen: Int = 256, widthPerData: Int = 32) extends Component {
@@ -20,7 +22,7 @@ case class Stream2Axi4WriteOnlyMasterInterfaceAddFifo(addressWidth: Int, maxBurs
   val streamInterface = slave Stream Bits(widthPerData bits)
   // rename streamInterface
   val bundleName = streamInterface.getName()
-  streamInterface.flatten.foreach{ port =>
+  streamInterface.flatten.foreach { port =>
     port.setName(port.getName().replace(bundleName, "s_axis"))
   }
   val axi4WriteOnlyMasterInterface = master(Axi4WriteOnly(config))
@@ -29,8 +31,8 @@ case class Stream2Axi4WriteOnlyMasterInterfaceAddFifo(addressWidth: Int, maxBurs
   val axi4Interconnection = Stream2Axi4WriteOnlyMasterInterface(addressWidth, maxBurstLen, widthPerData)
   val fifoInstance = StreamFifo(Bits(widthPerData bits), maxBurstLen)
   val start = in Bool()
-  val burstLen = in UInt(8 bits)
-  val offset = in UInt(addressWidth bits)
+  val burstLen = in UInt (8 bits)
+  val offset = in UInt (addressWidth bits)
   val transInterrupt = out Bool()
   streamInterface >> fifoInstance.io.push
   fifoInstance.io.pop >> axi4Interconnection.axi4Interface.stream
@@ -47,19 +49,17 @@ case class Stream2Axi4WriteOnlyMasterInterfaceAddFifo(addressWidth: Int, maxBurs
 
 object TestAxi4WriteOnlyMasterInterface extends App {
 
-  import scala.util.Random
   import scala.collection.mutable._
+  import scala.util.Random
 
   SimConfig.withWave.allOptimisation
     .withConfig(SpinalConfig(defaultConfigForClockDomains = ClockDomainConfig(resetActiveLevel = LOW)))
-    .compile(Stream2Axi4WriteOnlyMasterInterfaceAddFifo(32))
+    .compile(Stream2Axi4WriteOnlyMasterInterfaceAddFifo(32).setDefinitionName("Stream2Axi4WriteOnlyMasterInterfaceAddFifo"))
     .doSim { dut =>
 
       val testCase = ArrayBuffer[BigInt]()
       val writeData = ArrayBuffer[BigInt]()
       var isLastHandshake = false
-
-      import Axi4.resp._
       dut.axi4WriteOnlyMasterInterface.w.ready #= false
       dut.axi4WriteOnlyMasterInterface.aw.ready #= false
       dut.axi4WriteOnlyMasterInterface.b.resp #= 0
@@ -68,7 +68,6 @@ object TestAxi4WriteOnlyMasterInterface extends App {
       dut.start #= false
       dut.offset #= 0
       dut.burstLen #= 128
-
 
 
       dut.streamInterface.payload #= 32
@@ -84,10 +83,9 @@ object TestAxi4WriteOnlyMasterInterface extends App {
       dut.start #= false
 
 
-
       def doSim(): Unit = {
         val readySignal = Random.nextBoolean()
-        if(dut.axi4WriteOnlyMasterInterface.b.valid.toBoolean && dut.axi4WriteOnlyMasterInterface.b.ready.toBoolean){
+        if (dut.axi4WriteOnlyMasterInterface.b.valid.toBoolean && dut.axi4WriteOnlyMasterInterface.b.ready.toBoolean) {
           dut.offset #= Random.nextInt(256)
           sleep(20)
           dut.start #= true
@@ -99,11 +97,11 @@ object TestAxi4WriteOnlyMasterInterface extends App {
         dut.streamInterface.valid #= Random.nextBoolean()
         dut.axi4WriteOnlyMasterInterface.aw.ready #= readySignal
         dut.axi4WriteOnlyMasterInterface.w.ready #= readySignal
-        if(dut.axi4WriteOnlyMasterInterface.w.payload.last.toBoolean && dut.axi4WriteOnlyMasterInterface.w.valid.toBoolean
-          && dut.axi4WriteOnlyMasterInterface.w.ready.toBoolean){
+        if (dut.axi4WriteOnlyMasterInterface.w.payload.last.toBoolean && dut.axi4WriteOnlyMasterInterface.w.valid.toBoolean
+          && dut.axi4WriteOnlyMasterInterface.w.ready.toBoolean) {
           dut.axi4WriteOnlyMasterInterface.b.valid #= true
         }
-        if(dut.axi4WriteOnlyMasterInterface.b.valid.toBoolean){
+        if (dut.axi4WriteOnlyMasterInterface.b.valid.toBoolean) {
           dut.axi4WriteOnlyMasterInterface.b.valid #= false
         }
         if (dut.streamInterface.valid.toBoolean & dut.streamInterface.ready.toBoolean) {

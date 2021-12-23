@@ -1,10 +1,10 @@
 // Generator : SpinalHDL v1.6.0    git head : 73c8d8e2b86b45646e9d0b2e729291f2b65e6be3
-// Component : Stream2Axi4WriteOnlyMasterInterface
+// Component : Axi4Module.Axi4Full.Stream2Axi4WriteOnlyMasterInterface
 // Git hash  : 6d1480269f65659931465c8b65ad201e15ffd506
 
 
 
-module Stream2Axi4WriteOnlyMasterInterface (
+module Axi4Module.Axi4Full.Stream2Axi4WriteOnlyMasterInterface (
   input               s_axis_valid,
   output              s_axis_ready,
   input      [31:0]   s_axis_payload,

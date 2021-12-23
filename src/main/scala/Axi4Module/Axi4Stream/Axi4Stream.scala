@@ -1,7 +1,9 @@
-import spinal.lib._
-import spinal.core._
+package Axi4Module.Axi4Stream
 
-// define a config class for Axi4Stream
+import spinal.core._
+import spinal.lib._
+
+// define a config class for Axi4Module.Axi4Stream.Axi4Stream
 case class Axi4StreamConfig(dataWidth: Int,
                             dataNumber: Int,
                             useStrb: Boolean = true,
@@ -59,8 +61,9 @@ object Axi4StreamSpecRenamer {
         if (port.getName().startsWith("io_")) port.setName(port.getName().replaceFirst("io_", ""))
       }
     }
-    if (Component.current == that.component){
-      that.component.addPrePopTask(()=>doIt)
+
+    if (Component.current == that.component) {
+      that.component.addPrePopTask(() => doIt)
     } else {
       doIt
     }

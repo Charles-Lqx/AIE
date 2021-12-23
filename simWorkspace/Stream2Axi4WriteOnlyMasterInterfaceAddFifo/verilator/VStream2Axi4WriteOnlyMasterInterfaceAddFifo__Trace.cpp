@@ -74,8 +74,8 @@ void VStream2Axi4WriteOnlyMasterInterfaceAddFifo::traceChgThis__2(VStream2Axi4Wr
 	vcdp->chgBit  (c+5,(vlTOPp->Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2_io_push_valid));
 	vcdp->chgBus  (c+6,(vlTOPp->Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2_io_push_payload),32);
 	vcdp->chgBit  (c+7,(vlTOPp->Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2_io_pop_ready));
-	vcdp->chgBit  (c+8,(vlTOPp->Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__when_Axi4WriteOnlyMaster_l89));
-	vcdp->chgBit  (c+9,(vlTOPp->Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__when_Axi4WriteOnlyMaster_l152));
+	vcdp->chgBit  (c+8,(vlTOPp->Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__when_Axi4WriteOnlyMaster_l93));
+	vcdp->chgBit  (c+9,(vlTOPp->Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__when_Axi4WriteOnlyMaster_l156));
 	vcdp->chgBit  (c+10,(vlTOPp->Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_pushPtr_willIncrement));
 	vcdp->chgBus  (c+11,(vlTOPp->Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_pushPtr_valueNext),8);
 	vcdp->chgBit  (c+12,(vlTOPp->Stream2Axi4WriteOnlyMasterInterfaceAddFifo__DOT__axi4Interconnection__DOT__streamFifo_2__DOT__logic_popPtr_willIncrement));

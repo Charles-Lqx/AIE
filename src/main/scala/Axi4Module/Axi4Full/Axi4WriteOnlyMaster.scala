@@ -1,7 +1,8 @@
-import spinal.lib._
+package Axi4Module.Axi4Full
+
 import spinal.core._
+import spinal.lib._
 import spinal.lib.bus.amba4.axi._
-import spinal.core.sim._
 
 
 /**
@@ -28,22 +29,27 @@ case class Axi4WriteOnlyMaster(addressWidth: Int, maxBurstLen: Int = 256, widthP
 
   // interface define
   val start = in Bool()
-  val burstLen = in UInt(8 bits)
-  val offset = in UInt(addressWidth bits)
+  val burstLen = in UInt (8 bits)
+  val offset = in UInt (addressWidth bits)
   val stream = slave Stream transferDataType
   val full = master(Axi4WriteOnly(config))
   val transInterrupt = out Bool()
 
   // the start signal which indicate a burst can be initiated
   def startSignal: Bool = start
+
   // the burst length information signal
   def burstLength: UInt = burstLen
+
   // the start offset address signal
   def startOffsetSignal: UInt = offset
+
   // the stream data channel
   def StreamInterface: Stream[Bits] = stream
+
   // the axi4 write channel
   def writeOnlyMasterInterface: Axi4WriteOnly = full
+
   // the feedback signal for interrupt
   def interruptSignal: Bool = transInterrupt
 
@@ -59,24 +65,22 @@ case class Axi4WriteOnlyMaster(addressWidth: Int, maxBurstLen: Int = 256, widthP
   // so we define a internalClockDomain for it
   val resetStartSendSignal: Bool = writeOnlyMasterInterface.w.payload.last.fall()
   val startSendClockDomainConfig = ClockDomainConfig(clockEdge = RISING,
-                                                     resetKind = ASYNC,
-                                                     resetActiveLevel = HIGH)
+    resetKind = ASYNC,
+    resetActiveLevel = HIGH)
   val startSendClockDomain: ClockDomain = ClockDomain(clock = startSignal,
-                                                      reset = resetStartSendSignal || !ClockDomain.current.readResetWire,
-                                                      config = startSendClockDomainConfig
-                                                     )
-  val startSendArea = new ClockingArea(startSendClockDomain){
-    val startSendSignal: Bool = RegNext(True) init(False)
+    reset = resetStartSendSignal || !ClockDomain.current.readResetWire,
+    config = startSendClockDomainConfig
+  )
+  val startSendArea = new ClockingArea(startSendClockDomain) {
+    val startSendSignal: Bool = RegNext(True) init (False)
   }.setName("")
   startSendArea.startSendSignal.addTag(crossClockDomain)
-
-
 
 
   // record the times of handshake between streamInterface and streamDataBuffer
   val getDataHandshakeCounter: Counter = Counter(0, maxBurstLen)
 
-  // *************stream to Axi4WriteOnlyMaster channel map****************
+  // *************stream to Axi4Module.Axi4Full.Axi4WriteOnlyMaster channel map****************
 
 
   // define a streamFifo as buffer for storing the stream data
@@ -93,11 +97,11 @@ case class Axi4WriteOnlyMaster(addressWidth: Int, maxBurstLen: Int = 256, widthP
   }
 
   // recording the number of stream data which be send into buffer in a burst
-  when(streamDataBuffer.io.push.fire){
+  when(streamDataBuffer.io.push.fire) {
     getDataHandshakeCounter.increment()
   }
   // when a burst complete(the write response channel handshake successful), reset this counter for next burst transfer
-  when(writeOnlyMasterInterface.b.fire){
+  when(writeOnlyMasterInterface.b.fire) {
     getDataHandshakeCounter.clear()
   }
 
@@ -112,7 +116,7 @@ case class Axi4WriteOnlyMaster(addressWidth: Int, maxBurstLen: Int = 256, widthP
     isTransferAfterReset := False
   }
   // indicate whether last burst is already complete
-  val lastBurstComplete = RegNextWhen(True, writeOnlyMasterInterface.b.fire || isTransferAfterReset) init(False)
+  val lastBurstComplete = RegNextWhen(True, writeOnlyMasterInterface.b.fire || isTransferAfterReset) init (False)
   // Asynchronous LOW Level reset
   val controlAwValidSignal = RegInit(False)
   when(ClockDomain.current.readResetWire && startSendArea.startSendSignal) {
@@ -183,13 +187,11 @@ case class Axi4WriteOnlyMaster(addressWidth: Int, maxBurstLen: Int = 256, widthP
   // **************************setting interrupt signal**************************
   // indicate this burst complete, it be defined as a pulse signal
   val isBurstComplete = RegNext(writeOnlyMasterInterface.b.fire)
-  when(isBurstComplete){
+  when(isBurstComplete) {
     isBurstComplete := False
   }
   interruptSignal := isBurstComplete
 }
-
-
 
 
 object Axi4WriteOnlyMasterSpecRenamer {

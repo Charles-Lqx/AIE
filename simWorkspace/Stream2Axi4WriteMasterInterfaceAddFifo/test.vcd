@@ -42,7 +42,7 @@ $timescale   1ns $end
   $var wire 32 $0 s_axis_payload [31:0] $end
   $var wire  1 $/ s_axis_ready $end
   $var wire  1 $. s_axis_valid $end
-  $scope module Stream2Axi4WriteMasterInterfaceAddFifo $end
+  $scope module Axi4Module.Axi4Full.Stream2Axi4WriteMasterInterfaceAddFifo $end
    $var wire  1 $S aclk $end
    $var wire  1 $R aresetn $end
    $var wire 32 $d axi4Interconnection_m_axi_araddr [31:0] $end

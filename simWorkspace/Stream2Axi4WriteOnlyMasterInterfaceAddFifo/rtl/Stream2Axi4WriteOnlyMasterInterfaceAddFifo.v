@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.6.0    git head : 73c8d8e2b86b45646e9d0b2e729291f2b65e6be3
 // Component : Stream2Axi4WriteOnlyMasterInterfaceAddFifo
-// Git hash  : f78ebb8318316533b653963bba949dd0d52ae9f6
+// Git hash  : f36e0def70190b3afb319f09389a7ceaf993600e
 
 
 
@@ -157,10 +157,10 @@ module Stream2Axi4WriteOnlyMasterInterface (
   wire       [8:0]    streamFifo_2_io_availability;
   wire       [8:0]    _zz__zz_m_axi_wlast_1;
   wire       [0:0]    _zz__zz_m_axi_wlast_1_1;
-  wire       [8:0]    _zz__zz_when_Axi4WriteOnlyMaster_l89_1;
-  wire       [0:0]    _zz__zz_when_Axi4WriteOnlyMaster_l89_1_1;
-  wire       [8:0]    _zz_when_Axi4WriteOnlyMaster_l89_3;
-  wire       [8:0]    _zz_when_Axi4WriteOnlyMaster_l152;
+  wire       [8:0]    _zz__zz_when_Axi4WriteOnlyMaster_l93_1;
+  wire       [0:0]    _zz__zz_when_Axi4WriteOnlyMaster_l93_1_1;
+  wire       [8:0]    _zz_when_Axi4WriteOnlyMaster_l93_3;
+  wire       [8:0]    _zz_when_Axi4WriteOnlyMaster_l156;
   wire       [8:0]    _zz_m_axi_wlast_3;
   wire       [7:0]    _zz_m_axi_wlast_4;
   wire       [31:0]   axi4Interface_transferDataType;
@@ -174,23 +174,23 @@ module Stream2Axi4WriteOnlyMasterInterface (
   wire                axi4Interface_resetStartSendSignal;
   wire                _zz_4;
   (* async_reg = "true" *) reg                 startSendSignal;
-  reg                 _zz_when_Axi4WriteOnlyMaster_l89;
+  reg                 _zz_when_Axi4WriteOnlyMaster_l93;
   reg                 _zz_5;
-  reg        [8:0]    _zz_when_Axi4WriteOnlyMaster_l89_1;
-  reg        [8:0]    _zz_when_Axi4WriteOnlyMaster_l89_2;
+  reg        [8:0]    _zz_when_Axi4WriteOnlyMaster_l93_1;
+  reg        [8:0]    _zz_when_Axi4WriteOnlyMaster_l93_2;
   wire                _zz_6;
   wire                _zz_7;
-  wire                when_Axi4WriteOnlyMaster_l89;
+  wire                when_Axi4WriteOnlyMaster_l93;
   wire                streamFifo_2_io_push_fire;
   wire                axi4Interface_full_b_fire;
   reg                 axi4Interface_isTransferAfterReset;
   wire                axi4Interface_full_b_fire_1;
-  wire                when_Axi4WriteOnlyMaster_l115;
+  wire                when_Axi4WriteOnlyMaster_l119;
   reg                 axi4Interface_lastBurstComplete;
   reg                 axi4Interface_controlAwValidSignal;
-  wire                when_Axi4WriteOnlyMaster_l118;
+  wire                when_Axi4WriteOnlyMaster_l122;
   wire                axi4Interface_full_aw_fire;
-  wire                when_Axi4WriteOnlyMaster_l152;
+  wire                when_Axi4WriteOnlyMaster_l156;
   wire                axi4Interface_full_w_fire;
   wire                axi4Interface_full_b_fire_2;
   reg                 axi4Interface_controlBReady;
@@ -200,10 +200,10 @@ module Stream2Axi4WriteOnlyMasterInterface (
 
   assign _zz__zz_m_axi_wlast_1_1 = _zz_m_axi_wlast;
   assign _zz__zz_m_axi_wlast_1 = {8'd0, _zz__zz_m_axi_wlast_1_1};
-  assign _zz__zz_when_Axi4WriteOnlyMaster_l89_1_1 = _zz_when_Axi4WriteOnlyMaster_l89;
-  assign _zz__zz_when_Axi4WriteOnlyMaster_l89_1 = {8'd0, _zz__zz_when_Axi4WriteOnlyMaster_l89_1_1};
-  assign _zz_when_Axi4WriteOnlyMaster_l89_3 = {1'd0, burstLen};
-  assign _zz_when_Axi4WriteOnlyMaster_l152 = {1'd0, burstLen};
+  assign _zz__zz_when_Axi4WriteOnlyMaster_l93_1_1 = _zz_when_Axi4WriteOnlyMaster_l93;
+  assign _zz__zz_when_Axi4WriteOnlyMaster_l93_1 = {8'd0, _zz__zz_when_Axi4WriteOnlyMaster_l93_1_1};
+  assign _zz_when_Axi4WriteOnlyMaster_l93_3 = {1'd0, burstLen};
+  assign _zz_when_Axi4WriteOnlyMaster_l156 = {1'd0, burstLen};
   assign _zz_m_axi_wlast_4 = (burstLen - 8'h01);
   assign _zz_m_axi_wlast_3 = {1'd0, _zz_m_axi_wlast_4};
   StreamFifo streamFifo_2 (
@@ -249,9 +249,9 @@ module Stream2Axi4WriteOnlyMasterInterface (
   assign axi4Interface_resetStartSendSignal = ((! m_axi_wlast) && m_axi_wlast_regNext);
   assign _zz_4 = (axi4Interface_resetStartSendSignal || (! aresetn));
   always @(*) begin
-    _zz_when_Axi4WriteOnlyMaster_l89 = 1'b0;
+    _zz_when_Axi4WriteOnlyMaster_l93 = 1'b0;
     if(streamFifo_2_io_push_fire) begin
-      _zz_when_Axi4WriteOnlyMaster_l89 = 1'b1;
+      _zz_when_Axi4WriteOnlyMaster_l93 = 1'b1;
     end
   end
 
@@ -262,46 +262,46 @@ module Stream2Axi4WriteOnlyMasterInterface (
     end
   end
 
-  assign _zz_6 = (_zz_when_Axi4WriteOnlyMaster_l89_2 == 9'h100);
-  assign _zz_7 = (_zz_6 && _zz_when_Axi4WriteOnlyMaster_l89);
+  assign _zz_6 = (_zz_when_Axi4WriteOnlyMaster_l93_2 == 9'h100);
+  assign _zz_7 = (_zz_6 && _zz_when_Axi4WriteOnlyMaster_l93);
   always @(*) begin
     if(_zz_7) begin
-      _zz_when_Axi4WriteOnlyMaster_l89_1 = 9'h0;
+      _zz_when_Axi4WriteOnlyMaster_l93_1 = 9'h0;
     end else begin
-      _zz_when_Axi4WriteOnlyMaster_l89_1 = (_zz_when_Axi4WriteOnlyMaster_l89_2 + _zz__zz_when_Axi4WriteOnlyMaster_l89_1);
+      _zz_when_Axi4WriteOnlyMaster_l93_1 = (_zz_when_Axi4WriteOnlyMaster_l93_2 + _zz__zz_when_Axi4WriteOnlyMaster_l93_1);
     end
     if(_zz_5) begin
-      _zz_when_Axi4WriteOnlyMaster_l89_1 = 9'h0;
+      _zz_when_Axi4WriteOnlyMaster_l93_1 = 9'h0;
     end
   end
 
   always @(*) begin
     s_axis_ready = 1'b0;
-    if(when_Axi4WriteOnlyMaster_l89) begin
+    if(when_Axi4WriteOnlyMaster_l93) begin
       s_axis_ready = streamFifo_2_io_push_ready;
     end
   end
 
   always @(*) begin
     streamFifo_2_io_push_payload = s_axis_payload;
-    if(when_Axi4WriteOnlyMaster_l89) begin
+    if(when_Axi4WriteOnlyMaster_l93) begin
       streamFifo_2_io_push_payload = s_axis_payload;
     end
   end
 
   always @(*) begin
     streamFifo_2_io_push_valid = 1'b0;
-    if(when_Axi4WriteOnlyMaster_l89) begin
+    if(when_Axi4WriteOnlyMaster_l93) begin
       streamFifo_2_io_push_valid = s_axis_valid;
     end
   end
 
-  assign when_Axi4WriteOnlyMaster_l89 = ((_zz_when_Axi4WriteOnlyMaster_l89_2 < _zz_when_Axi4WriteOnlyMaster_l89_3) && startSendSignal);
+  assign when_Axi4WriteOnlyMaster_l93 = ((_zz_when_Axi4WriteOnlyMaster_l93_2 < _zz_when_Axi4WriteOnlyMaster_l93_3) && startSendSignal);
   assign streamFifo_2_io_push_fire = (streamFifo_2_io_push_valid && streamFifo_2_io_push_ready);
   assign axi4Interface_full_b_fire = (m_axi_bvalid && m_axi_bready);
   assign axi4Interface_full_b_fire_1 = (m_axi_bvalid && m_axi_bready);
-  assign when_Axi4WriteOnlyMaster_l115 = (axi4Interface_full_b_fire_1 || axi4Interface_isTransferAfterReset);
-  assign when_Axi4WriteOnlyMaster_l118 = (aresetn && startSendSignal);
+  assign when_Axi4WriteOnlyMaster_l119 = (axi4Interface_full_b_fire_1 || axi4Interface_isTransferAfterReset);
+  assign when_Axi4WriteOnlyMaster_l122 = (aresetn && startSendSignal);
   assign axi4Interface_full_aw_fire = (m_axi_awvalid && m_axi_awready);
   assign m_axi_awvalid = axi4Interface_controlAwValidSignal;
   assign m_axi_awaddr = offset;
@@ -314,26 +314,26 @@ module Stream2Axi4WriteOnlyMasterInterface (
   assign m_axi_awprot = 3'b000;
   always @(*) begin
     m_axi_wvalid = 1'b0;
-    if(when_Axi4WriteOnlyMaster_l152) begin
+    if(when_Axi4WriteOnlyMaster_l156) begin
       m_axi_wvalid = streamFifo_2_io_pop_valid;
     end
   end
 
   always @(*) begin
     m_axi_wdata = streamFifo_2_io_pop_payload;
-    if(when_Axi4WriteOnlyMaster_l152) begin
+    if(when_Axi4WriteOnlyMaster_l156) begin
       m_axi_wdata = streamFifo_2_io_pop_payload;
     end
   end
 
   always @(*) begin
     streamFifo_2_io_pop_ready = 1'b0;
-    if(when_Axi4WriteOnlyMaster_l152) begin
+    if(when_Axi4WriteOnlyMaster_l156) begin
       streamFifo_2_io_pop_ready = m_axi_wready;
     end
   end
 
-  assign when_Axi4WriteOnlyMaster_l152 = ((_zz_m_axi_wlast_2 < _zz_when_Axi4WriteOnlyMaster_l152) && startSendSignal);
+  assign when_Axi4WriteOnlyMaster_l156 = ((_zz_m_axi_wlast_2 < _zz_when_Axi4WriteOnlyMaster_l156) && startSendSignal);
   assign axi4Interface_full_w_fire = (m_axi_wvalid && m_axi_wready);
   assign axi4Interface_full_b_fire_2 = (m_axi_bvalid && m_axi_bready);
   assign m_axi_wstrb = 4'b1111;
@@ -345,21 +345,21 @@ module Stream2Axi4WriteOnlyMasterInterface (
   always @(posedge aclk or negedge aresetn) begin
     if(!aresetn) begin
       _zz_m_axi_wlast_2 <= 9'h0;
-      _zz_when_Axi4WriteOnlyMaster_l89_2 <= 9'h0;
+      _zz_when_Axi4WriteOnlyMaster_l93_2 <= 9'h0;
       axi4Interface_isTransferAfterReset <= 1'b1;
       axi4Interface_lastBurstComplete <= 1'b0;
       axi4Interface_controlAwValidSignal <= 1'b0;
       axi4Interface_controlBReady <= 1'b0;
     end else begin
       _zz_m_axi_wlast_2 <= _zz_m_axi_wlast_1;
-      _zz_when_Axi4WriteOnlyMaster_l89_2 <= _zz_when_Axi4WriteOnlyMaster_l89_1;
+      _zz_when_Axi4WriteOnlyMaster_l93_2 <= _zz_when_Axi4WriteOnlyMaster_l93_1;
       if(aresetn) begin
         axi4Interface_isTransferAfterReset <= 1'b0;
       end
-      if(when_Axi4WriteOnlyMaster_l115) begin
+      if(when_Axi4WriteOnlyMaster_l119) begin
         axi4Interface_lastBurstComplete <= 1'b1;
       end
-      if(when_Axi4WriteOnlyMaster_l118) begin
+      if(when_Axi4WriteOnlyMaster_l122) begin
         if(axi4Interface_full_aw_fire) begin
           axi4Interface_controlAwValidSignal <= 1'b0;
         end
