@@ -12,12 +12,12 @@ import spinal.lib.bus.amba4.axi._
  * @param maxBurstLen  The maximum number of transfer within a burst.
  * @param widthPerData The width of each data from stream interface
  */
-case class Axi4WriteOnlyMaster(addressWidth: Int, maxBurstLen: Int = 256, widthPerData: Int = 32) extends Bundle {
+case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, dataWidth: Int = 32) extends Bundle {
 
   // ********************set the config information*******************
   val config = Axi4Config(
     addressWidth = addressWidth,
-    dataWidth = widthPerData,
+    dataWidth = dataWidth,
     useId = false,
     useLock = false
   )
@@ -25,7 +25,7 @@ case class Axi4WriteOnlyMaster(addressWidth: Int, maxBurstLen: Int = 256, widthP
 
   // *******************declare the interface we need******************
   // dataType define
-  val transferDataType = Bits(widthPerData bits)
+  val transferDataType = Bits(dataWidth bits)
 
   // interface define
   val start = in Bool()

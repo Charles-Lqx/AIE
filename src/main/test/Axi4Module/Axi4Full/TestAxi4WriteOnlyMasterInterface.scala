@@ -5,21 +5,21 @@ import spinal.core.sim._
 import spinal.lib._
 import spinal.lib.bus.amba4.axi._
 
-case class Stream2Axi4WriteOnlyMasterInterface(addressWidth: Int, maxBurstLen: Int = 256, widthPerData: Int = 32) extends Component {
-  val axi4Interface = Axi4WriteOnlyMaster(addressWidth, maxBurstLen, widthPerData)
+case class Stream2Axi4WriteOnlyMasterInterface(addressWidth: Int = 32, maxBurstLen: Int = 256, dataWidth: Int = 32) extends Component {
+  val axi4Interface = Axi4WriteOnlyMaster(addressWidth, maxBurstLen, dataWidth)
   Axi4WriteOnlyMasterSpecRenamer(axi4Interface)
   ClockDomain.current.clock.setName("aclk")
   ClockDomain.current.reset.setName("aresetn")
 }
 
-case class Stream2Axi4WriteOnlyMasterInterfaceAddFifo(addressWidth: Int, maxBurstLen: Int = 256, widthPerData: Int = 32) extends Component {
+case class Stream2Axi4WriteOnlyMasterInterfaceAddFifo(addressWidth: Int = 32, maxBurstLen: Int = 256, dataWidth: Int = 32) extends Component {
   val config = Axi4Config(
     addressWidth = addressWidth,
-    dataWidth = widthPerData,
+    dataWidth = dataWidth,
     useId = false,
     useLock = false
   )
-  val streamInterface = slave Stream Bits(widthPerData bits)
+  val streamInterface = slave Stream Bits(dataWidth bits)
   // rename streamInterface
   val bundleName = streamInterface.getName()
   streamInterface.flatten.foreach { port =>
