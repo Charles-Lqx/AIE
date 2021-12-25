@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.6.1    git head : 3bf789d53b1b5a36974196e2d591342e15ddf28c
 // Component : PingPongBufferWithWriteOnlyMaster
-// Git hash  : 8ef5a9d43cc3f0b27d7cb59fbaaf887d74c01137
+// Git hash  : d81d1ac26c3eeb33b3a06067cad9605790be8c08
 
 `timescale 1ns/1ps 
 
@@ -816,15 +816,15 @@ module PingPongBuffer (
     endcase
   end
 
-  assign when_PingPongBuffer_l155 = (bufferFifoB_io_occupancy == _zz_when_PingPongBuffer_l155);
+  assign when_PingPongBuffer_l155 = (_zz_when_PingPongBuffer_l155 <= bufferFifoB_io_occupancy);
   assign bufferFifoB_io_push_fire = (bufferFifoB_io_push_valid && bufferFifoB_io_push_ready);
   assign when_PingPongBuffer_l159 = (((bufferFifoB_io_occupancy == _zz_when_PingPongBuffer_l159) && bufferFifoB_io_push_fire) && lastBurstCompleteSignal);
   assign when_PingPongBuffer_l167 = ((bufferFifoB_io_occupancy == bufferDepthIn) && lastBurstCompleteSignal);
-  assign when_PingPongBuffer_l202 = (bufferFifoA_io_occupancy == _zz_when_PingPongBuffer_l202);
+  assign when_PingPongBuffer_l202 = (_zz_when_PingPongBuffer_l202 <= bufferFifoA_io_occupancy);
   assign bufferFifoA_io_push_fire = (bufferFifoA_io_push_valid && bufferFifoA_io_push_ready);
   assign when_PingPongBuffer_l206 = (((bufferFifoA_io_occupancy == _zz_when_PingPongBuffer_l206) && bufferFifoA_io_push_fire) && lastBurstCompleteSignal);
   assign when_PingPongBuffer_l214 = ((bufferFifoA_io_occupancy == bufferDepthIn) && lastBurstCompleteSignal);
-  assign when_PingPongBuffer_l108 = (bufferFifoA_io_occupancy == _zz_when_PingPongBuffer_l108);
+  assign when_PingPongBuffer_l108 = (_zz_when_PingPongBuffer_l108 <= bufferFifoA_io_occupancy);
   assign bufferFifoA_io_push_fire_1 = (bufferFifoA_io_push_valid && bufferFifoA_io_push_ready);
   assign when_PingPongBuffer_l111 = ((bufferFifoA_io_occupancy == _zz_when_PingPongBuffer_l111) && bufferFifoA_io_push_fire_1);
   assign currentState = pingPongBufferStateMachine_stateReg;

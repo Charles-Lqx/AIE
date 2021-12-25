@@ -105,7 +105,7 @@ case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Co
           bufferFifoA.io.pop.ready := False
           bufferFifoB.io.pop.ready := False
 
-          when(bufferFifoA.io.occupancy === inputBufferDepth - U(1, 8 bits)) {
+          when(bufferFifoA.io.occupancy >= inputBufferDepth - U(1, 8 bits)) {
             startReceiveResetSignal := True
           }
           when(bufferFifoA.io.occupancy === inputBufferDepth - U(1, 8 bits) && bufferFifoA.io.push.fire) {
@@ -152,7 +152,7 @@ case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Co
           bufferFifoA.io.push.valid := False
           bufferFifoA.io.push.payload := B(0, dataWidth bits)
 
-          when(bufferFifoB.io.occupancy === inputBufferDepth - U(1, 8 bits)) {
+          when(bufferFifoB.io.occupancy >= inputBufferDepth - U(1, 8 bits)) {
             startReceiveResetSignal := True
           }
           when(bufferFifoB.io.occupancy === inputBufferDepth - U(1, 8 bits) && bufferFifoB.io.push.fire
@@ -199,7 +199,7 @@ case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Co
           bufferFifoB.io.push.valid := False
           bufferFifoB.io.push.payload := B(0, dataWidth bits)
 
-          when(bufferFifoA.io.occupancy === inputBufferDepth - U(1, 8 bits)) {
+          when(bufferFifoA.io.occupancy >= inputBufferDepth - U(1, 8 bits)) {
             startReceiveResetSignal := True
           }
           when(bufferFifoA.io.occupancy === inputBufferDepth - U(1, 8 bits) && bufferFifoA.io.push.fire
