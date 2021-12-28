@@ -1,8 +1,8 @@
-// Generator : SpinalHDL v1.6.0    git head : 73c8d8e2b86b45646e9d0b2e729291f2b65e6be3
+// Generator : SpinalHDL v1.6.1    git head : 3bf789d53b1b5a36974196e2d591342e15ddf28c
 // Component : Stream2Axi4WriteOnlyMasterInterfaceAddFifo
-// Git hash  : f36e0def70190b3afb319f09389a7ceaf993600e
+// Git hash  : bcf6aa3771bfd5ca7adaf0601a0e5779037fde65
 
-
+`timescale 1ns/1ps 
 
 module Stream2Axi4WriteOnlyMasterInterfaceAddFifo (
   input               s_axis_valid,
@@ -33,6 +33,7 @@ module Stream2Axi4WriteOnlyMasterInterfaceAddFifo (
   output              transInterrupt,
   input               aclk
 );
+
   wire                axi4Interconnection_s_axis_ready;
   wire                axi4Interconnection_m_axi_awvalid;
   wire       [31:0]   axi4Interconnection_m_axi_awaddr;
@@ -56,46 +57,46 @@ module Stream2Axi4WriteOnlyMasterInterfaceAddFifo (
   wire       [8:0]    fifoInstance_io_availability;
 
   Stream2Axi4WriteOnlyMasterInterface axi4Interconnection (
-    .start             (start                               ), //i
-    .burstLen          (burstLen                            ), //i
-    .offset            (offset                              ), //i
-    .s_axis_valid      (fifoInstance_io_pop_valid           ), //i
-    .s_axis_ready      (axi4Interconnection_s_axis_ready    ), //o
-    .s_axis_payload    (fifoInstance_io_pop_payload         ), //i
-    .m_axi_awvalid     (axi4Interconnection_m_axi_awvalid   ), //o
-    .m_axi_awready     (m_axi_awready                       ), //i
-    .m_axi_awaddr      (axi4Interconnection_m_axi_awaddr    ), //o
-    .m_axi_awregion    (axi4Interconnection_m_axi_awregion  ), //o
-    .m_axi_awlen       (axi4Interconnection_m_axi_awlen     ), //o
-    .m_axi_awsize      (axi4Interconnection_m_axi_awsize    ), //o
-    .m_axi_awburst     (axi4Interconnection_m_axi_awburst   ), //o
-    .m_axi_awcache     (axi4Interconnection_m_axi_awcache   ), //o
-    .m_axi_awqos       (axi4Interconnection_m_axi_awqos     ), //o
-    .m_axi_awprot      (axi4Interconnection_m_axi_awprot    ), //o
-    .m_axi_wvalid      (axi4Interconnection_m_axi_wvalid    ), //o
-    .m_axi_wready      (m_axi_wready                        ), //i
-    .m_axi_wdata       (axi4Interconnection_m_axi_wdata     ), //o
-    .m_axi_wstrb       (axi4Interconnection_m_axi_wstrb     ), //o
-    .m_axi_wlast       (axi4Interconnection_m_axi_wlast     ), //o
-    .m_axi_bvalid      (m_axi_bvalid                        ), //i
-    .m_axi_bready      (axi4Interconnection_m_axi_bready    ), //o
-    .m_axi_bresp       (m_axi_bresp                         ), //i
-    .transInterrupt    (axi4Interconnection_transInterrupt  ), //o
-    .aresetn           (aresetn                             ), //i
-    .aclk              (aclk                                )  //i
+    .start             (start                                    ), //i
+    .burstLen          (burstLen[7:0]                            ), //i
+    .offset            (offset[31:0]                             ), //i
+    .s_axis_valid      (fifoInstance_io_pop_valid                ), //i
+    .s_axis_ready      (axi4Interconnection_s_axis_ready         ), //o
+    .s_axis_payload    (fifoInstance_io_pop_payload[31:0]        ), //i
+    .m_axi_awvalid     (axi4Interconnection_m_axi_awvalid        ), //o
+    .m_axi_awready     (m_axi_awready                            ), //i
+    .m_axi_awaddr      (axi4Interconnection_m_axi_awaddr[31:0]   ), //o
+    .m_axi_awregion    (axi4Interconnection_m_axi_awregion[3:0]  ), //o
+    .m_axi_awlen       (axi4Interconnection_m_axi_awlen[7:0]     ), //o
+    .m_axi_awsize      (axi4Interconnection_m_axi_awsize[2:0]    ), //o
+    .m_axi_awburst     (axi4Interconnection_m_axi_awburst[1:0]   ), //o
+    .m_axi_awcache     (axi4Interconnection_m_axi_awcache[3:0]   ), //o
+    .m_axi_awqos       (axi4Interconnection_m_axi_awqos[3:0]     ), //o
+    .m_axi_awprot      (axi4Interconnection_m_axi_awprot[2:0]    ), //o
+    .m_axi_wvalid      (axi4Interconnection_m_axi_wvalid         ), //o
+    .m_axi_wready      (m_axi_wready                             ), //i
+    .m_axi_wdata       (axi4Interconnection_m_axi_wdata[31:0]    ), //o
+    .m_axi_wstrb       (axi4Interconnection_m_axi_wstrb[3:0]     ), //o
+    .m_axi_wlast       (axi4Interconnection_m_axi_wlast          ), //o
+    .m_axi_bvalid      (m_axi_bvalid                             ), //i
+    .m_axi_bready      (axi4Interconnection_m_axi_bready         ), //o
+    .m_axi_bresp       (m_axi_bresp[1:0]                         ), //i
+    .transInterrupt    (axi4Interconnection_transInterrupt       ), //o
+    .aresetn           (aresetn                                  ), //i
+    .aclk              (aclk                                     )  //i
   );
   StreamFifo fifoInstance (
-    .io_push_valid      (s_axis_valid                      ), //i
-    .io_push_ready      (fifoInstance_io_push_ready        ), //o
-    .io_push_payload    (s_axis_payload                    ), //i
-    .io_pop_valid       (fifoInstance_io_pop_valid         ), //o
-    .io_pop_ready       (axi4Interconnection_s_axis_ready  ), //i
-    .io_pop_payload     (fifoInstance_io_pop_payload       ), //o
-    .io_flush           (1'b0                              ), //i
-    .io_occupancy       (fifoInstance_io_occupancy         ), //o
-    .io_availability    (fifoInstance_io_availability      ), //o
-    .aclk               (aclk                              ), //i
-    .aresetn            (aresetn                           )  //i
+    .io_push_valid      (s_axis_valid                       ), //i
+    .io_push_ready      (fifoInstance_io_push_ready         ), //o
+    .io_push_payload    (s_axis_payload[31:0]               ), //i
+    .io_pop_valid       (fifoInstance_io_pop_valid          ), //o
+    .io_pop_ready       (axi4Interconnection_s_axis_ready   ), //i
+    .io_pop_payload     (fifoInstance_io_pop_payload[31:0]  ), //o
+    .io_flush           (1'b0                               ), //i
+    .io_occupancy       (fifoInstance_io_occupancy[8:0]     ), //o
+    .io_availability    (fifoInstance_io_availability[8:0]  ), //o
+    .aclk               (aclk                               ), //i
+    .aresetn            (aresetn                            )  //i
   );
   assign s_axis_ready = fifoInstance_io_push_ready;
   assign transInterrupt = axi4Interconnection_transInterrupt;
@@ -147,6 +148,7 @@ module Stream2Axi4WriteOnlyMasterInterface (
   input               aresetn,
   input               aclk
 );
+
   reg                 streamFifo_2_io_push_valid;
   reg        [31:0]   streamFifo_2_io_push_payload;
   reg                 streamFifo_2_io_pop_ready;
@@ -207,17 +209,17 @@ module Stream2Axi4WriteOnlyMasterInterface (
   assign _zz_m_axi_wlast_4 = (burstLen - 8'h01);
   assign _zz_m_axi_wlast_3 = {1'd0, _zz_m_axi_wlast_4};
   StreamFifo streamFifo_2 (
-    .io_push_valid      (streamFifo_2_io_push_valid    ), //i
-    .io_push_ready      (streamFifo_2_io_push_ready    ), //o
-    .io_push_payload    (streamFifo_2_io_push_payload  ), //i
-    .io_pop_valid       (streamFifo_2_io_pop_valid     ), //o
-    .io_pop_ready       (streamFifo_2_io_pop_ready     ), //i
-    .io_pop_payload     (streamFifo_2_io_pop_payload   ), //o
-    .io_flush           (1'b0                          ), //i
-    .io_occupancy       (streamFifo_2_io_occupancy     ), //o
-    .io_availability    (streamFifo_2_io_availability  ), //o
-    .aclk               (aclk                          ), //i
-    .aresetn            (aresetn                       )  //i
+    .io_push_valid      (streamFifo_2_io_push_valid          ), //i
+    .io_push_ready      (streamFifo_2_io_push_ready          ), //o
+    .io_push_payload    (streamFifo_2_io_push_payload[31:0]  ), //i
+    .io_pop_valid       (streamFifo_2_io_pop_valid           ), //o
+    .io_pop_ready       (streamFifo_2_io_pop_ready           ), //i
+    .io_pop_payload     (streamFifo_2_io_pop_payload[31:0]   ), //o
+    .io_flush           (1'b0                                ), //i
+    .io_occupancy       (streamFifo_2_io_occupancy[8:0]      ), //o
+    .io_availability    (streamFifo_2_io_availability[8:0]   ), //o
+    .aclk               (aclk                                ), //i
+    .aresetn            (aresetn                             )  //i
   );
   always @(*) begin
     _zz_m_axi_wlast = 1'b0;
@@ -409,6 +411,7 @@ module StreamFifo (
   input               aclk,
   input               aresetn
 );
+
   reg        [31:0]   _zz_logic_ram_port0;
   wire       [7:0]    _zz_logic_pushPtr_valueNext;
   wire       [0:0]    _zz_logic_pushPtr_valueNext_1;
@@ -437,7 +440,7 @@ module StreamFifo (
   wire                logic_empty;
   wire                logic_full;
   reg                 _zz_io_pop_valid;
-  wire                when_Stream_l933;
+  wire                when_Stream_l946;
   wire       [7:0]    logic_ptrDif;
   reg [31:0] logic_ram [0:255];
 
@@ -520,7 +523,7 @@ module StreamFifo (
   assign io_push_ready = (! logic_full);
   assign io_pop_valid = ((! logic_empty) && (! (_zz_io_pop_valid && (! logic_full))));
   assign io_pop_payload = _zz_logic_ram_port0;
-  assign when_Stream_l933 = (logic_pushing != logic_popping);
+  assign when_Stream_l946 = (logic_pushing != logic_popping);
   assign logic_ptrDif = (logic_pushPtr_value - logic_popPtr_value);
   assign io_occupancy = {(logic_risingOccupancy && logic_ptrMatch),logic_ptrDif};
   assign io_availability = {((! logic_risingOccupancy) && logic_ptrMatch),_zz_io_availability};
@@ -534,7 +537,7 @@ module StreamFifo (
       logic_pushPtr_value <= logic_pushPtr_valueNext;
       logic_popPtr_value <= logic_popPtr_valueNext;
       _zz_io_pop_valid <= (logic_popPtr_valueNext == logic_pushPtr_value);
-      if(when_Stream_l933) begin
+      if(when_Stream_l946) begin
         logic_risingOccupancy <= logic_pushing;
       end
       if(io_flush) begin

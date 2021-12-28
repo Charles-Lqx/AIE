@@ -5,6 +5,7 @@ import spinal.core.sim._
 import spinal.lib._
 import spinal.lib.bus.amba4.axi._
 
+
 case class Stream2Axi4WriteOnlyMasterInterface(addressWidth: Int = 32, maxBurstLen: Int = 256, dataWidth: Int = 32) extends Component {
   val axi4Interface = Axi4WriteOnlyMaster(addressWidth, maxBurstLen, dataWidth)
   Axi4WriteOnlyMasterSpecRenamer(axi4Interface)
@@ -28,8 +29,8 @@ case class Stream2Axi4WriteOnlyMasterInterfaceAddFifo(addressWidth: Int = 32, ma
   val axi4WriteOnlyMasterInterface = master(Axi4WriteOnly(config))
   Axi4WriteOnlyMasterSpecRenamer(axi4WriteOnlyMasterInterface)
 
-  val axi4Interconnection = Stream2Axi4WriteOnlyMasterInterface(addressWidth, maxBurstLen, widthPerData)
-  val fifoInstance = StreamFifo(Bits(widthPerData bits), maxBurstLen)
+  val axi4Interconnection = Stream2Axi4WriteOnlyMasterInterface(addressWidth, maxBurstLen, dataWidth)
+  val fifoInstance = StreamFifo(Bits(dataWidth bits), maxBurstLen)
   val start = in Bool()
   val burstLen = in UInt (8 bits)
   val offset = in UInt (addressWidth bits)
@@ -54,7 +55,9 @@ object TestAxi4WriteOnlyMasterInterface extends App {
 
   SimConfig.withWave.allOptimisation
     .withConfig(SpinalConfig(defaultConfigForClockDomains = ClockDomainConfig(resetActiveLevel = LOW)))
-    .compile(Stream2Axi4WriteOnlyMasterInterfaceAddFifo(32).setDefinitionName("Stream2Axi4WriteOnlyMasterInterfaceAddFifo"))
+    .compile(
+      Stream2Axi4WriteOnlyMasterInterfaceAddFifo(32).setDefinitionName("Stream2Axi4WriteOnlyMasterInterfaceAddFifo")
+    )
     .doSim { dut =>
 
       val testCase = ArrayBuffer[BigInt]()
@@ -117,9 +120,12 @@ object TestAxi4WriteOnlyMasterInterface extends App {
         if (i != 100) {
           doSim()
         } else {
-          println(s"the testCase is :${testCase.mkString(",")}")
-          println(s"the writeData is ${writeData.mkString(",")}")
+
         }
+        println(s"the testCase is :${testCase.mkString(",")}")
+        println(s"the writeData is ${writeData.mkString(",")}")
+        println(testCase.size)
+        println(writeData.size)
       }
 
     }
