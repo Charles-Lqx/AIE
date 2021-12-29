@@ -90,9 +90,9 @@ object TestAxi4WriteOnlyMasterInterface extends App {
         val readySignal = Random.nextBoolean()
         if (dut.axi4WriteOnlyMasterInterface.b.valid.toBoolean && dut.axi4WriteOnlyMasterInterface.b.ready.toBoolean) {
           dut.offset #= Random.nextInt(256)
-          sleep(20)
-          dut.start #= true
           sleep(5)
+          dut.start #= true
+          sleep(4)
           dut.start #= false
 
         }

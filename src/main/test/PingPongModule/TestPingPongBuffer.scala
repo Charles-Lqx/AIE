@@ -92,7 +92,7 @@ object TestPingPongBuffer extends App {
         if (dut.interruptOut.toBoolean) {
           sleep(5)
           dut.startIn #= true
-          sleep(5)
+          sleep(4)
           dut.startIn #= false
         }
         dut.streamIn.valid #= Random.nextBoolean()
