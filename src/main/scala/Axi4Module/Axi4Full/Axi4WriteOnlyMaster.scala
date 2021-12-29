@@ -4,7 +4,7 @@ import spinal.core._
 import spinal.lib._
 import spinal.lib.bus.amba4.axi._
 
-
+import spinal.core.sim._
 /**
  * this is a stream to axi4 interface define
  *
@@ -80,7 +80,10 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
   // record the times of handshake between streamInterface and streamDataBuffer
   val getDataHandshakeCounter: Counter = Counter(0, maxBurstLen)
 
-  // *************stream to Axi4Module.Axi4Full.Axi4WriteOnlyMaster channel map****************
+  // register the burstLength
+  val burstLengthReg = RegNext(burstLength) init U(maxBurstLen - 1 , 8 bits)
+
+  // *************stream to Axi4WriteOnlyMaster channel map****************
 
 
   // define a streamFifo as buffer for storing the stream data
@@ -90,7 +93,7 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
   StreamInterface.ready := False
   streamDataBuffer.io.push.payload := StreamInterface.payload
   streamDataBuffer.io.push.valid := False
-  when(getDataHandshakeCounter < burstLength && startSendArea.startSendSignal) {
+  when(getDataHandshakeCounter < burstLengthReg && startSendArea.startSendSignal) {
     StreamInterface.ready := streamDataBuffer.io.push.ready
     streamDataBuffer.io.push.payload := StreamInterface.payload
     streamDataBuffer.io.push.valid := StreamInterface.valid
@@ -140,7 +143,7 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
 
   writeOnlyMasterInterface.aw.payload.region := B(0, 4 bits)
   writeOnlyMasterInterface.aw.payload.burst := INCR
-  writeOnlyMasterInterface.aw.payload.len := burstLength - U(1, 8 bits)
+  writeOnlyMasterInterface.aw.payload.len := burstLengthReg - U(1, 8 bits)
   writeOnlyMasterInterface.aw.payload.size := U(log2Up(config.bytePerWord), 3 bits)
   writeOnlyMasterInterface.aw.payload.cache := B(0, 4 bits)
   writeOnlyMasterInterface.aw.payload.qos := B(0, 4 bits)
@@ -153,7 +156,7 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
   writeOnlyMasterInterface.w.valid := False
   writeOnlyMasterInterface.w.payload.data := streamDataBuffer.io.pop.payload
   streamDataBuffer.io.pop.ready := False
-  when(writeHandshakeCounter < burstLength && startSendArea.startSendSignal) {
+  when(writeHandshakeCounter < burstLengthReg && startSendArea.startSendSignal) {
     streamDataBuffer.io.pop.ready := writeOnlyMasterInterface.w.ready
     writeOnlyMasterInterface.w.valid := streamDataBuffer.io.pop.valid
     writeOnlyMasterInterface.w.payload.data := streamDataBuffer.io.pop.payload
@@ -169,7 +172,7 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
 
   // default setting is not use mask with write data
   writeOnlyMasterInterface.w.setStrb()
-  writeOnlyMasterInterface.w.last := writeHandshakeCounter === burstLength - U(1, 8 bits)
+  writeOnlyMasterInterface.w.last := writeHandshakeCounter === burstLengthReg - U(1, 8 bits)
 
 
   // ***************************The write respond map***************************

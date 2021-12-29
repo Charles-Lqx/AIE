@@ -40,6 +40,9 @@ case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Co
   def inputInterruptSignal: Bool = interruptIn
 
 
+  // register the inputBufferDepth
+  val bufferDepthReg = RegNext(inputBufferDepth) init U(bufferSize - 1, 8 bits)
+
   // define two streamFifo for store input data as buffer function
   val bufferFifoA, bufferFifoB = StreamFifo(Bits(dataWidth bits), bufferSize)
 
@@ -52,8 +55,8 @@ case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Co
   val isReadBufferA = RegInit(True)
 
   // according to the inputBufferDepth, define a signal for indicating whether willOverflow
-  val inCounterWillOverflow = inCounter === inputBufferDepth - U(1).resized && inputStreamInterface.fire
-  val outCounterWillOverflow = outCounter === inputBufferDepth - U(1).resized && outputStreamInterface.fire
+  val inCounterWillOverflow = inCounter === bufferDepthReg - U(1).resized && inputStreamInterface.fire
+  val outCounterWillOverflow = outCounter === bufferDepthReg - U(1).resized && outputStreamInterface.fire
 
   when(inputStreamInterface.fire){inCounter.increment()}
   when(outputStreamInterface.fire){outCounter.increment()}
@@ -82,7 +85,7 @@ case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Co
   }.setName("")
   startReceiveArea.startReceiveSignal.addTag(crossClockDomain)
 
-  val realStartSignal = startReceiveArea.startReceiveSignal || inCounter === inputBufferDepth - U(1).resized
+  val realStartSignal = startReceiveArea.startReceiveSignal || startReceiveArea.startReceiveSignal.fall()
 
   // define this clockDomain for monitor whether last burst complete(can start next burst)
   val lastBurstCompleteClockDomainConfig = ClockDomainConfig(clockEdge = RISING,
@@ -190,7 +193,7 @@ case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Co
   // get stateMachine's state for outside
   // addPrePopTask(() => currentState.assignFromBits(pingPongBufferStateMachine.stateReg.asBits))
 
-  outputBufferDepth := inputBufferDepth
+  outputBufferDepth := bufferDepthReg
 
   val outputStartSignalState = RegInit(False)
   when(isAfterResetState){outputStartSignalState := True}.otherwise(outputStartSignalState := lastBurstCompleteArea.lastBurstCompleteSignal)

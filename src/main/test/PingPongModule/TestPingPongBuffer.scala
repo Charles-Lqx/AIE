@@ -123,9 +123,8 @@ object TestPingPongBuffer extends App {
         if (i != 100) {
           doSim()
         }
-        println(s"the testCase is :${testCase.mkString(",")}")
-        println(s"the writeData is ${writeData.mkString(",")}")
-
       }
+      println(s"the testCase is :${testCase.mkString(",")}")
+      println(s"the writeData is ${writeData.mkString(",")}")
     }
 }

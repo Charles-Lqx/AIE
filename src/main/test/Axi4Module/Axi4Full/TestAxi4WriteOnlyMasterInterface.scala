@@ -117,16 +117,12 @@ object TestAxi4WriteOnlyMasterInterface extends App {
       }
 
       for (i <- 0 to 256 * 10) {
-        if (i != 100) {
+        if (i != 256 * 10) {
           doSim()
-        } else {
-
         }
-        println(s"the testCase is :${testCase.mkString(",")}")
-        println(s"the writeData is ${writeData.mkString(",")}")
-        println(testCase.size)
-        println(writeData.size)
       }
+      println(s"the testCase is :${testCase.mkString(",")}")
+      println(s"the writeData is ${writeData.mkString(",")}")
 
     }
 }

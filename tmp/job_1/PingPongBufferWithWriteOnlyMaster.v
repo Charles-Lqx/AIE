@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.6.1    git head : 3bf789d53b1b5a36974196e2d591342e15ddf28c
 // Component : PingPongBufferWithWriteOnlyMaster
-// Git hash  : bcf6aa3771bfd5ca7adaf0601a0e5779037fde65
+// Git hash  : ae620cf14419ef2a83981da483ef4b5621dcf9ee
 
 `timescale 1ns/1ps 
 
@@ -161,10 +161,10 @@ module Stream2Axi4WriteOnlyMasterInterface (
   wire       [8:0]    streamFifo_3_io_availability;
   wire       [8:0]    _zz__zz_m_axi_wlast_1;
   wire       [0:0]    _zz__zz_m_axi_wlast_1_1;
-  wire       [8:0]    _zz__zz_when_Axi4WriteOnlyMaster_l93_1;
-  wire       [0:0]    _zz__zz_when_Axi4WriteOnlyMaster_l93_1_1;
-  wire       [8:0]    _zz_when_Axi4WriteOnlyMaster_l93_3;
-  wire       [8:0]    _zz_when_Axi4WriteOnlyMaster_l156;
+  wire       [8:0]    _zz__zz_when_Axi4WriteOnlyMaster_l96_1;
+  wire       [0:0]    _zz__zz_when_Axi4WriteOnlyMaster_l96_1_1;
+  wire       [8:0]    _zz_when_Axi4WriteOnlyMaster_l96_3;
+  wire       [8:0]    _zz_when_Axi4WriteOnlyMaster_l159;
   wire       [8:0]    _zz_m_axi_wlast_3;
   wire       [7:0]    _zz_m_axi_wlast_4;
   wire       [31:0]   axi4Interface_transferDataType;
@@ -178,23 +178,24 @@ module Stream2Axi4WriteOnlyMasterInterface (
   wire                axi4Interface_resetStartSendSignal;
   wire                _zz_4;
   (* async_reg = "true" *) reg                 startSendSignal;
-  reg                 _zz_when_Axi4WriteOnlyMaster_l93;
+  reg                 _zz_when_Axi4WriteOnlyMaster_l96;
   reg                 _zz_5;
-  reg        [8:0]    _zz_when_Axi4WriteOnlyMaster_l93_1;
-  reg        [8:0]    _zz_when_Axi4WriteOnlyMaster_l93_2;
+  reg        [8:0]    _zz_when_Axi4WriteOnlyMaster_l96_1;
+  reg        [8:0]    _zz_when_Axi4WriteOnlyMaster_l96_2;
   wire                _zz_6;
   wire                _zz_7;
-  wire                when_Axi4WriteOnlyMaster_l93;
+  reg        [7:0]    burstLengthReg;
+  wire                when_Axi4WriteOnlyMaster_l96;
   wire                streamFifo_3_io_push_fire;
   wire                axi4Interface_full_b_fire;
   reg                 axi4Interface_isTransferAfterReset;
   wire                axi4Interface_full_b_fire_1;
-  wire                when_Axi4WriteOnlyMaster_l119;
+  wire                when_Axi4WriteOnlyMaster_l122;
   reg                 axi4Interface_lastBurstComplete;
   reg                 axi4Interface_controlAwValidSignal;
-  wire                when_Axi4WriteOnlyMaster_l122;
+  wire                when_Axi4WriteOnlyMaster_l125;
   wire                axi4Interface_full_aw_fire;
-  wire                when_Axi4WriteOnlyMaster_l156;
+  wire                when_Axi4WriteOnlyMaster_l159;
   wire                axi4Interface_full_w_fire;
   wire                axi4Interface_full_b_fire_2;
   reg                 axi4Interface_controlBReady;
@@ -204,11 +205,11 @@ module Stream2Axi4WriteOnlyMasterInterface (
 
   assign _zz__zz_m_axi_wlast_1_1 = _zz_m_axi_wlast;
   assign _zz__zz_m_axi_wlast_1 = {8'd0, _zz__zz_m_axi_wlast_1_1};
-  assign _zz__zz_when_Axi4WriteOnlyMaster_l93_1_1 = _zz_when_Axi4WriteOnlyMaster_l93;
-  assign _zz__zz_when_Axi4WriteOnlyMaster_l93_1 = {8'd0, _zz__zz_when_Axi4WriteOnlyMaster_l93_1_1};
-  assign _zz_when_Axi4WriteOnlyMaster_l93_3 = {1'd0, burstLen};
-  assign _zz_when_Axi4WriteOnlyMaster_l156 = {1'd0, burstLen};
-  assign _zz_m_axi_wlast_4 = (burstLen - 8'h01);
+  assign _zz__zz_when_Axi4WriteOnlyMaster_l96_1_1 = _zz_when_Axi4WriteOnlyMaster_l96;
+  assign _zz__zz_when_Axi4WriteOnlyMaster_l96_1 = {8'd0, _zz__zz_when_Axi4WriteOnlyMaster_l96_1_1};
+  assign _zz_when_Axi4WriteOnlyMaster_l96_3 = {1'd0, burstLengthReg};
+  assign _zz_when_Axi4WriteOnlyMaster_l159 = {1'd0, burstLengthReg};
+  assign _zz_m_axi_wlast_4 = (burstLengthReg - 8'h01);
   assign _zz_m_axi_wlast_3 = {1'd0, _zz_m_axi_wlast_4};
   StreamFifo streamFifo_3 (
     .io_push_valid      (streamFifo_3_io_push_valid          ), //i
@@ -253,9 +254,9 @@ module Stream2Axi4WriteOnlyMasterInterface (
   assign axi4Interface_resetStartSendSignal = ((! m_axi_wlast) && m_axi_wlast_regNext);
   assign _zz_4 = (axi4Interface_resetStartSendSignal || (! aresetn));
   always @(*) begin
-    _zz_when_Axi4WriteOnlyMaster_l93 = 1'b0;
+    _zz_when_Axi4WriteOnlyMaster_l96 = 1'b0;
     if(streamFifo_3_io_push_fire) begin
-      _zz_when_Axi4WriteOnlyMaster_l93 = 1'b1;
+      _zz_when_Axi4WriteOnlyMaster_l96 = 1'b1;
     end
   end
 
@@ -266,78 +267,78 @@ module Stream2Axi4WriteOnlyMasterInterface (
     end
   end
 
-  assign _zz_6 = (_zz_when_Axi4WriteOnlyMaster_l93_2 == 9'h100);
-  assign _zz_7 = (_zz_6 && _zz_when_Axi4WriteOnlyMaster_l93);
+  assign _zz_6 = (_zz_when_Axi4WriteOnlyMaster_l96_2 == 9'h100);
+  assign _zz_7 = (_zz_6 && _zz_when_Axi4WriteOnlyMaster_l96);
   always @(*) begin
     if(_zz_7) begin
-      _zz_when_Axi4WriteOnlyMaster_l93_1 = 9'h0;
+      _zz_when_Axi4WriteOnlyMaster_l96_1 = 9'h0;
     end else begin
-      _zz_when_Axi4WriteOnlyMaster_l93_1 = (_zz_when_Axi4WriteOnlyMaster_l93_2 + _zz__zz_when_Axi4WriteOnlyMaster_l93_1);
+      _zz_when_Axi4WriteOnlyMaster_l96_1 = (_zz_when_Axi4WriteOnlyMaster_l96_2 + _zz__zz_when_Axi4WriteOnlyMaster_l96_1);
     end
     if(_zz_5) begin
-      _zz_when_Axi4WriteOnlyMaster_l93_1 = 9'h0;
+      _zz_when_Axi4WriteOnlyMaster_l96_1 = 9'h0;
     end
   end
 
   always @(*) begin
     s_axis_ready = 1'b0;
-    if(when_Axi4WriteOnlyMaster_l93) begin
+    if(when_Axi4WriteOnlyMaster_l96) begin
       s_axis_ready = streamFifo_3_io_push_ready;
     end
   end
 
   always @(*) begin
     streamFifo_3_io_push_payload = s_axis_payload;
-    if(when_Axi4WriteOnlyMaster_l93) begin
+    if(when_Axi4WriteOnlyMaster_l96) begin
       streamFifo_3_io_push_payload = s_axis_payload;
     end
   end
 
   always @(*) begin
     streamFifo_3_io_push_valid = 1'b0;
-    if(when_Axi4WriteOnlyMaster_l93) begin
+    if(when_Axi4WriteOnlyMaster_l96) begin
       streamFifo_3_io_push_valid = s_axis_valid;
     end
   end
 
-  assign when_Axi4WriteOnlyMaster_l93 = ((_zz_when_Axi4WriteOnlyMaster_l93_2 < _zz_when_Axi4WriteOnlyMaster_l93_3) && startSendSignal);
+  assign when_Axi4WriteOnlyMaster_l96 = ((_zz_when_Axi4WriteOnlyMaster_l96_2 < _zz_when_Axi4WriteOnlyMaster_l96_3) && startSendSignal);
   assign streamFifo_3_io_push_fire = (streamFifo_3_io_push_valid && streamFifo_3_io_push_ready);
   assign axi4Interface_full_b_fire = (m_axi_bvalid && m_axi_bready);
   assign axi4Interface_full_b_fire_1 = (m_axi_bvalid && m_axi_bready);
-  assign when_Axi4WriteOnlyMaster_l119 = (axi4Interface_full_b_fire_1 || axi4Interface_isTransferAfterReset);
-  assign when_Axi4WriteOnlyMaster_l122 = (aresetn && startSendSignal);
+  assign when_Axi4WriteOnlyMaster_l122 = (axi4Interface_full_b_fire_1 || axi4Interface_isTransferAfterReset);
+  assign when_Axi4WriteOnlyMaster_l125 = (aresetn && startSendSignal);
   assign axi4Interface_full_aw_fire = (m_axi_awvalid && m_axi_awready);
   assign m_axi_awvalid = axi4Interface_controlAwValidSignal;
   assign m_axi_awaddr = offset;
   assign m_axi_awregion = 4'b0000;
   assign m_axi_awburst = 2'b01;
-  assign m_axi_awlen = (burstLen - 8'h01);
+  assign m_axi_awlen = (burstLengthReg - 8'h01);
   assign m_axi_awsize = 3'b010;
   assign m_axi_awcache = 4'b0000;
   assign m_axi_awqos = 4'b0000;
   assign m_axi_awprot = 3'b000;
   always @(*) begin
     m_axi_wvalid = 1'b0;
-    if(when_Axi4WriteOnlyMaster_l156) begin
+    if(when_Axi4WriteOnlyMaster_l159) begin
       m_axi_wvalid = streamFifo_3_io_pop_valid;
     end
   end
 
   always @(*) begin
     m_axi_wdata = streamFifo_3_io_pop_payload;
-    if(when_Axi4WriteOnlyMaster_l156) begin
+    if(when_Axi4WriteOnlyMaster_l159) begin
       m_axi_wdata = streamFifo_3_io_pop_payload;
     end
   end
 
   always @(*) begin
     streamFifo_3_io_pop_ready = 1'b0;
-    if(when_Axi4WriteOnlyMaster_l156) begin
+    if(when_Axi4WriteOnlyMaster_l159) begin
       streamFifo_3_io_pop_ready = m_axi_wready;
     end
   end
 
-  assign when_Axi4WriteOnlyMaster_l156 = ((_zz_m_axi_wlast_2 < _zz_when_Axi4WriteOnlyMaster_l156) && startSendSignal);
+  assign when_Axi4WriteOnlyMaster_l159 = ((_zz_m_axi_wlast_2 < _zz_when_Axi4WriteOnlyMaster_l159) && startSendSignal);
   assign axi4Interface_full_w_fire = (m_axi_wvalid && m_axi_wready);
   assign axi4Interface_full_b_fire_2 = (m_axi_bvalid && m_axi_bready);
   assign m_axi_wstrb = 4'b1111;
@@ -349,21 +350,23 @@ module Stream2Axi4WriteOnlyMasterInterface (
   always @(posedge aclk or negedge aresetn) begin
     if(!aresetn) begin
       _zz_m_axi_wlast_2 <= 9'h0;
-      _zz_when_Axi4WriteOnlyMaster_l93_2 <= 9'h0;
+      _zz_when_Axi4WriteOnlyMaster_l96_2 <= 9'h0;
+      burstLengthReg <= 8'hff;
       axi4Interface_isTransferAfterReset <= 1'b1;
       axi4Interface_lastBurstComplete <= 1'b0;
       axi4Interface_controlAwValidSignal <= 1'b0;
       axi4Interface_controlBReady <= 1'b0;
     end else begin
       _zz_m_axi_wlast_2 <= _zz_m_axi_wlast_1;
-      _zz_when_Axi4WriteOnlyMaster_l93_2 <= _zz_when_Axi4WriteOnlyMaster_l93_1;
+      _zz_when_Axi4WriteOnlyMaster_l96_2 <= _zz_when_Axi4WriteOnlyMaster_l96_1;
+      burstLengthReg <= burstLen;
       if(aresetn) begin
         axi4Interface_isTransferAfterReset <= 1'b0;
       end
-      if(when_Axi4WriteOnlyMaster_l119) begin
+      if(when_Axi4WriteOnlyMaster_l122) begin
         axi4Interface_lastBurstComplete <= 1'b1;
       end
-      if(when_Axi4WriteOnlyMaster_l122) begin
+      if(when_Axi4WriteOnlyMaster_l125) begin
         if(axi4Interface_full_aw_fire) begin
           axi4Interface_controlAwValidSignal <= 1'b0;
         end
@@ -447,9 +450,7 @@ module PingPongBuffer (
   wire       [7:0]    _zz_outCounterWillOverflow;
   wire       [7:0]    _zz_outCounterWillOverflow_1;
   wire       [0:0]    _zz_outCounterWillOverflow_2;
-  wire       [7:0]    _zz_realStartSignal;
-  wire       [7:0]    _zz_realStartSignal_1;
-  wire       [0:0]    _zz_realStartSignal_2;
+  reg        [7:0]    bufferDepthReg;
   reg                 inCounter_willIncrement;
   reg                 inCounter_willClear;
   reg        [7:0]    inCounter_valueNext;
@@ -473,6 +474,7 @@ module PingPongBuffer (
   reg                 startReceiveResetSignal;
   wire                _zz_1;
   (* async_reg = "true" *) reg                 startReceiveSignal;
+  reg                 startReceiveSignal_regNext;
   wire                realStartSignal;
   wire                _zz_2;
   (* async_reg = "true" *) reg                 lastBurstCompleteSignal;
@@ -486,13 +488,13 @@ module PingPongBuffer (
   reg        [1:0]    pingPongBufferStateMachine_stateNext;
   wire                _zz_when_StateMachine_l219;
   wire                _zz_when_StateMachine_l219_1;
-  wire                when_PingPongBuffer_l135;
-  wire                when_PingPongBuffer_l142;
-  wire                when_PingPongBuffer_l155;
-  wire                when_PingPongBuffer_l164;
+  wire                when_PingPongBuffer_l138;
+  wire                when_PingPongBuffer_l145;
+  wire                when_PingPongBuffer_l158;
   wire                when_PingPongBuffer_l167;
-  wire                when_PingPongBuffer_l168;
-  wire                when_PingPongBuffer_l179;
+  wire                when_PingPongBuffer_l170;
+  wire                when_PingPongBuffer_l171;
+  wire                when_PingPongBuffer_l182;
   wire                when_StateMachine_l219;
   wire                when_StateMachine_l219_1;
   wire                when_StateMachine_l235;
@@ -506,15 +508,12 @@ module PingPongBuffer (
   assign _zz_inCounter_valueNext = {7'd0, _zz_inCounter_valueNext_1};
   assign _zz_outCounter_valueNext_1 = outCounter_willIncrement;
   assign _zz_outCounter_valueNext = {7'd0, _zz_outCounter_valueNext_1};
-  assign _zz_inCounterWillOverflow = (bufferDepthIn - _zz_inCounterWillOverflow_1);
+  assign _zz_inCounterWillOverflow = (bufferDepthReg - _zz_inCounterWillOverflow_1);
   assign _zz_inCounterWillOverflow_2 = 1'b1;
   assign _zz_inCounterWillOverflow_1 = {7'd0, _zz_inCounterWillOverflow_2};
-  assign _zz_outCounterWillOverflow = (bufferDepthIn - _zz_outCounterWillOverflow_1);
+  assign _zz_outCounterWillOverflow = (bufferDepthReg - _zz_outCounterWillOverflow_1);
   assign _zz_outCounterWillOverflow_2 = 1'b1;
   assign _zz_outCounterWillOverflow_1 = {7'd0, _zz_outCounterWillOverflow_2};
-  assign _zz_realStartSignal = (bufferDepthIn - _zz_realStartSignal_1);
-  assign _zz_realStartSignal_2 = 1'b1;
-  assign _zz_realStartSignal_1 = {7'd0, _zz_realStartSignal_2};
   StreamFifo bufferFifoA (
     .io_push_valid      (bufferFifoA_io_push_valid          ), //i
     .io_push_ready      (bufferFifoA_io_push_ready          ), //o
@@ -620,7 +619,7 @@ module PingPongBuffer (
       pingPongBufferStateMachine_enumDef_EMPTY : begin
       end
       pingPongBufferStateMachine_enumDef_HALF : begin
-        if(when_PingPongBuffer_l155) begin
+        if(when_PingPongBuffer_l158) begin
           startReceiveResetSignal = 1'b1;
         end
       end
@@ -638,18 +637,18 @@ module PingPongBuffer (
   end
 
   assign _zz_1 = ((! aresetn) || startReceiveResetSignal);
-  assign realStartSignal = (startReceiveSignal || (inCounter_value == _zz_realStartSignal));
+  assign realStartSignal = (startReceiveSignal || ((! startReceiveSignal) && startReceiveSignal_regNext));
   assign _zz_2 = ((! aresetn) || startOut);
   always @(*) begin
     bufferFifoA_io_push_valid = 1'b0;
     case(pingPongBufferStateMachine_stateReg)
       pingPongBufferStateMachine_enumDef_EMPTY : begin
-        if(when_PingPongBuffer_l135) begin
+        if(when_PingPongBuffer_l138) begin
           bufferFifoA_io_push_valid = s_axis_valid;
         end
       end
       pingPongBufferStateMachine_enumDef_HALF : begin
-        if(when_PingPongBuffer_l167) begin
+        if(when_PingPongBuffer_l170) begin
           bufferFifoA_io_push_valid = s_axis_valid;
         end
       end
@@ -664,12 +663,12 @@ module PingPongBuffer (
     bufferFifoA_io_push_payload = s_axis_payload;
     case(pingPongBufferStateMachine_stateReg)
       pingPongBufferStateMachine_enumDef_EMPTY : begin
-        if(when_PingPongBuffer_l135) begin
+        if(when_PingPongBuffer_l138) begin
           bufferFifoA_io_push_payload = s_axis_payload;
         end
       end
       pingPongBufferStateMachine_enumDef_HALF : begin
-        if(when_PingPongBuffer_l167) begin
+        if(when_PingPongBuffer_l170) begin
           bufferFifoA_io_push_payload = s_axis_payload;
         end
       end
@@ -684,12 +683,12 @@ module PingPongBuffer (
     bufferFifoB_io_push_valid = 1'b0;
     case(pingPongBufferStateMachine_stateReg)
       pingPongBufferStateMachine_enumDef_EMPTY : begin
-        if(when_PingPongBuffer_l142) begin
+        if(when_PingPongBuffer_l145) begin
           bufferFifoB_io_push_valid = s_axis_valid;
         end
       end
       pingPongBufferStateMachine_enumDef_HALF : begin
-        if(when_PingPongBuffer_l168) begin
+        if(when_PingPongBuffer_l171) begin
           bufferFifoB_io_push_valid = s_axis_valid;
         end
       end
@@ -704,12 +703,12 @@ module PingPongBuffer (
     bufferFifoB_io_push_payload = s_axis_payload;
     case(pingPongBufferStateMachine_stateReg)
       pingPongBufferStateMachine_enumDef_EMPTY : begin
-        if(when_PingPongBuffer_l142) begin
+        if(when_PingPongBuffer_l145) begin
           bufferFifoB_io_push_payload = s_axis_payload;
         end
       end
       pingPongBufferStateMachine_enumDef_HALF : begin
-        if(when_PingPongBuffer_l168) begin
+        if(when_PingPongBuffer_l171) begin
           bufferFifoB_io_push_payload = s_axis_payload;
         end
       end
@@ -746,12 +745,12 @@ module PingPongBuffer (
       pingPongBufferStateMachine_enumDef_EMPTY : begin
       end
       pingPongBufferStateMachine_enumDef_HALF : begin
-        if(when_PingPongBuffer_l164) begin
+        if(when_PingPongBuffer_l167) begin
           bufferFifoB_io_pop_ready = m_axis_ready;
         end
       end
       pingPongBufferStateMachine_enumDef_FULL : begin
-        if(when_PingPongBuffer_l179) begin
+        if(when_PingPongBuffer_l182) begin
           bufferFifoB_io_pop_ready = m_axis_ready;
         end
       end
@@ -769,7 +768,7 @@ module PingPongBuffer (
         if(isReadBufferA) begin
           m_axis_valid = bufferFifoA_io_pop_valid;
         end
-        if(when_PingPongBuffer_l164) begin
+        if(when_PingPongBuffer_l167) begin
           m_axis_valid = bufferFifoB_io_pop_valid;
         end
       end
@@ -777,7 +776,7 @@ module PingPongBuffer (
         if(isReadBufferA) begin
           m_axis_valid = bufferFifoA_io_pop_valid;
         end
-        if(when_PingPongBuffer_l179) begin
+        if(when_PingPongBuffer_l182) begin
           m_axis_valid = bufferFifoB_io_pop_valid;
         end
       end
@@ -795,7 +794,7 @@ module PingPongBuffer (
         if(isReadBufferA) begin
           m_axis_payload = bufferFifoA_io_pop_payload;
         end
-        if(when_PingPongBuffer_l164) begin
+        if(when_PingPongBuffer_l167) begin
           m_axis_payload = bufferFifoB_io_pop_payload;
         end
       end
@@ -803,7 +802,7 @@ module PingPongBuffer (
         if(isReadBufferA) begin
           m_axis_payload = bufferFifoA_io_pop_payload;
         end
-        if(when_PingPongBuffer_l179) begin
+        if(when_PingPongBuffer_l182) begin
           m_axis_payload = bufferFifoB_io_pop_payload;
         end
       end
@@ -816,18 +815,18 @@ module PingPongBuffer (
     s_axis_ready = 1'b0;
     case(pingPongBufferStateMachine_stateReg)
       pingPongBufferStateMachine_enumDef_EMPTY : begin
-        if(when_PingPongBuffer_l135) begin
+        if(when_PingPongBuffer_l138) begin
           s_axis_ready = bufferFifoA_io_push_ready;
         end
-        if(when_PingPongBuffer_l142) begin
+        if(when_PingPongBuffer_l145) begin
           s_axis_ready = bufferFifoB_io_push_ready;
         end
       end
       pingPongBufferStateMachine_enumDef_HALF : begin
-        if(when_PingPongBuffer_l167) begin
+        if(when_PingPongBuffer_l170) begin
           s_axis_ready = bufferFifoA_io_push_ready;
         end
-        if(when_PingPongBuffer_l168) begin
+        if(when_PingPongBuffer_l171) begin
           s_axis_ready = bufferFifoB_io_push_ready;
         end
       end
@@ -855,7 +854,7 @@ module PingPongBuffer (
   end
 
   assign pingPongBufferStateMachine_wantKill = 1'b0;
-  assign bufferDepthOut = bufferDepthIn;
+  assign bufferDepthOut = bufferDepthReg;
   assign startOut = outputStartSignalState;
   assign interruptOut = outputInterruptSignalState;
   assign _zz_when_StateMachine_l219 = (pingPongBufferStateMachine_stateReg == pingPongBufferStateMachine_enumDef_EMPTY);
@@ -864,19 +863,19 @@ module PingPongBuffer (
     pingPongBufferStateMachine_stateNext = pingPongBufferStateMachine_stateReg;
     case(pingPongBufferStateMachine_stateReg)
       pingPongBufferStateMachine_enumDef_EMPTY : begin
-        if(when_PingPongBuffer_l135) begin
+        if(when_PingPongBuffer_l138) begin
           if(inCounterWillOverflow) begin
             pingPongBufferStateMachine_stateNext = pingPongBufferStateMachine_enumDef_HALF;
           end
         end
-        if(when_PingPongBuffer_l142) begin
+        if(when_PingPongBuffer_l145) begin
           if(inCounterWillOverflow) begin
             pingPongBufferStateMachine_stateNext = pingPongBufferStateMachine_enumDef_HALF;
           end
         end
       end
       pingPongBufferStateMachine_enumDef_HALF : begin
-        if(when_PingPongBuffer_l155) begin
+        if(when_PingPongBuffer_l158) begin
           pingPongBufferStateMachine_stateNext = pingPongBufferStateMachine_enumDef_HALF;
         end else begin
           if(inCounterWillOverflow) begin
@@ -894,7 +893,7 @@ module PingPongBuffer (
             pingPongBufferStateMachine_stateNext = pingPongBufferStateMachine_enumDef_HALF;
           end
         end
-        if(when_PingPongBuffer_l179) begin
+        if(when_PingPongBuffer_l182) begin
           if(outCounterWillOverflow) begin
             pingPongBufferStateMachine_stateNext = pingPongBufferStateMachine_enumDef_HALF;
           end
@@ -911,18 +910,19 @@ module PingPongBuffer (
     end
   end
 
-  assign when_PingPongBuffer_l135 = (realStartSignal && isWriteBufferA);
-  assign when_PingPongBuffer_l142 = (realStartSignal && (! isWriteBufferA));
-  assign when_PingPongBuffer_l155 = (inCounterWillOverflow && outCounterWillOverflow);
-  assign when_PingPongBuffer_l164 = (! isReadBufferA);
-  assign when_PingPongBuffer_l167 = (realStartSignal && isWriteBufferA);
-  assign when_PingPongBuffer_l168 = (realStartSignal && (! isWriteBufferA));
-  assign when_PingPongBuffer_l179 = (! isWriteBufferA);
+  assign when_PingPongBuffer_l138 = (realStartSignal && isWriteBufferA);
+  assign when_PingPongBuffer_l145 = (realStartSignal && (! isWriteBufferA));
+  assign when_PingPongBuffer_l158 = (inCounterWillOverflow && outCounterWillOverflow);
+  assign when_PingPongBuffer_l167 = (! isReadBufferA);
+  assign when_PingPongBuffer_l170 = (realStartSignal && isWriteBufferA);
+  assign when_PingPongBuffer_l171 = (realStartSignal && (! isWriteBufferA));
+  assign when_PingPongBuffer_l182 = (! isWriteBufferA);
   assign when_StateMachine_l219 = (_zz_when_StateMachine_l219 && (! _zz_when_StateMachine_l219_1));
   assign when_StateMachine_l219_1 = ((pingPongBufferStateMachine_stateReg == pingPongBufferStateMachine_enumDef_FULL) && (! (pingPongBufferStateMachine_stateNext == pingPongBufferStateMachine_enumDef_FULL)));
   assign when_StateMachine_l235 = ((! _zz_when_StateMachine_l219) && _zz_when_StateMachine_l219_1);
   always @(posedge aclk or negedge aresetn) begin
     if(!aresetn) begin
+      bufferDepthReg <= 8'hff;
       inCounter_value <= 8'h0;
       outCounter_value <= 8'h0;
       isWriteBufferA <= 1'b1;
@@ -932,6 +932,7 @@ module PingPongBuffer (
       outputInterruptSignalState <= 1'b0;
       pingPongBufferStateMachine_stateReg <= pingPongBufferStateMachine_enumDef_BOOT;
     end else begin
+      bufferDepthReg <= bufferDepthIn;
       inCounter_value <= inCounter_valueNext;
       outCounter_value <= outCounter_valueNext;
       if(inCounterWillOverflow) begin
@@ -952,12 +953,12 @@ module PingPongBuffer (
       case(pingPongBufferStateMachine_stateReg)
         pingPongBufferStateMachine_enumDef_EMPTY : begin
           outputInterruptSignalState <= 1'b0;
-          if(when_PingPongBuffer_l135) begin
+          if(when_PingPongBuffer_l138) begin
             if(inCounterWillOverflow) begin
               outputInterruptSignalState <= 1'b1;
             end
           end
-          if(when_PingPongBuffer_l142) begin
+          if(when_PingPongBuffer_l145) begin
             if(inCounterWillOverflow) begin
               outputInterruptSignalState <= 1'b1;
             end
@@ -965,7 +966,7 @@ module PingPongBuffer (
         end
         pingPongBufferStateMachine_enumDef_HALF : begin
           outputInterruptSignalState <= 1'b0;
-          if(when_PingPongBuffer_l155) begin
+          if(when_PingPongBuffer_l158) begin
             outputInterruptSignalState <= 1'b1;
           end
         end
@@ -975,7 +976,7 @@ module PingPongBuffer (
               outputInterruptSignalState <= 1'b1;
             end
           end
-          if(when_PingPongBuffer_l179) begin
+          if(when_PingPongBuffer_l182) begin
             if(outCounterWillOverflow) begin
               outputInterruptSignalState <= 1'b1;
             end
@@ -998,6 +999,10 @@ module PingPongBuffer (
     end else begin
       startReceiveSignal <= 1'b1;
     end
+  end
+
+  always @(posedge aclk) begin
+    startReceiveSignal_regNext <= startReceiveSignal;
   end
 
   always @(posedge interruptIn or posedge _zz_2) begin
