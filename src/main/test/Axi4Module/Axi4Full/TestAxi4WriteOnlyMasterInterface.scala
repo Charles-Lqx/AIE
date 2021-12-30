@@ -89,8 +89,8 @@ object TestAxi4WriteOnlyMasterInterface extends App {
       def doSim(): Unit = {
         val readySignal = Random.nextBoolean()
         if (dut.axi4WriteOnlyMasterInterface.b.valid.toBoolean && dut.axi4WriteOnlyMasterInterface.b.ready.toBoolean) {
-          dut.offset #= Random.nextInt(256)
           sleep(5)
+          dut.offset #= Random.nextInt(256)
           dut.start #= true
           sleep(4)
           dut.start #= false
@@ -119,6 +119,8 @@ object TestAxi4WriteOnlyMasterInterface extends App {
       for (i <- 0 to 256 * 10) {
         if (i != 256 * 10) {
           doSim()
+        } else {
+          dut.clockDomain.waitSampling(100)
         }
       }
       println(s"the testCase is :${testCase.mkString(",")}")

@@ -9,7 +9,7 @@ import spinal.lib.bus.amba4.axi.{Axi4Config, Axi4WriteOnly}
 
 import scala.collection.mutable.ArrayBuffer
 
-case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Component {
+case class PingPongBuffer(addressWidth: Int = 32, dataWidth: Int = 32, bufferSize: Int = 256) extends Component {
   // define this Component's port
 
   // slave side
@@ -17,11 +17,13 @@ case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Co
   val startIn = in Bool()
   val bufferDepthIn = in UInt (8 bits)
   val interruptOut = out Bool()
+  val dataOffsetIn = in UInt(addressWidth bits)
   // master side
   val streamOut = master Stream Bits(dataWidth bits)
   val startOut = out Bool()
   val bufferDepthOut = out UInt (8 bits)
   val interruptIn = in Bool()
+  val dataOffsetOut = out UInt(addressWidth bits)
 
   def inputStreamInterface: Stream[Bits] = streamIn
 
@@ -31,6 +33,8 @@ case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Co
 
   def outputInterruptSignal: Bool = interruptOut
 
+  def inputDataOffsetSignal: UInt = dataOffsetIn
+
   def outputStreamInterface: Stream[Bits] = streamOut
 
   def outputStartSignal: Bool = startOut
@@ -39,6 +43,7 @@ case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Co
 
   def inputInterruptSignal: Bool = interruptIn
 
+  def outputDataOffsetSignal: UInt = dataOffsetOut
 
   // register the inputBufferDepth
   val bufferDepthReg = RegNext(inputBufferDepth) init U(bufferSize - 1, 8 bits)
@@ -87,6 +92,7 @@ case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Co
 
   val realStartSignal = startReceiveArea.startReceiveSignal || startReceiveArea.startReceiveSignal.fall()
 
+  val fallSignal = startReceiveArea.startReceiveSignal.fall().simPublic()
   // define this clockDomain for monitor whether last burst complete(can start next burst)
   val lastBurstCompleteClockDomainConfig = ClockDomainConfig(clockEdge = RISING,
     resetKind = ASYNC,
@@ -190,15 +196,46 @@ case class PingPongBuffer(dataWidth: Int = 32, bufferSize: Int = 256) extends Co
     FULL.onExit(startReceiveResetSignal := True)
   }
 
-  // get stateMachine's state for outside
-  // addPrePopTask(() => currentState.assignFromBits(pingPongBufferStateMachine.stateReg.asBits))
+  // other signal port logic
+  val outputInterruptSignalState = RegInit(False)
+  outputInterruptSignal := outputInterruptSignalState
 
   outputBufferDepth := bufferDepthReg
 
-  val outputStartSignalState = RegInit(False)
-  when(isAfterResetState){outputStartSignalState := True}.otherwise(outputStartSignalState := lastBurstCompleteArea.lastBurstCompleteSignal)
-  outputStartSignal := outputStartSignalState
+  // define two register to store the offset address corresponding data and accompany a valid signal
+  val offsetA, offsetB = RegInit(U(0, addressWidth bits))
+  when(realStartSignal){
+    when(isWriteBufferA){offsetA := inputDataOffsetSignal}
+    when(!isWriteBufferA){offsetB := inputDataOffsetSignal}
+  }
 
-  val outputInterruptSignalState = RegInit(False)
-  outputInterruptSignal := outputInterruptSignalState
+  // get currentState
+  val currentState = UInt(2 bits)
+  addPrePopTask(() => currentState := pingPongBufferStateMachine.stateReg.asBits.asUInt)
+
+  val canReadData = currentState === U(2, 2 bits) || currentState === U(3, 2 bits)
+
+  val readyForNextTransfer = RegInit(False)
+  when(isAfterResetState){readyForNextTransfer := True}
+  when(lastBurstCompleteArea.lastBurstCompleteSignal){readyForNextTransfer := True}
+
+  val outputDataOffsetReg = RegInit(U(0, addressWidth bits))
+  val outputStartSignalReg = RegInit(False)
+  when(readyForNextTransfer && canReadData && isReadBufferA){
+    outputStartSignalReg := readyForNextTransfer
+    outputDataOffsetReg := offsetA
+    readyForNextTransfer := False
+  }
+  when(readyForNextTransfer && canReadData && !isReadBufferA){
+    outputStartSignalReg := readyForNextTransfer
+    outputDataOffsetReg := offsetB
+    readyForNextTransfer := False
+  }
+  when(outputStartSignalReg){outputStartSignalReg := False}
+
+
+  outputDataOffsetSignal := outputDataOffsetReg
+  outputStartSignal := outputStartSignalReg
+
+
 }

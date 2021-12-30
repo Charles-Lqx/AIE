@@ -21,6 +21,7 @@ case class PingPongBufferWithWriteOnlyMater(addressWidth: Int = 32, maxBurstLen:
   val startIn = in Bool()
   val bufferDepthIn = in UInt (8 bits)
   val interruptOut = out Bool()
+  val dataOffsetIn = in UInt(addressWidth bits)
 
   val config = Axi4Config(
     addressWidth = addressWidth,
@@ -30,9 +31,8 @@ case class PingPongBufferWithWriteOnlyMater(addressWidth: Int = 32, maxBurstLen:
   )
 
   val full = master(Axi4WriteOnly(config))
-  val offset = in UInt (addressWidth bits)
 
-  val pingPongBuffer = PingPongBuffer(dataWidth, maxBurstLen)
+  val pingPongBuffer = PingPongBuffer(addressWidth, dataWidth, maxBurstLen)
   val writeOnlyMater = Stream2Axi4WriteOnlyMasterInterface(addressWidth, maxBurstLen, dataWidth)
 
   // set name
@@ -48,6 +48,7 @@ case class PingPongBufferWithWriteOnlyMater(addressWidth: Int = 32, maxBurstLen:
   pingPongBuffer.streamIn << streamIn
   pingPongBuffer.startIn := startIn
   pingPongBuffer.bufferDepthIn := bufferDepthIn
+  pingPongBuffer.dataOffsetIn := dataOffsetIn
   interruptOut := pingPongBuffer.outputInterruptSignal
 
   pingPongBuffer.streamOut >> writeOnlyMater.axi4Interface.StreamInterface
@@ -56,7 +57,7 @@ case class PingPongBufferWithWriteOnlyMater(addressWidth: Int = 32, maxBurstLen:
   pingPongBuffer.inputInterruptSignal := writeOnlyMater.axi4Interface.transInterrupt
 
   writeOnlyMater.axi4Interface.full >> full
-  writeOnlyMater.axi4Interface.offset := offset
+  writeOnlyMater.axi4Interface.offset := pingPongBuffer.dataOffsetOut
 }
 
 object TestPingPongBuffer extends App {
@@ -71,7 +72,7 @@ object TestPingPongBuffer extends App {
       dut.streamIn.valid #= false
       dut.streamIn.payload #= 0
       dut.startIn #= false
-      dut.bufferDepthIn #= 128
+      dut.dataOffsetIn #= 0
 
       dut.full.w.ready #= false
       dut.full.aw.ready #= false
@@ -83,8 +84,10 @@ object TestPingPongBuffer extends App {
       dut.clockDomain.forkStimulus(15)
       dut.clockDomain.waitSampling()
 
-      sleep(20)
+      sleep(30)
       dut.startIn #= true
+      dut.dataOffsetIn #= 0
+      dut.bufferDepthIn #= 128
       sleep(5)
       dut.startIn #= false
 
@@ -92,6 +95,7 @@ object TestPingPongBuffer extends App {
         if (dut.interruptOut.toBoolean) {
           sleep(5)
           dut.startIn #= true
+          dut.dataOffsetIn #= dut.dataOffsetIn.toBigInt + 4 * 128
           sleep(4)
           dut.startIn #= false
         }
@@ -122,6 +126,8 @@ object TestPingPongBuffer extends App {
       for (i <- 0 to 256 * 10) {
         if (i != 100) {
           doSim()
+        } else{
+          dut.clockDomain.waitSampling(10)
         }
       }
       println(s"the testCase is :${testCase.mkString(",")}")

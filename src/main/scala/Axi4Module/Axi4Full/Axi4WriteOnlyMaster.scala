@@ -5,6 +5,7 @@ import spinal.lib._
 import spinal.lib.bus.amba4.axi._
 
 import spinal.core.sim._
+
 /**
  * this is a stream to axi4 interface define
  *
@@ -81,7 +82,7 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
   val getDataHandshakeCounter: Counter = Counter(0, maxBurstLen)
 
   // register the burstLength
-  val burstLengthReg = RegNext(burstLength) init U(maxBurstLen - 1 , 8 bits)
+  val burstLengthReg = RegNext(burstLength) init U(maxBurstLen - 1, 8 bits)
 
   // *************stream to Axi4WriteOnlyMaster channel map****************
 
@@ -94,9 +95,7 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
   streamDataBuffer.io.push.payload := StreamInterface.payload
   streamDataBuffer.io.push.valid := False
   when(getDataHandshakeCounter < burstLengthReg && startSendArea.startSendSignal) {
-    StreamInterface.ready := streamDataBuffer.io.push.ready
-    streamDataBuffer.io.push.payload := StreamInterface.payload
-    streamDataBuffer.io.push.valid := StreamInterface.valid
+    StreamInterface >> streamDataBuffer.io.push
   }
 
   // recording the number of stream data which be send into buffer in a burst
@@ -113,22 +112,20 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
 
   // ------------------------------handshake logic---------------------------
 
-  // this signal indicate the time of transfer after reset, be use for help decide lastBurstComplete
-  val isTransferAfterReset = RegInit(True)
-  when(ClockDomain.current.readResetWire) {
-    isTransferAfterReset := False
+  // indicate whether is a new Burst transfer
+  val newBurst = RegInit(True)
+  when(writeOnlyMasterInterface.b.fire) {
+    newBurst := True
   }
-  // indicate whether last burst is already complete
-  val lastBurstComplete = RegNextWhen(True, writeOnlyMasterInterface.b.fire || isTransferAfterReset) init (False)
+
   // Asynchronous LOW Level reset
   val controlAwValidSignal = RegInit(False)
   when(ClockDomain.current.readResetWire && startSendArea.startSendSignal) {
     when(writeOnlyMasterInterface.aw.fire) {
       controlAwValidSignal := False
-    }
-    when(lastBurstComplete) {
+      newBurst := False
+    }.elsewhen(newBurst) {
       controlAwValidSignal := True
-      lastBurstComplete := False
     }
   }
 
@@ -137,7 +134,11 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
   // ----------------------------- payload logic------------------------------
   // the writeMasterInterface's aw channel's addr port should give a startAddress for each burst
   // send address according to the specific address port
-  writeOnlyMasterInterface.aw.payload.addr := startOffsetSignal
+  val startOffsetReg = RegInit(U(0, addressWidth bits))
+  when(startSendArea.startSendSignal) {
+    startOffsetReg := startOffsetSignal
+  }
+  writeOnlyMasterInterface.aw.payload.addr := startOffsetReg
 
   import Axi4.burst._
 
@@ -157,9 +158,10 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
   writeOnlyMasterInterface.w.payload.data := streamDataBuffer.io.pop.payload
   streamDataBuffer.io.pop.ready := False
   when(writeHandshakeCounter < burstLengthReg && startSendArea.startSendSignal) {
-    streamDataBuffer.io.pop.ready := writeOnlyMasterInterface.w.ready
-    writeOnlyMasterInterface.w.valid := streamDataBuffer.io.pop.valid
-    writeOnlyMasterInterface.w.payload.data := streamDataBuffer.io.pop.payload
+    val pipePopInterface = streamDataBuffer.io.pop.stage()
+    pipePopInterface.ready := writeOnlyMasterInterface.w.ready
+    writeOnlyMasterInterface.w.valid := pipePopInterface.valid
+    writeOnlyMasterInterface.w.payload.data := pipePopInterface.payload
   }
   // recording the data which send to outside by axi4 interface
   when(writeOnlyMasterInterface.w.fire) {

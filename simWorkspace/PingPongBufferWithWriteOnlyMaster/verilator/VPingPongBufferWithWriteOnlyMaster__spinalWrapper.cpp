@@ -159,7 +159,7 @@ public:
     uint32_t timeCheck;
     bool waveEnabled;
     VPingPongBufferWithWriteOnlyMaster top;
-    ISignalAccess *signalAccess[27];
+    ISignalAccess *signalAccess[28];
     #ifdef TRACE
 	  VerilatedVcdC tfp;
 	  #endif
@@ -171,33 +171,34 @@ public:
       timeCheck = 0;
       lastFlushAt = high_resolution_clock::now();
       waveEnabled = true;
-      signalAccess[0] = new CDataSignalAccess( top.streamIn_valid );
-      signalAccess[1] = new CDataSignalAccess( top.streamIn_ready );
-      signalAccess[2] = new IDataSignalAccess( top.streamIn_payload );
-      signalAccess[3] = new CDataSignalAccess( top.startIn );
-      signalAccess[4] = new CDataSignalAccess( top.bufferDepthIn );
-      signalAccess[5] = new CDataSignalAccess( top.interruptOut );
-      signalAccess[6] = new CDataSignalAccess( top.full_aw_valid );
-      signalAccess[7] = new CDataSignalAccess( top.full_aw_ready );
-      signalAccess[8] = new IDataSignalAccess( top.full_aw_payload_addr );
-      signalAccess[9] = new CDataSignalAccess( top.full_aw_payload_region );
-      signalAccess[10] = new CDataSignalAccess( top.full_aw_payload_len );
-      signalAccess[11] = new CDataSignalAccess( top.full_aw_payload_size );
-      signalAccess[12] = new CDataSignalAccess( top.full_aw_payload_burst );
-      signalAccess[13] = new CDataSignalAccess( top.full_aw_payload_cache );
-      signalAccess[14] = new CDataSignalAccess( top.full_aw_payload_qos );
-      signalAccess[15] = new CDataSignalAccess( top.full_aw_payload_prot );
-      signalAccess[16] = new CDataSignalAccess( top.full_w_valid );
-      signalAccess[17] = new CDataSignalAccess( top.full_w_ready );
-      signalAccess[18] = new IDataSignalAccess( top.full_w_payload_data );
-      signalAccess[19] = new CDataSignalAccess( top.full_w_payload_strb );
-      signalAccess[20] = new CDataSignalAccess( top.full_w_payload_last );
-      signalAccess[21] = new CDataSignalAccess( top.full_b_valid );
-      signalAccess[22] = new CDataSignalAccess( top.full_b_ready );
-      signalAccess[23] = new CDataSignalAccess( top.full_b_payload_resp );
-      signalAccess[24] = new IDataSignalAccess( top.offset );
-      signalAccess[25] = new CDataSignalAccess( top.aresetn );
-      signalAccess[26] = new CDataSignalAccess( top.aclk );
+      signalAccess[0] = new CDataSignalAccess( top.PingPongBufferWithWriteOnlyMaster->pingPongBuffer_1->fallSignal );
+      signalAccess[1] = new CDataSignalAccess( top.streamIn_valid );
+      signalAccess[2] = new CDataSignalAccess( top.streamIn_ready );
+      signalAccess[3] = new IDataSignalAccess( top.streamIn_payload );
+      signalAccess[4] = new CDataSignalAccess( top.startIn );
+      signalAccess[5] = new CDataSignalAccess( top.bufferDepthIn );
+      signalAccess[6] = new CDataSignalAccess( top.interruptOut );
+      signalAccess[7] = new IDataSignalAccess( top.dataOffsetIn );
+      signalAccess[8] = new CDataSignalAccess( top.full_aw_valid );
+      signalAccess[9] = new CDataSignalAccess( top.full_aw_ready );
+      signalAccess[10] = new IDataSignalAccess( top.full_aw_payload_addr );
+      signalAccess[11] = new CDataSignalAccess( top.full_aw_payload_region );
+      signalAccess[12] = new CDataSignalAccess( top.full_aw_payload_len );
+      signalAccess[13] = new CDataSignalAccess( top.full_aw_payload_size );
+      signalAccess[14] = new CDataSignalAccess( top.full_aw_payload_burst );
+      signalAccess[15] = new CDataSignalAccess( top.full_aw_payload_cache );
+      signalAccess[16] = new CDataSignalAccess( top.full_aw_payload_qos );
+      signalAccess[17] = new CDataSignalAccess( top.full_aw_payload_prot );
+      signalAccess[18] = new CDataSignalAccess( top.full_w_valid );
+      signalAccess[19] = new CDataSignalAccess( top.full_w_ready );
+      signalAccess[20] = new IDataSignalAccess( top.full_w_payload_data );
+      signalAccess[21] = new CDataSignalAccess( top.full_w_payload_strb );
+      signalAccess[22] = new CDataSignalAccess( top.full_w_payload_last );
+      signalAccess[23] = new CDataSignalAccess( top.full_b_valid );
+      signalAccess[24] = new CDataSignalAccess( top.full_b_ready );
+      signalAccess[25] = new CDataSignalAccess( top.full_b_payload_resp );
+      signalAccess[26] = new CDataSignalAccess( top.aresetn );
+      signalAccess[27] = new CDataSignalAccess( top.aclk );
 
       #ifdef TRACE
       Verilated::traceEverOn(true);
@@ -208,7 +209,7 @@ public:
     }
 
     virtual ~Wrapper_1(){
-      for(int idx = 0;idx < 27;idx++){
+      for(int idx = 0;idx < 28;idx++){
           delete signalAccess[idx];
       }
 
