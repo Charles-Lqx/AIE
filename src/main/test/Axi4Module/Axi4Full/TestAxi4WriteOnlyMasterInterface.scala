@@ -7,6 +7,7 @@ import spinal.lib.bus.amba4.axi._
 
 
 case class Stream2Axi4WriteOnlyMasterInterface(addressWidth: Int = 32, maxBurstLen: Int = 256, dataWidth: Int = 32) extends Component {
+  require(maxBurstLen > 0 && maxBurstLen <= 256 , "the maxBurstLength is illegal !")
   val axi4Interface = Axi4WriteOnlyMaster(addressWidth, maxBurstLen, dataWidth)
   Axi4WriteOnlyMasterSpecRenamer(axi4Interface)
   ClockDomain.current.clock.setName("aclk")
@@ -31,15 +32,21 @@ case class Stream2Axi4WriteOnlyMasterInterfaceAddFifo(addressWidth: Int = 32, ma
 
   val axi4Interconnection = Stream2Axi4WriteOnlyMasterInterface(addressWidth, maxBurstLen, dataWidth)
   val fifoInstance = StreamFifo(Bits(dataWidth bits), maxBurstLen)
+
   val start = in Bool()
   val burstLen = in UInt (8 bits)
+  val startAddr = in UInt (addressWidth bits)
   val offset = in UInt (addressWidth bits)
+  val pathNumb = in UInt(8 bits)
   val transInterrupt = out Bool()
   streamInterface >> fifoInstance.io.push
   fifoInstance.io.pop >> axi4Interconnection.axi4Interface.stream
   axi4Interconnection.axi4Interface.start := start
   axi4Interconnection.axi4Interface.burstLen := burstLen
   axi4Interconnection.axi4Interface.offset := offset
+  axi4Interconnection.axi4Interface.startAddr := startAddr
+  axi4Interconnection.axi4Interface.pathNumb := pathNumb
+  axi4Interconnection.axi4Interface.pathNumb.setName("pathNumb")
   transInterrupt := axi4Interconnection.axi4Interface.transInterrupt
   axi4Interconnection.axi4Interface.writeOnlyMasterInterface >> axi4WriteOnlyMasterInterface
 
@@ -69,7 +76,9 @@ object TestAxi4WriteOnlyMasterInterface extends App {
       dut.axi4WriteOnlyMasterInterface.b.valid #= false
 
       dut.start #= false
-      dut.offset #= 0
+      dut.startAddr #= 0
+      dut.offset #= 512
+      dut.pathNumb #= 32
       dut.burstLen #= 128
 
 
@@ -90,12 +99,12 @@ object TestAxi4WriteOnlyMasterInterface extends App {
         val readySignal = Random.nextBoolean()
         if (dut.axi4WriteOnlyMasterInterface.b.valid.toBoolean && dut.axi4WriteOnlyMasterInterface.b.ready.toBoolean) {
           sleep(5)
-          dut.offset #= Random.nextInt(256)
           dut.start #= true
           sleep(4)
           dut.start #= false
 
         }
+        if(dut.axi4Interconnection.axi4Interface.isInitialIterate.toBoolean){dut.startAddr #= Random.nextInt(16)}
         dut.streamInterface.payload #= Random.nextInt(256)
         dut.streamInterface.valid #= Random.nextBoolean()
         dut.axi4WriteOnlyMasterInterface.aw.ready #= readySignal
@@ -116,15 +125,20 @@ object TestAxi4WriteOnlyMasterInterface extends App {
         dut.clockDomain.waitSampling()
       }
 
-      for (i <- 0 to 256 * 10) {
-        if (i != 256 * 10) {
+      for (i <- 0 to 256 * 20) {
+        if (i < 256 * 10) {
           doSim()
         } else {
-          dut.clockDomain.waitSampling(100)
+          dut.clockDomain.waitSampling()
         }
       }
-      println(s"the testCase is :${testCase.mkString(",")}")
-      println(s"the writeData is ${writeData.mkString(",")}")
+      val dataSize = Seq(testCase.size , writeData.size).min
+      val realTestCase = testCase.dropRight(testCase.size - dataSize)
+      val isCorrect = realTestCase.diff(writeData).isEmpty
+      if(isCorrect){println("Sim pass !")} else {
+        println(s"the testCase is :${realTestCase.mkString(",")}")
+        println(s"the writeData is ${writeData.mkString(",")}")
+      }
 
     }
 }

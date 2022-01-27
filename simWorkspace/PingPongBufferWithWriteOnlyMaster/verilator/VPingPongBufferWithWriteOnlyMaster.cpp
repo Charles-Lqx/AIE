@@ -1,235 +1,176 @@
 // Verilated -*- C++ -*-
-// DESCRIPTION: Verilator output: Design implementation internals
-// See VPingPongBufferWithWriteOnlyMaster.h for the primary calling header
+// DESCRIPTION: Verilator output: Model implementation (design independent parts)
 
-#include "VPingPongBufferWithWriteOnlyMaster.h" // For This
+#include "VPingPongBufferWithWriteOnlyMaster.h"
 #include "VPingPongBufferWithWriteOnlyMaster__Syms.h"
-
+#include "verilated_vcd_c.h"
 #include "verilated_dpi.h"
 
+//============================================================
+// Constructors
 
-//--------------------
+VPingPongBufferWithWriteOnlyMaster::VPingPongBufferWithWriteOnlyMaster(VerilatedContext* _vcontextp__, const char* _vcname__)
+    : vlSymsp{new VPingPongBufferWithWriteOnlyMaster__Syms(_vcontextp__, _vcname__, this)}
+    , startIn{vlSymsp->TOP.startIn}
+    , aresetn{vlSymsp->TOP.aresetn}
+    , aclk{vlSymsp->TOP.aclk}
+    , streamIn_valid{vlSymsp->TOP.streamIn_valid}
+    , streamIn_ready{vlSymsp->TOP.streamIn_ready}
+    , bufferDepthIn{vlSymsp->TOP.bufferDepthIn}
+    , interruptOut{vlSymsp->TOP.interruptOut}
+    , pathNumb{vlSymsp->TOP.pathNumb}
+    , full_aw_valid{vlSymsp->TOP.full_aw_valid}
+    , full_aw_ready{vlSymsp->TOP.full_aw_ready}
+    , full_aw_payload_region{vlSymsp->TOP.full_aw_payload_region}
+    , full_aw_payload_len{vlSymsp->TOP.full_aw_payload_len}
+    , full_aw_payload_size{vlSymsp->TOP.full_aw_payload_size}
+    , full_aw_payload_burst{vlSymsp->TOP.full_aw_payload_burst}
+    , full_aw_payload_cache{vlSymsp->TOP.full_aw_payload_cache}
+    , full_aw_payload_qos{vlSymsp->TOP.full_aw_payload_qos}
+    , full_aw_payload_prot{vlSymsp->TOP.full_aw_payload_prot}
+    , full_w_valid{vlSymsp->TOP.full_w_valid}
+    , full_w_ready{vlSymsp->TOP.full_w_ready}
+    , full_w_payload_strb{vlSymsp->TOP.full_w_payload_strb}
+    , full_w_payload_last{vlSymsp->TOP.full_w_payload_last}
+    , full_b_valid{vlSymsp->TOP.full_b_valid}
+    , full_b_ready{vlSymsp->TOP.full_b_ready}
+    , full_b_payload_resp{vlSymsp->TOP.full_b_payload_resp}
+    , streamIn_payload{vlSymsp->TOP.streamIn_payload}
+    , startAddr{vlSymsp->TOP.startAddr}
+    , offset{vlSymsp->TOP.offset}
+    , full_aw_payload_addr{vlSymsp->TOP.full_aw_payload_addr}
+    , full_w_payload_data{vlSymsp->TOP.full_w_payload_data}
+    , PingPongBufferWithWriteOnlyMaster{vlSymsp->TOP.PingPongBufferWithWriteOnlyMaster}
+    , rootp{&(vlSymsp->TOP)}
+{
+}
 
+VPingPongBufferWithWriteOnlyMaster::VPingPongBufferWithWriteOnlyMaster(const char* _vcname__)
+    : VPingPongBufferWithWriteOnlyMaster(nullptr, _vcname__)
+{
+}
 
-void VPingPongBufferWithWriteOnlyMaster::eval() {
-    VL_DEBUG_IF(VL_DBG_MSGF("+++++TOP Evaluate VPingPongBufferWithWriteOnlyMaster::eval\n"); );
-    VPingPongBufferWithWriteOnlyMaster__Syms* __restrict vlSymsp = this->__VlSymsp;  // Setup global symbol table
-    VPingPongBufferWithWriteOnlyMaster* __restrict vlTOPp VL_ATTR_UNUSED = vlSymsp->TOPp;
+//============================================================
+// Destructor
+
+VPingPongBufferWithWriteOnlyMaster::~VPingPongBufferWithWriteOnlyMaster() {
+    delete vlSymsp;
+}
+
+//============================================================
+// Evaluation loop
+
+void VPingPongBufferWithWriteOnlyMaster___024root___eval_initial(VPingPongBufferWithWriteOnlyMaster___024root* vlSelf);
+void VPingPongBufferWithWriteOnlyMaster___024root___eval_settle(VPingPongBufferWithWriteOnlyMaster___024root* vlSelf);
+void VPingPongBufferWithWriteOnlyMaster___024root___eval(VPingPongBufferWithWriteOnlyMaster___024root* vlSelf);
+QData VPingPongBufferWithWriteOnlyMaster___024root___change_request(VPingPongBufferWithWriteOnlyMaster___024root* vlSelf);
+#ifdef VL_DEBUG
+void VPingPongBufferWithWriteOnlyMaster___024root___eval_debug_assertions(VPingPongBufferWithWriteOnlyMaster___024root* vlSelf);
+#endif  // VL_DEBUG
+void VPingPongBufferWithWriteOnlyMaster___024root___final(VPingPongBufferWithWriteOnlyMaster___024root* vlSelf);
+
+static void _eval_initial_loop(VPingPongBufferWithWriteOnlyMaster__Syms* __restrict vlSymsp) {
+    vlSymsp->__Vm_didInit = true;
+    VPingPongBufferWithWriteOnlyMaster___024root___eval_initial(&(vlSymsp->TOP));
+    // Evaluate till stable
+    int __VclockLoop = 0;
+    QData __Vchange = 1;
+    vlSymsp->__Vm_activity = true;
+    do {
+        VL_DEBUG_IF(VL_DBG_MSGF("+ Initial loop\n"););
+        VPingPongBufferWithWriteOnlyMaster___024root___eval_settle(&(vlSymsp->TOP));
+        VPingPongBufferWithWriteOnlyMaster___024root___eval(&(vlSymsp->TOP));
+        if (VL_UNLIKELY(++__VclockLoop > 100)) {
+            // About to fail, so enable debug to see what's not settling.
+            // Note you must run make with OPT=-DVL_DEBUG for debug prints.
+            int __Vsaved_debug = Verilated::debug();
+            Verilated::debug(1);
+            __Vchange = VPingPongBufferWithWriteOnlyMaster___024root___change_request(&(vlSymsp->TOP));
+            Verilated::debug(__Vsaved_debug);
+            VL_FATAL_MT("/home/lqx/IdeaProjects/AIE/tmp/job_1/PingPongBufferWithWriteOnlyMaster.v", 7, "",
+                "Verilated model didn't DC converge\n"
+                "- See https://verilator.org/warn/DIDNOTCONVERGE");
+        } else {
+            __Vchange = VPingPongBufferWithWriteOnlyMaster___024root___change_request(&(vlSymsp->TOP));
+        }
+    } while (VL_UNLIKELY(__Vchange));
+}
+
+void VPingPongBufferWithWriteOnlyMaster::eval_step() {
+    VL_DEBUG_IF(VL_DBG_MSGF("+++++TOP Evaluate VPingPongBufferWithWriteOnlyMaster::eval_step\n"); );
 #ifdef VL_DEBUG
     // Debug assertions
-    _eval_debug_assertions();
-#endif // VL_DEBUG
+    VPingPongBufferWithWriteOnlyMaster___024root___eval_debug_assertions(&(vlSymsp->TOP));
+#endif  // VL_DEBUG
     // Initialize
     if (VL_UNLIKELY(!vlSymsp->__Vm_didInit)) _eval_initial_loop(vlSymsp);
     // Evaluate till stable
     int __VclockLoop = 0;
     QData __Vchange = 1;
-    while (VL_LIKELY(__Vchange)) {
-	VL_DEBUG_IF(VL_DBG_MSGF("+ Clock loop\n"););
-	vlSymsp->__Vm_activity = true;
-	_eval(vlSymsp);
-	__Vchange = _change_request(vlSymsp);
-	if (VL_UNLIKELY(++__VclockLoop > 100)) VL_FATAL_MT(__FILE__,__LINE__,__FILE__,"Verilated model didn't converge");
-    }
-}
-
-void VPingPongBufferWithWriteOnlyMaster::_eval_initial_loop(VPingPongBufferWithWriteOnlyMaster__Syms* __restrict vlSymsp) {
-    vlSymsp->__Vm_didInit = true;
-    _eval_initial(vlSymsp);
     vlSymsp->__Vm_activity = true;
-    int __VclockLoop = 0;
-    QData __Vchange = 1;
-    while (VL_LIKELY(__Vchange)) {
-	_eval_settle(vlSymsp);
-	_eval(vlSymsp);
-	__Vchange = _change_request(vlSymsp);
-	if (VL_UNLIKELY(++__VclockLoop > 100)) VL_FATAL_MT(__FILE__,__LINE__,__FILE__,"Verilated model didn't DC converge");
-    }
+    do {
+        VL_DEBUG_IF(VL_DBG_MSGF("+ Clock loop\n"););
+        VPingPongBufferWithWriteOnlyMaster___024root___eval(&(vlSymsp->TOP));
+        if (VL_UNLIKELY(++__VclockLoop > 100)) {
+            // About to fail, so enable debug to see what's not settling.
+            // Note you must run make with OPT=-DVL_DEBUG for debug prints.
+            int __Vsaved_debug = Verilated::debug();
+            Verilated::debug(1);
+            __Vchange = VPingPongBufferWithWriteOnlyMaster___024root___change_request(&(vlSymsp->TOP));
+            Verilated::debug(__Vsaved_debug);
+            VL_FATAL_MT("/home/lqx/IdeaProjects/AIE/tmp/job_1/PingPongBufferWithWriteOnlyMaster.v", 7, "",
+                "Verilated model didn't converge\n"
+                "- See https://verilator.org/warn/DIDNOTCONVERGE");
+        } else {
+            __Vchange = VPingPongBufferWithWriteOnlyMaster___024root___change_request(&(vlSymsp->TOP));
+        }
+    } while (VL_UNLIKELY(__Vchange));
+    // Evaluate cleanup
 }
 
-//--------------------
-// Internal Methods
+//============================================================
+// Utilities
 
-VL_INLINE_OPT void VPingPongBufferWithWriteOnlyMaster::_sequent__TOP__3(VPingPongBufferWithWriteOnlyMaster__Syms* __restrict vlSymsp) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VPingPongBufferWithWriteOnlyMaster::_sequent__TOP__3\n"); );
-    VPingPongBufferWithWriteOnlyMaster* __restrict vlTOPp VL_ATTR_UNUSED = vlSymsp->TOPp;
-    // Body
-    vlTOPp->full_aw_payload_addr = vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater__DOT__startOffsetReg;
-    vlTOPp->full_aw_valid = vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater__DOT__axi4Interface_controlAwValidSignal;
-    vlTOPp->full_b_ready = vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater__DOT__axi4Interface_controlBReady;
-    vlTOPp->full_aw_payload_len = (0xffU & ((IData)(vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater__DOT__burstLengthReg) 
-					    - (IData)(1U)));
-    vlTOPp->full_w_payload_last = vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater_m_axi_wlast;
-    vlTOPp->interruptOut = vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT__outputInterruptSignalState;
+VerilatedContext* VPingPongBufferWithWriteOnlyMaster::contextp() const {
+    return vlSymsp->_vm_contextp__;
 }
 
-VL_INLINE_OPT void VPingPongBufferWithWriteOnlyMaster::_multiclk__TOP__4(VPingPongBufferWithWriteOnlyMaster__Syms* __restrict vlSymsp) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VPingPongBufferWithWriteOnlyMaster::_multiclk__TOP__4\n"); );
-    VPingPongBufferWithWriteOnlyMaster* __restrict vlTOPp VL_ATTR_UNUSED = vlSymsp->TOPp;
-    // Body
-    vlTOPp->full_w_payload_data = vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater_m_axi_wdata;
-    vlTOPp->full_w_valid = vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater_m_axi_wvalid;
+const char* VPingPongBufferWithWriteOnlyMaster::name() const {
+    return vlSymsp->name();
 }
 
-VL_INLINE_OPT void VPingPongBufferWithWriteOnlyMaster::_multiclk__TOP__5(VPingPongBufferWithWriteOnlyMaster__Syms* __restrict vlSymsp) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VPingPongBufferWithWriteOnlyMaster::_multiclk__TOP__5\n"); );
-    VPingPongBufferWithWriteOnlyMaster* __restrict vlTOPp VL_ATTR_UNUSED = vlSymsp->TOPp;
-    // Body
-    vlTOPp->streamIn_ready = vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT__s_axis_ready;
+//============================================================
+// Invoke final blocks
+
+VL_ATTR_COLD void VPingPongBufferWithWriteOnlyMaster::final() {
+    VPingPongBufferWithWriteOnlyMaster___024root___final(&(vlSymsp->TOP));
 }
 
-void VPingPongBufferWithWriteOnlyMaster::_eval(VPingPongBufferWithWriteOnlyMaster__Syms* __restrict vlSymsp) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VPingPongBufferWithWriteOnlyMaster::_eval\n"); );
-    VPingPongBufferWithWriteOnlyMaster* __restrict vlTOPp VL_ATTR_UNUSED = vlSymsp->TOPp;
-    // Body
-    if (((IData)(vlTOPp->aclk) & (~ (IData)(vlTOPp->__Vclklast__TOP__aclk)))) {
-	vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster._sequent__TOP__PingPongBufferWithWriteOnlyMaster__3(vlSymsp);
-	vlTOPp->__Vm_traceActivity = (2U | vlTOPp->__Vm_traceActivity);
-	vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1._sequent__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__3(vlSymsp);
+//============================================================
+// Trace configuration
+
+void VPingPongBufferWithWriteOnlyMaster___024root__trace_init_top(VPingPongBufferWithWriteOnlyMaster___024root* vlSelf, VerilatedVcd* tracep);
+
+VL_ATTR_COLD static void trace_init(void* voidSelf, VerilatedVcd* tracep, uint32_t code) {
+    // Callback from tracep->open()
+    VPingPongBufferWithWriteOnlyMaster___024root* const __restrict vlSelf VL_ATTR_UNUSED = static_cast<VPingPongBufferWithWriteOnlyMaster___024root*>(voidSelf);
+    VPingPongBufferWithWriteOnlyMaster__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
+    if (!vlSymsp->_vm_contextp__->calcUnusedSigs()) {
+        VL_FATAL_MT(__FILE__, __LINE__, __FILE__,
+            "Turning on wave traces requires Verilated::traceEverOn(true) call before time 0.");
     }
-    if ((((IData)(vlTOPp->aclk) & (~ (IData)(vlTOPp->__Vclklast__TOP__aclk))) 
-	 | ((~ (IData)(vlTOPp->aresetn)) & (IData)(vlTOPp->__Vclklast__TOP__aresetn)))) {
-	vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster._sequent__TOP__PingPongBufferWithWriteOnlyMaster__4(vlSymsp);
-	vlTOPp->__Vm_traceActivity = (4U | vlTOPp->__Vm_traceActivity);
-	vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1._sequent__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__4(vlSymsp);
-	vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1._sequent__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__5(vlSymsp);
-	vlTOPp->_sequent__TOP__3(vlSymsp);
-    }
-    if ((((IData)(vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_1) 
-	  & (~ (IData)(vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_1))) 
-	 | ((IData)(vlTOPp->startIn) & (~ (IData)(vlTOPp->__Vclklast__TOP__startIn))))) {
-	vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1._sequent__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__6(vlSymsp);
-	vlTOPp->__Vm_traceActivity = (8U | vlTOPp->__Vm_traceActivity);
-    }
-    if ((((IData)(vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_2) 
-	  & (~ (IData)(vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_2))) 
-	 | ((IData)(vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster____PVT__writeOnlyMater__DOT__axi4Interface_isBurstComplete) 
-	    & (~ (IData)(vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster____PVT__writeOnlyMater__DOT__axi4Interface_isBurstComplete))))) {
-	vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1._sequent__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__7(vlSymsp);
-	vlTOPp->__Vm_traceActivity = (0x10U | vlTOPp->__Vm_traceActivity);
-    }
-    vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster._combo__TOP__PingPongBufferWithWriteOnlyMaster__5(vlSymsp);
-    vlTOPp->__Vm_traceActivity = (0x20U | vlTOPp->__Vm_traceActivity);
-    vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1._combo__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__8(vlSymsp);
-    if ((((IData)(vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT__outputStartSignalReg) 
-	  & (~ (IData)(vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT__outputStartSignalReg))) 
-	 | ((IData)(vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster____PVT__writeOnlyMater__DOT___zz_4) 
-	    & (~ (IData)(vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster____PVT__writeOnlyMater__DOT___zz_4))))) {
-	vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster._sequent__TOP__PingPongBufferWithWriteOnlyMaster__6(vlSymsp);
-	vlTOPp->__Vm_traceActivity = (0x40U | vlTOPp->__Vm_traceActivity);
-    }
-    if (((((IData)(vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_1) 
-	   & (~ (IData)(vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_1))) 
-	  | ((IData)(vlTOPp->aclk) & (~ (IData)(vlTOPp->__Vclklast__TOP__aclk)))) 
-	 | ((IData)(vlTOPp->startIn) & (~ (IData)(vlTOPp->__Vclklast__TOP__startIn))))) {
-	vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1._multiclk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__9(vlSymsp);
-	vlTOPp->__Vm_traceActivity = (0x80U | vlTOPp->__Vm_traceActivity);
-    }
-    vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster._combo__TOP__PingPongBufferWithWriteOnlyMaster__7(vlSymsp);
-    if ((((((IData)(vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT__outputStartSignalReg) 
-	    & (~ (IData)(vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT__outputStartSignalReg))) 
-	   | ((IData)(vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster____PVT__writeOnlyMater__DOT___zz_4) 
-	      & (~ (IData)(vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster____PVT__writeOnlyMater__DOT___zz_4)))) 
-	  | ((IData)(vlTOPp->aclk) & (~ (IData)(vlTOPp->__Vclklast__TOP__aclk)))) 
-	 | ((~ (IData)(vlTOPp->aresetn)) & (IData)(vlTOPp->__Vclklast__TOP__aresetn)))) {
-	vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster._multiclk__TOP__PingPongBufferWithWriteOnlyMaster__8(vlSymsp);
-	vlTOPp->__Vm_traceActivity = (0x100U | vlTOPp->__Vm_traceActivity);
-	vlTOPp->_multiclk__TOP__4(vlSymsp);
-	vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1._multiclk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__10(vlSymsp);
-    }
-    if ((((((IData)(vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_1) 
-	    & (~ (IData)(vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_1))) 
-	   | ((IData)(vlTOPp->aclk) & (~ (IData)(vlTOPp->__Vclklast__TOP__aclk)))) 
-	  | ((~ (IData)(vlTOPp->aresetn)) & (IData)(vlTOPp->__Vclklast__TOP__aresetn))) 
-	 | ((IData)(vlTOPp->startIn) & (~ (IData)(vlTOPp->__Vclklast__TOP__startIn))))) {
-	vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1._multiclk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__11(vlSymsp);
-	vlTOPp->__Vm_traceActivity = (0x200U | vlTOPp->__Vm_traceActivity);
-	vlTOPp->_multiclk__TOP__5(vlSymsp);
-    }
-    vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster._combo__TOP__PingPongBufferWithWriteOnlyMaster__9(vlSymsp);
-    vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1._combo__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__12(vlSymsp);
-    // Final
-    vlTOPp->__Vclklast__TOP__aclk = vlTOPp->aclk;
-    vlTOPp->__Vclklast__TOP__aresetn = vlTOPp->aresetn;
-    vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_1 
-	= vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_1;
-    vlTOPp->__Vclklast__TOP__startIn = vlTOPp->startIn;
-    vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_2 
-	= vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_2;
-    vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster____PVT__writeOnlyMater__DOT__axi4Interface_isBurstComplete 
-	= vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster____PVT__writeOnlyMater__DOT__axi4Interface_isBurstComplete;
-    vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT__outputStartSignalReg 
-	= vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT__outputStartSignalReg;
-    vlTOPp->__Vclklast__TOP____VinpClk__TOP__PingPongBufferWithWriteOnlyMaster____PVT__writeOnlyMater__DOT___zz_4 
-	= vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster____PVT__writeOnlyMater__DOT___zz_4;
-    vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_1 
-	= vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT___zz_1;
-    vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT___zz_2 
-	= vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT___zz_2;
-    vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster____PVT__writeOnlyMater__DOT__axi4Interface_isBurstComplete 
-	= vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater__DOT__axi4Interface_isBurstComplete;
-    vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1____PVT__outputStartSignalReg 
-	= vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT__outputStartSignalReg;
-    vlTOPp->__VinpClk__TOP__PingPongBufferWithWriteOnlyMaster____PVT__writeOnlyMater__DOT___zz_4 
-	= vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater__DOT___zz_4;
+    vlSymsp->__Vm_baseCode = code;
+    tracep->scopeEscape(' ');
+    tracep->pushNamePrefix(std::string{vlSymsp->name()} + ' ');
+    VPingPongBufferWithWriteOnlyMaster___024root__trace_init_top(vlSelf, tracep);
+    tracep->popNamePrefix();
+    tracep->scopeEscape('.');
 }
 
-VL_INLINE_OPT QData VPingPongBufferWithWriteOnlyMaster::_change_request(VPingPongBufferWithWriteOnlyMaster__Syms* __restrict vlSymsp) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VPingPongBufferWithWriteOnlyMaster::_change_request\n"); );
-    VPingPongBufferWithWriteOnlyMaster* __restrict vlTOPp VL_ATTR_UNUSED = vlSymsp->TOPp;
-    // Body
-    return (vlTOPp->_change_request_1(vlSymsp));
-}
+VL_ATTR_COLD void VPingPongBufferWithWriteOnlyMaster___024root__trace_register(VPingPongBufferWithWriteOnlyMaster___024root* vlSelf, VerilatedVcd* tracep);
 
-VL_INLINE_OPT QData VPingPongBufferWithWriteOnlyMaster::_change_request_1(VPingPongBufferWithWriteOnlyMaster__Syms* __restrict vlSymsp) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VPingPongBufferWithWriteOnlyMaster::_change_request_1\n"); );
-    VPingPongBufferWithWriteOnlyMaster* __restrict vlTOPp VL_ATTR_UNUSED = vlSymsp->TOPp;
-    // Body
-    // Change detection
-    QData __req = false;  // Logically a bool
-    __req |= ((vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater__DOT___zz_4 ^ vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__writeOnlyMater__DOT___zz_4)
-	 | (vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater__DOT__axi4Interface_isBurstComplete ^ vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__writeOnlyMater__DOT__axi4Interface_isBurstComplete)
-	 | (vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT___zz_1 ^ vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1___zz_1)
-	 | (vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT___zz_2 ^ vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1___zz_2)
-	 | (vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT__outputStartSignalReg ^ vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__outputStartSignalReg));
-    VL_DEBUG_IF( if(__req && ((vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater__DOT___zz_4 ^ vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__writeOnlyMater__DOT___zz_4))) VL_DBG_MSGF("        CHANGE: /home/lqx/IdeaProjects/AIE/tmp/job_1/PingPongBufferWithWriteOnlyMaster.v:182: writeOnlyMater._zz_4\n"); );
-    VL_DEBUG_IF( if(__req && ((vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater__DOT__axi4Interface_isBurstComplete ^ vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__writeOnlyMater__DOT__axi4Interface_isBurstComplete))) VL_DBG_MSGF("        CHANGE: /home/lqx/IdeaProjects/AIE/tmp/job_1/PingPongBufferWithWriteOnlyMaster.v:212: writeOnlyMater.axi4Interface_isBurstComplete\n"); );
-    VL_DEBUG_IF( if(__req && ((vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT___zz_1 ^ vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1___zz_1))) VL_DBG_MSGF("        CHANGE: /home/lqx/IdeaProjects/AIE/tmp/job_1/PingPongBufferWithWriteOnlyMaster.v:508: _zz_1\n"); );
-    VL_DEBUG_IF( if(__req && ((vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT___zz_2 ^ vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1___zz_2))) VL_DBG_MSGF("        CHANGE: /home/lqx/IdeaProjects/AIE/tmp/job_1/PingPongBufferWithWriteOnlyMaster.v:514: _zz_2\n"); );
-    VL_DEBUG_IF( if(__req && ((vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT__outputStartSignalReg ^ vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__outputStartSignalReg))) VL_DBG_MSGF("        CHANGE: /home/lqx/IdeaProjects/AIE/tmp/job_1/PingPongBufferWithWriteOnlyMaster.v:528: outputStartSignalReg\n"); );
-    // Final
-    vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__writeOnlyMater__DOT___zz_4 
-	= vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater__DOT___zz_4;
-    vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__writeOnlyMater__DOT__axi4Interface_isBurstComplete 
-	= vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster.__PVT__writeOnlyMater__DOT__axi4Interface_isBurstComplete;
-    vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1___zz_1 
-	= vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT___zz_1;
-    vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1___zz_2 
-	= vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT___zz_2;
-    vlTOPp->__Vchglast__TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1__outputStartSignalReg 
-	= vlSymsp->TOP__PingPongBufferWithWriteOnlyMaster__pingPongBuffer_1.__PVT__outputStartSignalReg;
-    return __req;
+VL_ATTR_COLD void VPingPongBufferWithWriteOnlyMaster::trace(VerilatedVcdC* tfp, int levels, int options) {
+    if (false && levels && options) {}  // Prevent unused
+    tfp->spTrace()->addInitCb(&trace_init, &(vlSymsp->TOP));
+    VPingPongBufferWithWriteOnlyMaster___024root__trace_register(&(vlSymsp->TOP), tfp->spTrace());
 }
-
-#ifdef VL_DEBUG
-void VPingPongBufferWithWriteOnlyMaster::_eval_debug_assertions() {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VPingPongBufferWithWriteOnlyMaster::_eval_debug_assertions\n"); );
-    // Body
-    if (VL_UNLIKELY((streamIn_valid & 0xfeU))) {
-	Verilated::overWidthError("streamIn_valid");}
-    if (VL_UNLIKELY((startIn & 0xfeU))) {
-	Verilated::overWidthError("startIn");}
-    if (VL_UNLIKELY((full_aw_ready & 0xfeU))) {
-	Verilated::overWidthError("full_aw_ready");}
-    if (VL_UNLIKELY((full_w_ready & 0xfeU))) {
-	Verilated::overWidthError("full_w_ready");}
-    if (VL_UNLIKELY((full_b_valid & 0xfeU))) {
-	Verilated::overWidthError("full_b_valid");}
-    if (VL_UNLIKELY((full_b_payload_resp & 0xfcU))) {
-	Verilated::overWidthError("full_b_payload_resp");}
-    if (VL_UNLIKELY((aresetn & 0xfeU))) {
-	Verilated::overWidthError("aresetn");}
-    if (VL_UNLIKELY((aclk & 0xfeU))) {
-	Verilated::overWidthError("aclk");}
-}
-#endif // VL_DEBUG

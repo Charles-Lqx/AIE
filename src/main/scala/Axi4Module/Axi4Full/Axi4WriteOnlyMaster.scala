@@ -11,7 +11,7 @@ import spinal.core.sim._
  *
  * @param addressWidth The width of address which we use to write data to axiSlave
  * @param maxBurstLen  The maximum number of transfer within a burst.
- * @param widthPerData The width of each data from stream interface
+ * @param dataWidth The width of each data from stream interface
  */
 case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, dataWidth: Int = 32) extends Bundle {
 
@@ -31,7 +31,9 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
   // interface define
   val start = in Bool()
   val burstLen = in UInt (8 bits)
-  val offset = in UInt (addressWidth bits)
+  val startAddr = in UInt (addressWidth bits)
+  val offset = in UInt(addressWidth bits)
+  val pathNumb = in UInt(8 bits)
   val stream = slave Stream transferDataType
   val full = master(Axi4WriteOnly(config))
   val transInterrupt = out Bool()
@@ -42,8 +44,14 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
   // the burst length information signal
   def burstLength: UInt = burstLen
 
-  // the start offset address signal
-  def startOffsetSignal: UInt = offset
+  // the start address signal
+  def startAddressSignal: UInt = startAddr
+
+  // the offset address signal
+  def offsetAddressSignal: UInt = offset
+
+  // the data path number(stream data path) the maximum number is 255(means that have 256 path)
+  def dataPathNumber: UInt = pathNumb
 
   // the stream data channel
   def StreamInterface: Stream[Bits] = stream
@@ -133,12 +141,31 @@ case class Axi4WriteOnlyMaster(addressWidth: Int = 32, maxBurstLen: Int = 256, d
 
   // ----------------------------- payload logic------------------------------
   // the writeMasterInterface's aw channel's addr port should give a startAddress for each burst
-  // send address according to the specific address port
-  val startOffsetReg = RegInit(U(0, addressWidth bits))
-  when(startSendArea.startSendSignal) {
-    startOffsetReg := startOffsetSignal
+  // send address according to the specific address port(startAddr and offset) for each burst
+  val iterateCounter = Counter(0, 255)
+  val isInitialIterate = iterateCounter === U(0, 8 bits)
+  isInitialIterate.simPublic()
+  val isRefreshAddr = RegInit(True)
+
+  when(writeOnlyMasterInterface.b.fire){isRefreshAddr := True}
+  when(writeOnlyMasterInterface.b.fire){iterateCounter.increment()}
+  when(iterateCounter === dataPathNumber && writeOnlyMasterInterface.b.fire){iterateCounter.clear()}
+
+  val offsetAddressReg = RegInit(U(0, addressWidth bits))
+  val finalAddressReg = RegInit(U(0, addressWidth bits))
+
+
+
+  when(isRefreshAddr && startSendArea.startSendSignal && isInitialIterate) {
+    offsetAddressReg := offsetAddressSignal
+    finalAddressReg := startAddressSignal
+    isRefreshAddr := False
   }
-  writeOnlyMasterInterface.aw.payload.addr := startOffsetReg
+  when(isRefreshAddr && startSendArea.startSendSignal && !isInitialIterate){
+    finalAddressReg := finalAddressReg + offsetAddressReg
+    isRefreshAddr := False
+  }
+  writeOnlyMasterInterface.aw.payload.addr := finalAddressReg
 
   import Axi4.burst._
 

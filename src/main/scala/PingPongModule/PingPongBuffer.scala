@@ -17,13 +17,13 @@ case class PingPongBuffer(addressWidth: Int = 32, dataWidth: Int = 32, bufferSiz
   val startIn = in Bool()
   val bufferDepthIn = in UInt (8 bits)
   val interruptOut = out Bool()
-  val dataOffsetIn = in UInt(addressWidth bits)
+  // val dataOffsetIn = in UInt(addressWidth bits)
   // master side
   val streamOut = master Stream Bits(dataWidth bits)
   val startOut = out Bool()
   val bufferDepthOut = out UInt (8 bits)
   val interruptIn = in Bool()
-  val dataOffsetOut = out UInt(addressWidth bits)
+  // val dataOffsetOut = out UInt(addressWidth bits)
 
   def inputStreamInterface: Stream[Bits] = streamIn
 
@@ -33,7 +33,7 @@ case class PingPongBuffer(addressWidth: Int = 32, dataWidth: Int = 32, bufferSiz
 
   def outputInterruptSignal: Bool = interruptOut
 
-  def inputDataOffsetSignal: UInt = dataOffsetIn
+  // def inputDataOffsetSignal: UInt = dataOffsetIn
 
   def outputStreamInterface: Stream[Bits] = streamOut
 
@@ -43,7 +43,7 @@ case class PingPongBuffer(addressWidth: Int = 32, dataWidth: Int = 32, bufferSiz
 
   def inputInterruptSignal: Bool = interruptIn
 
-  def outputDataOffsetSignal: UInt = dataOffsetOut
+  // def outputDataOffsetSignal: UInt = dataOffsetOut
 
   // register the inputBufferDepth
   val bufferDepthReg = RegNext(inputBufferDepth) init U(bufferSize - 1, 8 bits)
@@ -92,7 +92,6 @@ case class PingPongBuffer(addressWidth: Int = 32, dataWidth: Int = 32, bufferSiz
 
   val realStartSignal = startReceiveArea.startReceiveSignal || startReceiveArea.startReceiveSignal.fall()
 
-  val fallSignal = startReceiveArea.startReceiveSignal.fall().simPublic()
   // define this clockDomain for monitor whether last burst complete(can start next burst)
   val lastBurstCompleteClockDomainConfig = ClockDomainConfig(clockEdge = RISING,
     resetKind = ASYNC,
@@ -116,6 +115,9 @@ case class PingPongBuffer(addressWidth: Int = 32, dataWidth: Int = 32, bufferSiz
 
   // val currentState = UInt(2 bits)
 
+  // delay for timing
+  val pipedBufferAPop = bufferFifoA.io.pop.stage()
+  val pipedBufferBPop = bufferFifoB.io.pop.stage()
 
   bufferFifoA.io.push.valid := False
   bufferFifoA.io.push.payload := inputStreamInterface.payload
@@ -123,11 +125,11 @@ case class PingPongBuffer(addressWidth: Int = 32, dataWidth: Int = 32, bufferSiz
   bufferFifoB.io.push.valid := False
   bufferFifoB.io.push.payload := inputStreamInterface.payload
 
-  bufferFifoA.io.pop.ready := False
-  bufferFifoB.io.pop.ready := False
+  pipedBufferAPop.ready := False
+  pipedBufferBPop.ready := False
 
   outputStreamInterface.valid := False
-  outputStreamInterface.payload := bufferFifoA.io.pop.payload
+  outputStreamInterface.payload := pipedBufferAPop.payload
 
   inputStreamInterface.ready := False
 
@@ -169,8 +171,8 @@ case class PingPongBuffer(addressWidth: Int = 32, dataWidth: Int = 32, bufferSiz
        .elsewhen(outCounterWillOverflow){goto(EMPTY)}
 
       // pop logic
-      when(isReadBufferA){outputStreamInterface << bufferFifoA.io.pop}
-      when(!isReadBufferA){outputStreamInterface << bufferFifoB.io.pop}
+      when(isReadBufferA){outputStreamInterface << pipedBufferAPop}
+      when(!isReadBufferA){outputStreamInterface << pipedBufferBPop}
 
       // start push logic
       when(realStartSignal && isWriteBufferA) {bufferFifoA.io.push << inputStreamInterface}
@@ -179,14 +181,14 @@ case class PingPongBuffer(addressWidth: Int = 32, dataWidth: Int = 32, bufferSiz
 
     FULL.whenIsActive {
       when(isReadBufferA) {
-        outputStreamInterface << bufferFifoA.io.pop
+        outputStreamInterface << pipedBufferAPop
         when(outCounterWillOverflow) {
           outputInterruptSignalState := True
           goto(HALF)
         }
       }
       when(!isWriteBufferA) {
-        outputStreamInterface << bufferFifoB.io.pop
+        outputStreamInterface << pipedBufferBPop
         when(outCounterWillOverflow) {
           outputInterruptSignalState := True
           goto(HALF)
@@ -202,12 +204,12 @@ case class PingPongBuffer(addressWidth: Int = 32, dataWidth: Int = 32, bufferSiz
 
   outputBufferDepth := bufferDepthReg
 
-  // define two register to store the offset address corresponding data and accompany a valid signal
-  val offsetA, offsetB = RegInit(U(0, addressWidth bits))
-  when(realStartSignal){
-    when(isWriteBufferA){offsetA := inputDataOffsetSignal}
-    when(!isWriteBufferA){offsetB := inputDataOffsetSignal}
-  }
+//  // define two register to store the offset address corresponding data and accompany a valid signal
+//  val offsetA, offsetB = RegInit(U(0, addressWidth bits))
+//  when(realStartSignal){
+//    when(isWriteBufferA){offsetA := inputDataOffsetSignal}
+//    when(!isWriteBufferA){offsetB := inputDataOffsetSignal}
+//  }
 
   // get currentState
   val currentState = UInt(2 bits)
@@ -219,22 +221,22 @@ case class PingPongBuffer(addressWidth: Int = 32, dataWidth: Int = 32, bufferSiz
   when(isAfterResetState){readyForNextTransfer := True}
   when(lastBurstCompleteArea.lastBurstCompleteSignal){readyForNextTransfer := True}
 
-  val outputDataOffsetReg = RegInit(U(0, addressWidth bits))
+  // val outputDataOffsetReg = RegInit(U(0, addressWidth bits))
   val outputStartSignalReg = RegInit(False)
   when(readyForNextTransfer && canReadData && isReadBufferA){
     outputStartSignalReg := readyForNextTransfer
-    outputDataOffsetReg := offsetA
+    // outputDataOffsetReg := offsetA
     readyForNextTransfer := False
   }
   when(readyForNextTransfer && canReadData && !isReadBufferA){
     outputStartSignalReg := readyForNextTransfer
-    outputDataOffsetReg := offsetB
+    // outputDataOffsetReg := offsetB
     readyForNextTransfer := False
   }
   when(outputStartSignalReg){outputStartSignalReg := False}
 
 
-  outputDataOffsetSignal := outputDataOffsetReg
+  // outputDataOffsetSignal := outputDataOffsetReg
   outputStartSignal := outputStartSignalReg
 
 

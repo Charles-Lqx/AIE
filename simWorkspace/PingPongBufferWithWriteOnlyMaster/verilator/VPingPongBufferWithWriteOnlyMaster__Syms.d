@@ -1,11 +1,12 @@
 VPingPongBufferWithWriteOnlyMaster__Syms.o: \
  VPingPongBufferWithWriteOnlyMaster__Syms.cpp \
  VPingPongBufferWithWriteOnlyMaster__Syms.h \
- /usr/share/verilator/include/verilated.h \
- /usr/share/verilator/include/verilated_config.h \
- /usr/share/verilator/include/verilatedos.h \
+ /usr/local/share/verilator/include/verilated.h \
+ /usr/local/share/verilator/include/verilatedos.h \
+ /usr/local/share/verilator/include/verilated_types.h \
+ /usr/local/share/verilator/include/verilated_funcs.h \
  VPingPongBufferWithWriteOnlyMaster.h \
- VPingPongBufferWithWriteOnlyMaster__Dpi.h \
- /usr/share/verilator/include/vltstd/svdpi.h \
+ /usr/local/share/verilator/include/vltstd/svdpi.h \
+ VPingPongBufferWithWriteOnlyMaster___024root.h \
  VPingPongBufferWithWriteOnlyMaster_PingPongBufferWithWriteOnlyMaster.h \
- VPingPongBufferWithWriteOnlyMaster_PingPongBuffer.h
+ VPingPongBufferWithWriteOnlyMaster_Stream2Axi4WriteOnlyMasterInterface.h
