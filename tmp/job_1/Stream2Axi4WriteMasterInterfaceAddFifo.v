@@ -1,10 +1,10 @@
 // Generator : SpinalHDL v1.6.0    git head : 73c8d8e2b86b45646e9d0b2e729291f2b65e6be3
-// Component : Axi4Module.Axi4Full.Stream2Axi4WriteMasterInterfaceAddFifo
+// Component : AIE.Axi4Module.Axi4Full.Stream2Axi4WriteMasterInterfaceAddFifo
 // Git hash  : 6d1480269f65659931465c8b65ad201e15ffd506
 
 
 
-module Axi4Module.Axi4Full.Stream2Axi4WriteMasterInterfaceAddFifo (
+module AIE.Axi4Module.Axi4Full.Stream2Axi4WriteMasterInterfaceAddFifo (
   input               s_axis_valid,
   output              s_axis_ready,
   input      [31:0]   s_axis_payload,
@@ -75,7 +75,7 @@ module Axi4Module.Axi4Full.Stream2Axi4WriteMasterInterfaceAddFifo (
   wire       [8:0]    fifoInstance_io_occupancy;
   wire       [8:0]    fifoInstance_io_availability;
 
-  Axi4Module.Axi4Full.Stream2Axi4WriteMasterInterface axi4Interconnection (
+  AIE.Axi4Module.Axi4Full.Stream2Axi4WriteMasterInterface axi4Interconnection (
     .s_axis_valid      (fifoInstance_io_pop_valid           ), //i
     .s_axis_ready      (axi4Interconnection_s_axis_ready    ), //o
     .s_axis_payload    (fifoInstance_io_pop_payload         ), //i
@@ -306,7 +306,7 @@ module StreamFifo (
 
 endmodule
 
-module Axi4Module.Axi4Full.Stream2Axi4WriteMasterInterface (
+module AIE.Axi4Module.Axi4Full.Stream2Axi4WriteMasterInterface (
   input               s_axis_valid,
   output reg          s_axis_ready,
   input      [31:0]   s_axis_payload,

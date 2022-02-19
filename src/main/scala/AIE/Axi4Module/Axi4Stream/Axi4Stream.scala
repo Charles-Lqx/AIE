@@ -1,9 +1,9 @@
-package Axi4Module.Axi4Stream
+package AIE.Axi4Module.Axi4Stream
 
 import spinal.core._
 import spinal.lib._
 
-// define a config class for Axi4Module.Axi4Stream.Axi4Stream
+// define a config class for AIE.Axi4Module.Axi4Stream.Axi4Stream
 case class Axi4StreamConfig(dataWidth: Int,
                             dataNumber: Int,
                             useStrb: Boolean = true,

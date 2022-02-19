@@ -1,4 +1,4 @@
-package Axi4Module.Axi4Full
+package AIE.Axi4Module.Axi4Full
 
 import spinal.core.sim._
 import spinal.core.{U, _}
@@ -38,16 +38,16 @@ case class Axi4WriteMaster(addressWidth: Int, len: Int = 256, widthPerData: Int 
   // record the times of write op in write channel
   val writeCounter = Counter(0, len)
 
-  // record the times of handshake between fifo and Axi4Module.Axi4Full.Axi4WriteMaster interface
+  // record the times of handshake between fifo and AIE.Axi4Module.Axi4Full.Axi4WriteMaster interface
   val handshakeCounter: Counter = Counter(0, len)
 
-  // ----------------fifo to Axi4Module.Axi4Full.Axi4WriteMaster channel map-------------------
+  // ----------------fifo to AIE.Axi4Module.Axi4Full.Axi4WriteMaster channel map-------------------
 
   // register the fifo data (or fifo data buffer)
 
   val fifoDataBuffer: Vec[Bits] = Vec(List.tabulate(len)(i => RegInit(B(0, widthPerData bits))))
 
-  // handshake between fifo and Axi4Module.Axi4Full.Axi4WriteMaster
+  // handshake between fifo and AIE.Axi4Module.Axi4Full.Axi4WriteMaster
   when(StreamInterface.fire) {
     fifoDataBuffer(handshakeCounter.resized) := StreamInterface.payload
     handshakeCounter.increment()

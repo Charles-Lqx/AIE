@@ -1,6 +1,6 @@
-package PingPongModule
+package AIE.PingPongModule
 
-import Axi4Module.Axi4Full.{Axi4WriteOnlyMaster, Axi4WriteOnlyMasterSpecRenamer}
+import AIE.Axi4Module.Axi4Full.{Axi4WriteOnlyMaster, Axi4WriteOnlyMasterSpecRenamer}
 import spinal.lib._
 import spinal.core._
 import spinal.lib.fsm._

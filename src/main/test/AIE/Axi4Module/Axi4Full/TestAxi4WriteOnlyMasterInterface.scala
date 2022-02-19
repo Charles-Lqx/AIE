@@ -1,4 +1,4 @@
-package Axi4Module.Axi4Full
+package AIE.Axi4Module.Axi4Full
 
 import spinal.core._
 import spinal.core.sim._

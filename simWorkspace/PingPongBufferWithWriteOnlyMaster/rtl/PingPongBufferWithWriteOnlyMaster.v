@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.6.1    git head : 3bf789d53b1b5a36974196e2d591342e15ddf28c
 // Component : PingPongBufferWithWriteOnlyMaster
-// Git hash  : aa3ad2539167a6e12d64ef3684992f15a9ac70fb
+// Git hash  : b383458a57b8674cbf97c3d66bffbdc20a73ffe9
 
 `timescale 1ns/1ps 
 
