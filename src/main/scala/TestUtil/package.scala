@@ -18,7 +18,7 @@ package object TestUtil {
 
   def setMonitorOnVec[T <: BaseType](trigger: Bool, target: Vec[T], Container: ArrayBuffer[T]): SimThread = fork {
     while (true) {
-      if (trigger.toBoolean) Container ++= target.map(_).toBuffer
+      if (trigger.toBoolean) Container ++= target.toBuffer
       sleep(2)
     }
   }
@@ -105,19 +105,21 @@ package object TestUtil {
     dutResult
   }
 
-  def flowPeekPokeFullData[To, Ti, Hi <: Data, Ho <: Data]
-  (dut: Component, testCases: Seq[Ti], dataIn: Stream[Hi], dataOut: Stream[Ho], latency: Int = 0): ArrayBuffer[To] = {
+  def flowPeekPokeFullDataOneToMore[To, Ti, Hi <: Data, Ho <: Data]
+  (dut: Component, testCases: Seq[Ti], dataIn: Stream[Hi], dataOut: Vec[Stream[Ho]], latency: Int = 0): ArrayBuffer[ArrayBuffer[To]] = {
     // init
     dataIn.clear()
     dut.clockDomain.waitSampling()
     // set monitor
-    val dutResult = ArrayBuffer[To]()
-    dataOut.setMonitor(dutResult)
+    val dutResult = ArrayBuffer.fill(dataOut.size)(ArrayBuffer[To]())
+    (0 until dutResult.size).foreach { i =>
+      dataOut(i).setMonitorStream(dutResult(i))
+    }
     // poke stimulus
-    import dataIn.fire
     testCases.indices.foreach { i =>
       dataIn.poke(testCases(i), lastWhen = i == (testCases.length - 1))
-      dut.clockDomain.waitSamplingWhere(fire.toBoolean)
+      dut.clockDomain.waitRisingEdgeWhere(dataIn.valid.toBoolean && dataIn.ready.toBoolean)
+
     }
     // wait for result
     dataIn.clear()
@@ -253,5 +255,28 @@ package object TestUtil {
       }
     }
   }
-}
 
+  implicit class StreamUtils[T <: Data](cut: Stream[T]) {
+
+    def forkWhenFire(body: => Unit): SimThread = fork {
+      while (true) {
+        if (cut.valid.toBoolean && cut.ready.toBoolean) {
+          body
+        }
+        sleep(2)
+      }
+    }
+
+    def setMonitorStream[T](Container: ArrayBuffer[T], name: String = ""): SimThread = forkWhenFire {
+      cut.payload match {
+        case vec: Vec[_] => Container ++= peekData(vec)
+        case fragment: Fragment[_] =>
+          fragment.fragment match {
+            case vec: Vec[_] => Container ++= peekData(vec)
+            case _ => Container += peekData(fragment.fragment)
+          }
+        case _ => Container += peekData(cut.payload)
+      }
+    }
+  }
+}

@@ -4,6 +4,7 @@ import spinal.core._
 import spinal.lib._
 import spinal.lib.fsm._
 
+import spinal.core.sim._
 import scala.collection.mutable._
 
 
@@ -57,7 +58,7 @@ case class ArraySlice(dataWidth: Int, arraySliceConfig: ArraySliceConfig) extend
 
 
   // record handshake times
-  val handshakeTimes = ArrayBuffer.fill(N)(Counter(0, (W * H) / (M * N)))
+  val handshakeTimes = ArrayBuffer.fill(N)(Counter(0, W * H))
 
   // define the mem we need
   val fifoGroup: ArrayBuffer[StreamFifo[Bits]] =
@@ -67,15 +68,11 @@ case class ArraySlice(dataWidth: Int, arraySliceConfig: ArraySliceConfig) extend
   val selectWriteFifo = Reg(UInt(log2Up(W) bits)).init(U(0).resized).allowUnsetRegToAvoidLatch
   val selectReadFifo = ArrayBuffer.fill(N)(Reg(UInt(log2Up(W) bits)).init(U(0).resized).allowUnsetRegToAvoidLatch)
 
-  val canSelectNext: Bool = RegInit(False)
-  when(canSelectNext){
-    canSelectNext := False
-  }
   val holdReadOp = ArrayBuffer.fill(N)(RegInit(False))
-  val writeSelectRound: Bool = RegInit(False)
-  when(writeSelectRound){
-    writeSelectRound := False
-  }
+  val allowPadding = ArrayBuffer.fill(N)(RegInit(True))
+  val outSliceNumb = ArrayBuffer.fill(N)(Counter(0, H))
+  val writeAround = RegInit(False)
+  val readAround = ArrayBuffer.fill(N)(RegInit(False))
 
   // initial state
   ifmData.ready := False
@@ -91,26 +88,25 @@ case class ArraySlice(dataWidth: Int, arraySliceConfig: ArraySliceConfig) extend
 
   // decide real fifo depth which be used
   def realFifoDepth: UInt = {
-    val realFifoDepthValue = UInt(log2Up(H) bits)
+    val realFifoDepthValue = UInt()
     val realDepth = h
     val res = realDepth % (a * U(M).resized)
     when(res =/= U(0).resized) {
       when(U(H).resized <= realDepth + a * U(M).resized - res) {
         realFifoDepthValue := U(H).resized
-      }
-        .otherwise(realFifoDepthValue := realDepth + a * U(M).resized - res)
-    } otherwise {
+      }.otherwise(realFifoDepthValue := (realDepth + a * U(M).resized - res).resized)
+    }.otherwise {
       when(U(H).resized <= realDepth) {
         realFifoDepthValue := U(H).resized
       }
-        .otherwise(realFifoDepthValue := realDepth)
+        .otherwise(realFifoDepthValue := realDepth.resized)
     }
     realFifoDepthValue
   }
 
   // decide the number of fifo which be used
   def realFifoNumb: UInt = {
-    val realFifoNumbValue = UInt(log2Up(W) bits)
+    val realFifoNumbValue = UInt()
     val realNumb = w
     val res = realNumb % (b * U(N).resized)
     when(res =/= U(0).resized) {
@@ -135,7 +131,7 @@ case class ArraySlice(dataWidth: Int, arraySliceConfig: ArraySliceConfig) extend
     val pushValids = Vec(fifoGroup.map(_.io.push.valid).toSeq)
     val pushPayloads = Vec(fifoGroup.map(_.io.push.payload).toSeq)
     val pushReadys = Vec(fifoGroup.map(_.io.push.ready).toSeq)
-    val returnStream = Stream (arrayDataType)
+    val returnStream = Stream(arrayDataType)
     pushValids(index) := returnStream.valid
     pushPayloads(index) := returnStream.payload
     returnStream.ready := pushReadys(index)
@@ -146,7 +142,7 @@ case class ArraySlice(dataWidth: Int, arraySliceConfig: ArraySliceConfig) extend
     val popValids = Vec(fifoGroup.map(_.io.pop.valid).toSeq)
     val popPayloads = Vec(fifoGroup.map(_.io.pop.payload).toSeq)
     val popReadys = Vec(fifoGroup.map(_.io.pop.ready).toSeq)
-    val returnStream = Stream (arrayDataType)
+    val returnStream = Stream(arrayDataType)
     returnStream.valid := popValids(index)
     returnStream.payload := popPayloads(index)
     popReadys(index) := returnStream.ready
@@ -158,6 +154,50 @@ case class ArraySlice(dataWidth: Int, arraySliceConfig: ArraySliceConfig) extend
     val fifoOccupancys = Vec(fifoGroup.map(_.io.occupancy).toSeq)
     val returnOccupancy = fifoOccupancys(index)
     returnOccupancy
+  }
+
+  // define some indicate function
+  def allReadHold: Bool = Vec(holdReadOp) === Vec(True, N)
+
+  def nextPatchDataReady: Bool = {
+    val dataReady = Vec(Bool(false), N)
+    (0 until N).foreach { p =>
+      when(selectWriteFifo >= realReadFifo(p)) {
+        when(selectWriteFifo - realReadFifo(p) >= U(N - p).resized * b) {
+          dataReady(p) := True
+        }
+          .otherwise {
+            dataReady(p) := False
+          }
+      }.otherwise {
+        when(realFifoNumb - realReadFifo(p) + selectWriteFifo >= U(N - p).resized * b) {
+          dataReady(p) := True
+        }
+          .otherwise {
+            dataReady(p) := False
+          }
+      }
+    }
+    dataReady.simPublic().setName("debug")
+    dataReady === Vec(True, N)
+  }
+
+  //TODO: FIX (now :a case not satisfy)
+  def banWriteFifo: Bool = {
+    val banWriteFlag = Vec(Bool(), N)
+    (0 until N).foreach { p =>
+      when(selectWriteFifo === (selectReadFifo(p) - selectReadFifo(p) % b).resized) {
+        when(writeAround ^ readAround(p)) {
+          banWriteFlag(p) := True
+        }.otherwise{
+          banWriteFlag(p) := False
+        }
+      }
+        .otherwise {
+          banWriteFlag(p) := False
+        }
+    }
+    banWriteFlag =/= Vec(False, N)
   }
 
   // define stateMachine to indicate the data storage
@@ -172,23 +212,24 @@ case class ArraySlice(dataWidth: Int, arraySliceConfig: ArraySliceConfig) extend
         selectFifoPush(selectWriteFifo) << ifmData
       }
 
-      when(selectFifoOccupancy(selectWriteFifo) === h) {
+      when(selectFifoOccupancy(selectWriteFifo) === h - U(1).resized && ifmData.fire) {
         when(selectWriteFifo === w - U(1).resized) {
-          when((selectWriteFifo + U(1).resized) % (U(N) * b).resized =/= U(0).resized) {
-            writeSelectRound := True
-          }
           selectWriteFifo := U(0).resized
+          writeAround := ~writeAround
         }.otherwise {
           selectWriteFifo := selectWriteFifo + U(1).resized
         }
       }
-
-      val canReadData = ((selectWriteFifo + U(1).resized) % (U(N) * b).resized === U(0).resized &&
-        selectFifoOccupancy(selectWriteFifo) === h) ||
-        writeSelectRound
-
-      when(canReadData) {
+      when(nextPatchDataReady) {
         goto(readWriteData)
+        (0 until N).foreach { p =>
+          when(holdReadOp(p)) {
+            holdReadOp(p) := False
+          }
+          when(!allowPadding(p)) {
+            allowPadding(p) := True
+          }
+        }
       }
 
     }
@@ -202,65 +243,102 @@ case class ArraySlice(dataWidth: Int, arraySliceConfig: ArraySliceConfig) extend
           }
 
           // selection logic
-          when(canSelectNext && selectFifoOccupancy(realReadFifo(n)) =/= U(0).resized) {
-            when(handshakeTimes(n) === b * a) {
-              selectReadFifo(n) := selectReadFifo(n) - b
-            }.otherwise {
-              selectReadFifo(n) := selectReadFifo(n) + U(1).resized
-            }
-          }
-
-          when(selectFifoOccupancy(realReadFifo(n)) === U(0).resized) {
-            when(canSelectNext) {
-              when(handshakeTimes(n) === b * a) {
-                selectReadFifo(n) := selectReadFifo(n) + U(N - 1).resized * b + U(1).resized
-                holdReadOp(n) := True
-              }.otherwise {
+          when(!holdReadOp(n)) {
+            when(selectFifoOccupancy(realReadFifo(n)) > U(1).resized && ofmData(n).fire) {
+              when(handshakeTimes(n) === b * a - U(1).resized) {
+                selectReadFifo(n) := selectReadFifo(n) - b + U(1).resized
+                outSliceNumb(n).increment()
+              }.elsewhen((handshakeTimes(n).value + U(1).resized) % a === U(0).resized) {
                 selectReadFifo(n) := selectReadFifo(n) + U(1).resized
               }
-            }.otherwise {
-              ofmData(n).valid := True
             }
-          }
 
-        } elsewhen (realReadFifo(n) >= w) {
-          ofmData(n).valid := True
-          when(canSelectNext) {
-            when(handshakeTimes(n) === b * a) {
-              selectReadFifo(n) := U(0).resized
-            } otherwise {
-              selectReadFifo(n) := selectReadFifo(n) + U(1).resized
+            when(selectFifoOccupancy(realReadFifo(n)) === U(1).resized && ofmData(n).fire) {
+              when(handshakeTimes(n) === b * a - U(1).resized) {
+
+                when((outSliceNumb(n).value + U(1).resized) < (realFifoDepth / a).resized) {
+                  selectReadFifo(n) := selectReadFifo(n) - b + U(1).resized
+                  outSliceNumb(n).increment()
+                }.otherwise {
+                  selectReadFifo(n) := selectReadFifo(n) + U(N - 1).resized * b + U(1).resized
+                  outSliceNumb(n).clear()
+                  when(!(allReadHold && nextPatchDataReady)) {
+                    holdReadOp(n) := True
+                  }
+                  when((selectReadFifo(n) + U(N - 1).resized * b + U(1).resized + b * U(n).resized) >= w) {
+                    allowPadding(n) := False
+                  }
+                }
+              }.elsewhen((handshakeTimes(n).value + U(1).resized) % a === U(0).resized) {
+                selectReadFifo(n) := selectReadFifo(n) + U(1).resized
+              }
             }
+            when(selectFifoOccupancy(realReadFifo(n)) === U(0).resized) {
+              when(handshakeTimes(n) === b * a - U(1).resized && ofmData(n).fire) {
+
+                when((outSliceNumb(n).value + U(1).resized).resized < (realFifoDepth / a).resized) {
+                  selectReadFifo(n) := selectReadFifo(n) - b + U(1).resized
+                  outSliceNumb(n).increment()
+                }.otherwise {
+                  selectReadFifo(n) := selectReadFifo(n) + U(N - 1).resized * b + U(1).resized
+                  outSliceNumb(n).clear()
+                  when(!(allReadHold && nextPatchDataReady)) {
+                    holdReadOp(n) := True
+                  }
+                  when((selectReadFifo(n) + U(N - 1).resized * b + U(1).resized + b * U(n).resized) >= w) {
+                    allowPadding(n) := False
+                  }
+                }
+              }.elsewhen((handshakeTimes(n).value + U(1).resized) % a === U(0).resized && ofmData(n).fire) {
+                selectReadFifo(n) := selectReadFifo(n) + U(1).resized
+              }
+              ofmData(n).valid := True
+
+            }
+
+
+          }
+        }.elsewhen(allowPadding(n) && realReadFifo(n) >= w) {
+          ofmData(n).valid := True
+          when(handshakeTimes(n) === b * a - U(1).resized && ofmData(n).fire) {
+            when((outSliceNumb(n).value + U(1).resized).resized < (realFifoDepth / a).resized) {
+              selectReadFifo(n) := selectReadFifo(n) - b + U(1).resized
+              outSliceNumb(n).increment()
+            }.otherwise {
+              selectReadFifo(n) := U(0).resized
+              readAround(n) := ~readAround(n)
+              outSliceNumb(n).clear()
+              when(!(allReadHold && nextPatchDataReady)) {
+                holdReadOp(n) := True
+              }
+            }
+          }.elsewhen((handshakeTimes(n).value + U(1).resized) % a === U(0).resized && ofmData(n).fire) {
+            selectReadFifo(n) := selectReadFifo(n) + U(1).resized
           }
         }
+
 
         when(ofmData(n).fire) {
-          handshakeTimes(n).increment()
-        }
+          when(handshakeTimes(n) === b * a - U(1).resized) {
+            handshakeTimes(n).clear()
+          } otherwise {
+            handshakeTimes(n).increment()
+          }
 
-        when(handshakeTimes(n) === b * a) {
-          handshakeTimes(n).clear()
-        }
-
-        // control the selection of fifo
-        when((handshakeTimes(n).value + U(1).resized) % a === U(0).resized && ofmData(n).fire) {
-          canSelectNext := True
         }
 
       }
 
       // write data logic
-      when(!notWriteFifo) {
+      when(!banWriteFifo) {
         when(selectFifoOccupancy(selectWriteFifo) < h) {
           selectFifoPush(selectWriteFifo) << ifmData
         }
 
-        when(selectFifoOccupancy(selectWriteFifo) === h) {
+        when(selectFifoOccupancy(selectWriteFifo) === h - U(1).resized && ifmData.fire) {
           when(selectWriteFifo === w - U(1).resized) {
-            when((selectWriteFifo + U(1).resized) % (U(N) * b).resized =/= U(0).resized) {
-              writeSelectRound := True
-            }
             selectWriteFifo := U(0).resized
+            writeAround := ~writeAround
           }.otherwise {
             selectWriteFifo := selectWriteFifo + U(1).resized
           }
@@ -269,87 +347,26 @@ case class ArraySlice(dataWidth: Int, arraySliceConfig: ArraySliceConfig) extend
 
       // state transform logic
 
-      // define some indicate function
-      def allReadHold: Bool = Vec(holdReadOp) === Vec(True, N)
-
-      def nextPatchDataReady: Bool = {
-        val dataReady = Vec(Bool(false), N)
-        (0 until N).foreach { p =>
-          when(selectWriteFifo > realReadFifo(p)) {
-            when(selectWriteFifo - realReadFifo(p) >= U(N).resized * b) {
-              dataReady(p) := True
-            }
-              .otherwise {
-                dataReady(p) := False
-              }
-          }.otherwise {
-            when(realFifoNumb - realReadFifo(p) + selectWriteFifo >= U(N).resized * b) {
-              dataReady(p) := True
-            }
-              .otherwise {
-                dataReady(p) := False
-              }
-          }
-        }
-        dataReady === Vec(True, N)
-      }
-
-      def notWriteFifo: Bool = {
-        val notWriteFlag = Vec(Bool(), N)
-        (0 until N).foreach { p =>
-          when(selectWriteFifo === (realReadFifo(p) - realReadFifo(p) % b).resized) {
-            notWriteFlag(p) := True
-          }
-            .otherwise {
-              notWriteFlag(p) := True
-            }
-        }
-        notWriteFlag === Vec(False, N)
-      }
-
-      def willFullOrEmpty: Bool = {
-        val flag = Bool()
-        when(allReadHold && selectReadFifo(0) === selectWriteFifo) {
-          flag := True
-        }
-          .otherwise {
-            flag := False
-          }
-        flag
-      }
-
-      def fifoEmpty: Bool = {
-        val emptyFlag = Bool(false)
-        when(willFullOrEmpty && selectFifoOccupancy(selectWriteFifo + U(1).resized) === U(0).resized) {
-          emptyFlag := True
-        }
-        emptyFlag
-      }
-
-      def fifoFull: Bool = {
-        val fullFlag = Bool(false)
-        when(willFullOrEmpty && selectFifoOccupancy(selectWriteFifo + U(1).resized) =/= U(0).resized) {
-          fullFlag := True
-        }
-        fullFlag
-      }
-
       when(allReadHold && nextPatchDataReady) {
         (0 until N).foreach(p => holdReadOp(p) := False)
       }
 
-      // state transform
-
-      when(fifoEmpty){
+      when(allReadHold && !nextPatchDataReady && !banWriteFifo) {
         goto(writeDataOnly)
       }
-      when(fifoFull){
+
+      when(banWriteFifo) {
         goto(readDataOnly)
+        (0 until N).foreach { p =>
+          when(!allowPadding(p)) {
+            allowPadding(p) := True
+          }
+        }
       }
 
     }
 
-    readDataOnly.whenIsActive{
+    readDataOnly.whenIsActive {
 
       // read data logic
       (0 until N).foreach { n =>
@@ -359,55 +376,106 @@ case class ArraySlice(dataWidth: Int, arraySliceConfig: ArraySliceConfig) extend
           }
 
           // selection logic
-          when(canSelectNext && selectFifoOccupancy(realReadFifo(n)) =/= U(0).resized) {
-            when(handshakeTimes(n) === b * a) {
-              selectReadFifo(n) := selectReadFifo(n) - b
-            }.otherwise {
-              selectReadFifo(n) := selectReadFifo(n) + U(1).resized
-            }
-          }
-
-          when(selectFifoOccupancy(realReadFifo(n)) === U(0).resized) {
-            when(canSelectNext) {
-              when(handshakeTimes(n) === b * a) {
-                selectReadFifo(n) := selectReadFifo(n) + U(N - 1).resized * b + U(1).resized
-                holdReadOp(n) := True
-              }.otherwise {
+          when(!holdReadOp(n)) {
+            when(selectFifoOccupancy(realReadFifo(n)) > U(1).resized && ofmData(n).fire) {
+              when(handshakeTimes(n) === b * a - U(1).resized) {
+                selectReadFifo(n) := selectReadFifo(n) - b + U(1).resized
+                outSliceNumb(n).increment()
+              }.elsewhen((handshakeTimes(n).value + U(1).resized) % a === U(0).resized) {
                 selectReadFifo(n) := selectReadFifo(n) + U(1).resized
               }
-            }.otherwise {
-              ofmData(n).valid := True
             }
-          }
 
-        } elsewhen (realReadFifo(n) >= w) {
-          ofmData(n).valid := True
-          when(canSelectNext) {
-            when(handshakeTimes(n) === b * a) {
-              selectReadFifo(n) := U(0).resized
-            } otherwise {
-              selectReadFifo(n) := selectReadFifo(n) + U(1).resized
+            when(selectFifoOccupancy(realReadFifo(n)) === U(1).resized && ofmData(n).fire) {
+              when(handshakeTimes(n) === b * a - U(1).resized) {
+
+                when((outSliceNumb(n).value + U(1).resized) < (realFifoDepth / a).resized) {
+                  selectReadFifo(n) := selectReadFifo(n) - b + U(1).resized
+                  outSliceNumb(n).increment()
+                }.otherwise {
+                  selectReadFifo(n) := selectReadFifo(n) + U(N - 1).resized * b + U(1).resized
+                  outSliceNumb(n).clear()
+                  when(!(allReadHold && nextPatchDataReady)) {
+                    holdReadOp(n) := True
+                  }
+                  when((selectReadFifo(n) + U(N - 1).resized * b + U(1).resized + b * U(n).resized) >= w) {
+                    allowPadding(n) := False
+                  }
+                }
+              }.elsewhen((handshakeTimes(n).value + U(1).resized) % a === U(0).resized) {
+                selectReadFifo(n) := selectReadFifo(n) + U(1).resized
+              }
             }
+            when(selectFifoOccupancy(realReadFifo(n)) === U(0).resized) {
+              when(handshakeTimes(n) === b * a - U(1).resized && ofmData(n).fire) {
+
+                when((outSliceNumb(n).value + U(1).resized).resized < (realFifoDepth / a).resized) {
+                  selectReadFifo(n) := selectReadFifo(n) - b + U(1).resized
+                  outSliceNumb(n).increment()
+                }.otherwise {
+                  selectReadFifo(n) := selectReadFifo(n) + U(N - 1).resized * b + U(1).resized
+                  outSliceNumb(n).clear()
+                  when(!(allReadHold && nextPatchDataReady)) {
+                    holdReadOp(n) := True
+                  }
+                  when((selectReadFifo(n) + U(N - 1).resized * b + U(1).resized + b * U(n).resized) >= w) {
+                    allowPadding(n) := False
+                  }
+                }
+              }.elsewhen((handshakeTimes(n).value + U(1).resized) % a === U(0).resized && ofmData(n).fire) {
+                selectReadFifo(n) := selectReadFifo(n) + U(1).resized
+              }
+              ofmData(n).valid := True
+
+            }
+
+
+          }
+        }.elsewhen(allowPadding(n) && realReadFifo(n) >= w) {
+          ofmData(n).valid := True
+          when(handshakeTimes(n) === b * a - U(1).resized && ofmData(n).fire) {
+            when((outSliceNumb(n).value + U(1).resized).resized < (realFifoDepth / a).resized) {
+              selectReadFifo(n) := selectReadFifo(n) - b + U(1).resized
+              outSliceNumb(n).increment()
+            }.otherwise {
+              selectReadFifo(n) := U(0).resized
+              readAround(n) := ~readAround(n)
+              outSliceNumb(n).clear()
+              when(!(allReadHold && nextPatchDataReady)) {
+                holdReadOp(n) := True
+              }
+            }
+          }.elsewhen((handshakeTimes(n).value + U(1).resized) % a === U(0).resized && ofmData(n).fire) {
+            selectReadFifo(n) := selectReadFifo(n) + U(1).resized
           }
         }
+
 
         when(ofmData(n).fire) {
-          handshakeTimes(n).increment()
-        }
+          when(handshakeTimes(n) === b * a - U(1).resized) {
+            handshakeTimes(n).clear()
+          } otherwise {
+            handshakeTimes(n).increment()
+          }
 
-        when(handshakeTimes(n) === b * a) {
-          handshakeTimes(n).clear()
-        }
-
-        // control the selection of fifo
-        when((handshakeTimes(n).value + U(1).resized).resized % a === U(0).resized && ofmData(n).fire) {
-          canSelectNext := True
         }
 
       }
+      // state transform logic
+      when(allReadHold && nextPatchDataReady) {
+        (0 until N).foreach { p =>
+          holdReadOp(p) := False
+          when(!allowPadding(p)) {
+            allowPadding(p) := True
+          }
+        }
+        goto(readWriteData)
+      }
     }
-
-
   }
+  // for debug
+  val stateIndicate = UInt()
+  addPrePopTask(() => stateIndicate.assignFromBits(arraySliceStateMachine.stateReg.asBits))
+
 
 }
