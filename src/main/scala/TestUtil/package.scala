@@ -5,6 +5,7 @@ import spinal.core.sim._
 import spinal.sim.SimThread
 
 import scala.collection.mutable.ArrayBuffer
+import scala.util.Random
 
 package object TestUtil {
 
@@ -105,28 +106,6 @@ package object TestUtil {
     dutResult
   }
 
-  def flowPeekPokeFullDataOneToMore[To, Ti, Hi <: Data, Ho <: Data]
-  (dut: Component, testCases: Seq[Ti], dataIn: Stream[Hi], dataOut: Vec[Stream[Ho]], latency: Int = 0): ArrayBuffer[ArrayBuffer[To]] = {
-    // init
-    dataIn.clear()
-    dut.clockDomain.waitSampling()
-    // set monitor
-    val dutResult = ArrayBuffer.fill(dataOut.size)(ArrayBuffer[To]())
-    (0 until dutResult.size).foreach { i =>
-      dataOut(i).setMonitorStream(dutResult(i))
-    }
-    // poke stimulus
-    testCases.indices.foreach { i =>
-      dataIn.poke(testCases(i), lastWhen = i == (testCases.length - 1))
-      dut.clockDomain.waitRisingEdgeWhere(dataIn.valid.toBoolean && dataIn.ready.toBoolean)
-
-    }
-    // wait for result
-    dataIn.clear()
-    dut.clockDomain.waitSampling(latency + 1)
-    dutResult
-  }
-
   def doFlowPeekPokeTest[To, Ti, Hi <: Data, Ho <: Data]
   (name: String, dut: => Component with Testable[Hi, Ho], testCases: Seq[Ti], golden: Seq[To], initLength: Int = 0): ArrayBuffer[To] = {
 
@@ -145,7 +124,7 @@ package object TestUtil {
 
       import dut.{clockDomain, dataIn, dataOut, latency}
       dataIn.halt()
-      clockDomain.forkStimulus(2)
+      clockDomain.forkStimulus(5)
 
       dutResult ++= flowPeekPoke(dut, testCases, dataIn, dataOut, latency).drop(initLength * outputSize)
 
@@ -159,6 +138,57 @@ package object TestUtil {
         assert(difference.isEmpty, difference.mkString(" "))
       }
     }
+    dutResult
+  }
+
+  def streamPeekPokeAllDataOneToMore[To, Ti, Hi <: Data, Ho <: Data]
+  (dut: Component, testCases: Seq[Ti], dataIn: Stream[Hi], dataOut: Vec[Stream[Ho]], latency: Int = 0): ArrayBuffer[ArrayBuffer[To]] = {
+    // init
+    dataIn.clear()
+    dut.clockDomain.waitSampling()
+    // set monitor
+    val dutResult = ArrayBuffer.fill(dataOut.size)(ArrayBuffer[To]())
+    (0 until dutResult.size).foreach { i =>
+      dataOut(i).setMonitorForStream(dutResult(i))
+    }
+    // poke stimulus
+    testCases.indices.foreach { i =>
+      dataIn.poke(testCases(i), lastWhen = i == (testCases.length - 1))
+      dut.clockDomain.waitRisingEdgeWhere(dataIn.valid.toBoolean && dataIn.ready.toBoolean)
+    }
+    // wait for result
+    dataIn.clear()
+    dut.clockDomain.waitSampling(latency + 1)
+    dutResult
+  }
+
+  def streamPeekPokeDataRandomOneToMore[To, Ti, Hi <: Data, Ho <: Data]
+  (dut: Component, testCases: Seq[Ti], dataIn: Stream[Hi], dataOut: Vec[Stream[Ho]], latency: Int = 0): ArrayBuffer[ArrayBuffer[To]] = {
+    // init
+    dataIn.clear()
+    dut.clockDomain.waitSampling()
+    // set monitor
+    val dutResult = ArrayBuffer.fill(dataOut.size)(ArrayBuffer[To]())
+    (0 until dutResult.size).foreach { i =>
+      dataOut(i).setMonitorForStream(dutResult(i))
+    }
+    // poke stimulus
+    val loopCond = ArrayBuffer.fill(testCases.size)(Random.nextBoolean())
+    testCases.indices.foreach { i =>
+      while(!loopCond(i)){
+        dataIn.pokeInvalidData(BigInt(Random.nextInt(256)))
+        dut.clockDomain.waitSampling()
+        loopCond(i) = Random.nextBoolean()
+      }
+      if(loopCond(i)){
+        dataIn.poke(testCases(i), lastWhen = i == (testCases.length - 1))
+        dut.clockDomain.waitRisingEdgeWhere(dataIn.valid.toBoolean && dataIn.ready.toBoolean)
+      }
+
+    }
+    // wait for result
+    dataIn.clear()
+    dut.clockDomain.waitSampling(latency + 1)
     dutResult
   }
 
@@ -232,6 +262,19 @@ package object TestUtil {
       }
     }
 
+    def pokeInvalidData[D](data: D, lastWhen: Boolean = false) = {
+
+      // deal with control signals
+      cut.valid #= false
+      cut.payload match {
+        case fragment: Fragment[_] => fragment.last #= lastWhen
+        case _ =>
+      }
+
+      // deal with payload
+      pokeData(cut.payload, data)
+    }
+
     // fork a SimThread when this DataCarrier is valid
     def forkWhenValid(body: => Unit): SimThread = fork {
       while (true) {
@@ -267,7 +310,7 @@ package object TestUtil {
       }
     }
 
-    def setMonitorStream[T](Container: ArrayBuffer[T], name: String = ""): SimThread = forkWhenFire {
+    def setMonitorForStream[T](Container: ArrayBuffer[T], name: String = ""): SimThread = forkWhenFire {
       cut.payload match {
         case vec: Vec[_] => Container ++= peekData(vec)
         case fragment: Fragment[_] =>
